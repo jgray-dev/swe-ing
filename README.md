@@ -1,6 +1,6 @@
-- [ ] Deploy to vercel
-- [ ] Basic UI with mock data
-- [ ] Create databases for live/dev branches (vercel postgres)
+- [x] Deploy to vercel
+- [x] Basic UI with mock data
+- [x] Create databases for live/dev branches (vercel postgres)
 - [ ] Authentication (clerk)
 - [ ] Posting + image uploading
 - [ ] Post routing (NextJS parallel routing)
@@ -10,4 +10,3 @@
 - [ ] Error handling (sentry)
 - [ ] Analytics (posthog)
 - [ ] Rate limiting? (upstash)
-- 
