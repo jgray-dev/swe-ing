@@ -3,6 +3,8 @@ import "~/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 
 import { TRPCReactProvider } from "~/trpc/react";
+import { ClerkProvider } from "@clerk/nextjs";
+import Navbar from "~/app/_components/Navbar";
 
 export const metadata = {
   title: "swe-ing",
@@ -10,30 +12,19 @@ export const metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-function TopNav() {
-  return (
-    <div
-      className={
-        "flex w-full items-center justify-between bg-zinc-300 p-4 text-lg font-semibold"
-      }
-    >
-      <div>sweing app</div>
-      <div>sign in</div>
-    </div>
-  );
-}
-
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
-      <body className="flex flex-col gap-4 bg-zinc-900">
-        <TopNav />
-        <TRPCReactProvider>{children}</TRPCReactProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en" className={`${GeistSans.variable}`}>
+        <body className="flex flex-col gap-4 bg-zinc-900">
+          <Navbar />
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
