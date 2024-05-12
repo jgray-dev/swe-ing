@@ -1,4 +1,4 @@
-- [ ] Deploy to vercel
+- [x] Deploy to vercel
 - [ ] Basic UI with mock data
 - [ ] Create databases for live/dev branches (vercel postgres)
 - [ ] Authentication (clerk)
