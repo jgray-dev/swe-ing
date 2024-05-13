@@ -4,10 +4,10 @@ export default function Navbar() {
   return (
     <div
       className={
-        "flex w-full items-center justify-between bg-zinc-300 p-4 text-lg font-semibold"
+        "flex w-full items-center justify-between bg-black p-4 text-lg font-semibold text-white"
       }
     >
-      <div>sweing app</div>
+      <div>swe.ing app</div>
       <div>
         <SignedIn>
           <UserButton />
