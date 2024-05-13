@@ -3,5 +3,5 @@ export default function PostPage({
 }: {
   params: { id: string };
 }) {
-  return <div>This is a post page for post id {postId}</div>;
+  return <div>This is a modal post page for post id {postId}</div>;
 }
