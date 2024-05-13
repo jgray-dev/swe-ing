@@ -1,4 +1,5 @@
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import Link from "next/link";
 
 export default function Navbar() {
   return (
@@ -10,7 +11,12 @@ export default function Navbar() {
       <div>swe.ing app</div>
       <div>
         <SignedIn>
-          <UserButton />
+          <div>
+            <Link href={`/newpost`}>Create new post</Link>
+          </div>
+          <div>
+            <UserButton />
+          </div>
         </SignedIn>
         <SignedOut>
           <SignInButton />
