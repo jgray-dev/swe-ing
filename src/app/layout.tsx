@@ -1,10 +1,16 @@
 import "~/styles/globals.css";
+import "@uploadthing/react/styles.css";
 
 import { GeistSans } from "geist/font/sans";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "~/app/_components/Navbar";
+import React from "react";
+
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import { ourFileRouter } from "~/app/api/uploadthing/core";
 
 export const metadata = {
   title: "swe-ing",
@@ -14,15 +20,22 @@ export const metadata = {
 
 export default function RootLayout({
   children,
+  modal,
 }: {
   children: React.ReactNode;
+  modal: React.ReactNode;
 }) {
   return (
     <ClerkProvider>
       <html lang="en" className={`${GeistSans.variable}`}>
-        <body className="flex flex-col gap-4 bg-zinc-900">
+        <body className="flex flex-col gap-4 bg-zinc-900 text-white">
+          <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
           <Navbar />
-          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <TRPCReactProvider>
+            {children}
+            {modal}
+            <div id="modal-root"></div>
+          </TRPCReactProvider>
         </body>
       </html>
     </ClerkProvider>

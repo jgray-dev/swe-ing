@@ -12,17 +12,13 @@ import {
 
 export const createTable = pgTableCreator((name) => `swe-ing_${name}`);
 
-export const posts = createTable(
-  "post",
-  {
-    id: serial("id").primaryKey(),
-    name: varchar("name", { length: 256 }),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updatedAt", { withTimezone: true }),
-  },
-  (example) => ({
-    nameIndex: index("name_idx").on(example.name),
-  }),
-);
+export const posts = createTable("post", {
+  id: serial("id").primaryKey(),
+  author: varchar("author", { length: 256 }).notNull(),
+  authorId: varchar("author_id").notNull(),
+  imageUrl: varchar("image_url", { length: 1024 }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updatedAt", { withTimezone: true }),
+});

@@ -18,6 +18,6 @@ export type AppRouter = typeof appRouter;
  * @example
  * const trpc = createCaller(createContext);
  * const res = await trpc.post.all();
- *       ^? Post[]
+ *       ^? Page[]
  */
 export const createCaller = createCallerFactory(appRouter);
