@@ -2,12 +2,7 @@
 import { UploadDropzone } from "~/utils/uploadthing";
 import { useState } from "react";
 
-export default function NewPost({
-  params: { redirect: redirectUrl },
-}: {
-  params: { redirect: string };
-}) {
-  console.log(redirectUrl);
+export default function NewPost() {
   const [content, setContent] = useState("");
   return (
     <div
