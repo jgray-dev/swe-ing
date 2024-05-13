@@ -1,9 +1,9 @@
 - [x] Deploy to vercel
 - [x] Basic UI with mock data
 - [x] Create databases for live/dev branches (vercel postgres)
-- [ ] Authentication (clerk)
+- [x] Authentication (clerk)
 - [ ] Posting + image uploading
-- [ ] Post routing (NextJS parallel routing)
+- [ ] Page routing (NextJS parallel routing)
 - [ ] User profile
 - [ ] User dashboard
 - [ ] Search
