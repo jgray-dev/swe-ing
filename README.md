@@ -3,7 +3,7 @@
 - [x] Create databases for live/dev branches (vercel postgres)
 - [x] Authentication (clerk)
 - [ ] Posting + image uploading
-- [ ] Page routing (NextJS parallel routing)
+- [x] Post page routing (NextJS parallel routing)
 - [ ] User profile
 - [ ] User dashboard
 - [ ] Search
