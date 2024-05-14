@@ -20,10 +20,8 @@ export const metadata = {
 
 export default function RootLayout({
   children,
-  modal,
 }: {
   children: React.ReactNode;
-  modal: React.ReactNode;
 }) {
   return (
     <ClerkProvider>
@@ -31,11 +29,7 @@ export default function RootLayout({
         <body className="flex flex-col gap-4 bg-zinc-900 text-white">
           <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
           <Navbar />
-          <TRPCReactProvider>
-            {children}
-            {modal}
-            <div id="modal-root"></div>
-          </TRPCReactProvider>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
         </body>
       </html>
     </ClerkProvider>
