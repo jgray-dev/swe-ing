@@ -1,7 +1,6 @@
 import { db } from "~/server/db";
 import Image from "next/image";
 import Link from "next/link";
-import { clerkClient } from "@clerk/nextjs/server";
 
 export const dynamic = "force-dynamic";
 
