@@ -11,20 +11,10 @@ export default async function Home() {
     <main className="h-screen w-screen bg-zinc-900 text-white">
       <div className="flex flex-wrap gap-4">
         {posts.map((post, index) => {
+          console.log(post);
           return (
             <div key={index}>
-              <Link href={`/post/${post.id}`}>
-                <h1>meow</h1>
-                {post.imageUrl ? (
-                  <Image
-                    src={post.imageUrl}
-                    alt={post.authorId}
-                    width={200}
-                    height={200}
-                    style={{ width: "auto" }}
-                  />
-                ) : null}
-              </Link>
+              <Link href={`/post/${post.id}`}>{post.content}</Link>
             </div>
           );
         })}
