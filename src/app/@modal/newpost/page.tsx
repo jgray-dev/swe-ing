@@ -6,8 +6,10 @@ export default function NewPost() {
   const [content, setContent] = useState("");
   return (
     <div
-      className="fixed left-0 top-0 h-screen w-screen bg-black/75 backdrop-blur-sm"
-      onClick={() => console.log("close")}
+      className="fixed left-0 top-0 h-screen w-screen scroll-auto bg-black/75 backdrop-blur-sm"
+      onClick={() => {
+        console.log("CLOSE");
+      }}
     >
       <div
         className={"mx-auto h-screen w-96 text-center"}
@@ -15,7 +17,7 @@ export default function NewPost() {
           e.stopPropagation();
         }}
       >
-        <h1>Page for creating a new post</h1>
+        <h1>Create new post</h1>
         <textarea
           className="h-48 w-full rounded-md border border-gray-200 bg-black/90 p-4 text-white placeholder-neutral-200"
           value={content}
