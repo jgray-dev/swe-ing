@@ -4,7 +4,7 @@
  */
 await import("./src/env.js");
 /** @type {import("next").NextConfig} */
-const coreConfig = {
+const config = {
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -22,18 +22,5 @@ const coreConfig = {
     ],
   },
 };
-
-import { withSentryConfig } from "@sentry/nextjs";
-
-const config = withSentryConfig(coreConfig, {
-  org: "sweing",
-  project: "javascript-nextjs",
-  silent: !process.env.CI,
-  widenClientFileUpload: true,
-  tunnelRoute: "/monitoring",
-  hideSourceMaps: true,
-  disableLogger: true,
-  automaticVercelMonitors: true,
-});
 
 export default config;
