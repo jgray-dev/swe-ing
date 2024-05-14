@@ -3,9 +3,8 @@
  * for Docker builds.
  */
 await import("./src/env.js");
-
 /** @type {import("next").NextConfig} */
-const config = {
+const coreConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -23,5 +22,18 @@ const config = {
     ],
   },
 };
+
+import { withSentryConfig } from "@sentry/nextjs";
+
+const config = withSentryConfig(coreConfig, {
+  org: "sweing",
+  project: "javascript-nextjs",
+  silent: !process.env.CI,
+  widenClientFileUpload: true,
+  tunnelRoute: "/monitoring",
+  hideSourceMaps: true,
+  disableLogger: true,
+  automaticVercelMonitors: true,
+});
 
 export default config;
