@@ -1,13 +1,20 @@
 "use client";
 import { UploadDropzone } from "~/utils/uploadthing";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Modal } from "./modal";
 import { useRouter } from "next/navigation";
 
 export default function NewPost() {
   const router = useRouter();
   const [content, setContent] = useState("");
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [blockSubmit, setBlockSubmit] = useState(false);
 
+  function handleImageUpload(response: { url: string }[]) {
+    const urls = response.map((item) => item.url);
+    setImageUrls([...imageUrls, ...urls]);
+    setBlockSubmit(false);
+  }
   return (
     <Modal>
       <div
@@ -37,9 +44,23 @@ export default function NewPost() {
             placeholder="Write your post here"
             onChange={(e) => setContent(e.target.value)}
           />
-          <UploadDropzone endpoint="imageUploader" />
+          <UploadDropzone
+            endpoint="imageUploader"
+            onUploadBegin={() => {
+              setBlockSubmit(true);
+            }}
+            onUploadError={() => {
+              alert("Error uploading image");
+            }}
+            config={{
+              mode: "auto",
+            }}
+            onClientUploadComplete={(res) => {
+              handleImageUpload(res);
+            }}
+          />
           <button
-            className="mt-4 w-full rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+            className={`mt-4 w-full rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 ${blockSubmit ? "cursor-select-none" : "cursor-pointer"}`}
             onClick={() => console.log(content)}
           >
             Submit
