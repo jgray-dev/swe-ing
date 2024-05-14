@@ -1,6 +1,7 @@
 import { db } from "~/server/db";
 import Image from "next/image";
 import Link from "next/link";
+import { clerkClient } from "@clerk/nextjs/server";
 
 export const dynamic = "force-dynamic";
 
@@ -14,10 +15,10 @@ export default async function Home() {
           return (
             <div key={index}>
               <Link href={`/post/${post.id}`}>
-                <h1>{post.author}</h1>
+                <h1>meow</h1>
                 <Image
                   src={post.imageUrl}
-                  alt={post.author}
+                  alt={post.authorId}
                   width={200}
                   height={200}
                   style={{ width: "auto" }}
