@@ -3,12 +3,34 @@ import { UploadDropzone } from "~/utils/uploadthing";
 import { useState } from "react";
 import { Modal } from "./modal";
 import { useRouter } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
+import { db } from "~/server/db";
+import { posts } from "~/server/db/schema";
 
 export default function NewPost() {
   const router = useRouter();
   const [content, setContent] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [blockSubmit, setBlockSubmit] = useState(false);
+
+  async function handleSubmit() {
+    const user = auth();
+    if (!user.userId) throw new Error("Unauthorized");
+    if (blockSubmit) {
+      alert("Please wait for image upload to complete.");
+    } else if (content !== "") {
+      console.log("Add to database here:");
+      console.log(imageUrls);
+      console.log(content);
+      await db.insert(posts).values({
+        authorId: user.userId,
+        content: content,
+        imageUrls: imageUrls,
+      });
+    } else {
+      alert("Please add content to your post");
+    }
+  }
 
   function handleImageUpload(response: { url: string }[]) {
     const urls = response.map((item) => item.url);
@@ -46,8 +68,9 @@ export default function NewPost() {
           />
           <UploadDropzone
             endpoint="imageUploader"
-            onUploadBegin={() => {
+            onBeforeUploadBegin={(files) => {
               setBlockSubmit(true);
+              return files;
             }}
             onUploadError={() => {
               alert("Error uploading image");
@@ -60,8 +83,8 @@ export default function NewPost() {
             }}
           />
           <button
-            className={`mt-4 w-full rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 ${blockSubmit ? "cursor-select-none" : "cursor-pointer"}`}
-            onClick={() => console.log(content)}
+            className={`mt-4 w-full rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 ${blockSubmit ? "cursor-progress" : "cursor-pointer"}`}
+            onClick={() => handleSubmit()}
           >
             Submit
           </button>
