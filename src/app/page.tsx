@@ -1,11 +1,11 @@
-import { db } from "~/server/db";
 import Image from "next/image";
 import Link from "next/link";
+import { getPosts } from "~/server/queries";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const posts = await db.query.posts.findMany();
+  const posts = await getPosts();
 
   return (
     <main className="h-screen w-screen bg-zinc-900 text-white">
@@ -15,13 +15,15 @@ export default async function Home() {
             <div key={index}>
               <Link href={`/post/${post.id}`}>
                 <h1>meow</h1>
-                <Image
-                  src={post.imageUrl}
-                  alt={post.authorId}
-                  width={200}
-                  height={200}
-                  style={{ width: "auto" }}
-                />
+                {post.imageUrl ? (
+                  <Image
+                    src={post.imageUrl}
+                    alt={post.authorId}
+                    width={200}
+                    height={200}
+                    style={{ width: "auto" }}
+                  />
+                ) : null}
               </Link>
             </div>
           );
