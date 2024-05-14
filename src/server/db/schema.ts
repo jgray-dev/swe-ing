@@ -5,8 +5,8 @@ import {
   integer,
   varchar,
   timestamp,
+  text,
 } from "drizzle-orm/pg-core";
-
 export const createTable = pgTableCreator((name) => `swe-ing_${name}`);
 
 export const users = createTable("users", {
@@ -21,7 +21,7 @@ export const posts = createTable("posts", {
   id: serial("id").primaryKey(),
   authorId: varchar("author_id", { length: 191 }).notNull(),
   content: varchar("content", { length: 255 }).notNull(),
-  imageUrl: varchar("image_url", { length: 1024 }),
+  imageUrls: text("image_urls").$type<string[]>(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
