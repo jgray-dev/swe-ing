@@ -1,9 +1,11 @@
-import { Modal } from "./modal";
+import { getPost } from "~/server/queries";
 
-export default function PostPage({
+export default async function PostPage({
   params: { id: postId },
 }: {
   params: { id: string };
 }) {
-  return <Modal>This is a modal post page for post id {postId}</Modal>;
+  const post = await getPost(Number(postId));
+  console.log(post);
+  return <div>This is a post page for post id {postId}</div>;
 }
