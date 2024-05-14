@@ -1,7 +1,6 @@
 "use client";
 import { UploadDropzone } from "~/utils/uploadthing";
 import { useState } from "react";
-import { Modal } from "./modal";
 import { useRouter } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { db } from "~/server/db";
@@ -22,11 +21,6 @@ export default function NewPost() {
       console.log("Add to database here:");
       console.log(imageUrls);
       console.log(content);
-      await db.insert(posts).values({
-        authorId: user.userId,
-        content: content,
-        imageUrls: imageUrls,
-      });
     } else {
       alert("Please add content to your post");
     }
@@ -38,7 +32,7 @@ export default function NewPost() {
     setBlockSubmit(false);
   }
   return (
-    <Modal>
+    <div className={"h-screen w-screen"}>
       <div
         className="fixed left-0 top-0 h-screen w-screen scroll-auto bg-black/75 backdrop-blur-sm"
         onClick={() => {
@@ -90,6 +84,6 @@ export default function NewPost() {
           </button>
         </div>
       </div>
-    </Modal>
+    </div>
   );
 }
