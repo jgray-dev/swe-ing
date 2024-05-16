@@ -5,16 +5,14 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { api } from "~/trpc/react";
-import type { NextApiRequest } from "next";
 
-export default function NewPost(req: NextApiRequest) {
+export default function NewPost() {
   const router = useRouter();
   const [content, setContent] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [blockSubmit, setBlockSubmit] = useState(false);
 
   function successCallback(data: any) {
-    console.log(data[0].id);
     router.push(`/post/${data[0].id}`);
   }
 
@@ -31,10 +29,8 @@ export default function NewPost(req: NextApiRequest) {
     if (blockSubmit) {
       alert("Please wait for image upload to complete.");
     } else if (content !== "") {
-      console.log("Add to database here:");
+      console.log("image URLS:");
       console.log(imageUrls);
-      console.log(content);
-      //Fill type defs and syntax for creating a post
       createPost.mutate({ content, imageUrls });
     } else {
       alert("Please add content to your post");
