@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" className={`${GeistSans.variable}`}>
-        <body className="flex flex-col gap-4 bg-zinc-900 text-white">
+        <body className="flex flex-col bg-zinc-900 text-white">
           <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
           <Navbar />
           <TRPCReactProvider>{children}</TRPCReactProvider>
