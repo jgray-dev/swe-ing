@@ -19,35 +19,34 @@ export const users = createTable("users", {
 
 export const posts = createTable("posts", {
   id: serial("id").primaryKey(),
-  authorId: varchar("author_id", { length: 191 }).notNull(),
+  author_id: varchar("author_id", { length: 191 }).notNull(),
   content: varchar("content", { length: 255 }).notNull(),
-  imageUrls: text("image_urls").$type<string[]>(),
-  created_at: bigint("bigint", { mode: "number" }).notNull(),
+  image_urls: text("image_urls").$type<string[]>(),
+  created_at: bigint("created_at", { mode: "number" }).notNull(),
 });
 
 export const comments = createTable("comments", {
   id: serial("id").primaryKey(),
-  postId: integer("post_id").notNull(),
-  authorId: varchar("author_id", { length: 191 }).notNull(),
+  post_id: integer("post_id").notNull(),
+  author_id: varchar("author_id", { length: 191 }).notNull(),
   content: varchar("content", { length: 255 }).notNull(),
-  // created + updated timestamps
+  created_at: bigint("created_at", { mode: "number" }).notNull(),
+  updated_at: bigint("updated_at", { mode: "number" }).notNull(),
 });
 
-//1715880851
-//1715880839
 export const likes = createTable("likes", {
-  userId: varchar("user_id", { length: 191 }).notNull(),
-  postId: integer("post_id").notNull(),
-  // created
+  user_id: varchar("user_id", { length: 191 }).notNull(),
+  post_id: integer("post_id").notNull(),
 });
 
+// If jackson follows Sabrina, jackson is user_id, and sabrina is following_user_id
 export const follows = createTable("follows", {
-  followingUserId: varchar("following_user_id", { length: 191 }).notNull(),
-  followedUserId: varchar("followed_user_id", { length: 191 }).notNull(),
+  user_id: varchar("user_id", { length: 191 }).notNull(),
+  following_user_id: varchar("following_user_id", { length: 191 }).notNull(),
 });
 
 export const searches = createTable("searches", {
   id: serial("id").primaryKey(),
-  userId: varchar("user_id", { length: 191 }).notNull(),
-  search: varchar("search", { length: 255 }).notNull(),
+  user_id: varchar("user_id", { length: 191 }).notNull(),
+  searches: text("searches").$type<string[]>(),
 });
