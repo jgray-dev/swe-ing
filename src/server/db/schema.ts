@@ -23,7 +23,6 @@ export const posts = createTable("posts", {
   content: varchar("content", { length: 255 }).notNull(),
   imageUrls: text("image_urls").$type<string[]>(),
   created_at: bigint("bigint", { mode: "number" }).notNull(),
-  // created + updated timestamps
 });
 
 export const comments = createTable("comments", {
