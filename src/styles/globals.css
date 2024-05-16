@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+body {
+    background-image: url("https://utfs.io/f/8a0cafc3-758b-497e-8507-0f64742e7203-m15jgy.png");
+}
