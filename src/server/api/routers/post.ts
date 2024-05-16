@@ -9,6 +9,7 @@ export const postApi = createTRPCRouter({
   create: publicProcedure
     .input(
       z.object({
+        time: z.number(),
         content: z.string(),
         imageUrls: z.array(z.string()).optional(),
       }),
@@ -23,6 +24,7 @@ export const postApi = createTRPCRouter({
           authorId: user.userId,
           content: input.content,
           imageUrls: input.imageUrls ?? null,
+          created_at: input.time,
         })
         .returning();
     }),
