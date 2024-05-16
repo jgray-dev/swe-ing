@@ -1,59 +1,34 @@
+// Example model schema from the Drizzle docs
+// https://orm.drizzle.team/docs/sql-schema-declaration
+
 import { sql } from "drizzle-orm";
 import {
+  index,
   pgTableCreator,
   serial,
-  integer,
-  varchar,
   timestamp,
-  text,
+  varchar,
 } from "drizzle-orm/pg-core";
-export const createTable = pgTableCreator((name) => `swe-ing_${name}`);
 
-export const users = createTable("users", {
-  id: varchar("id", { length: 191 }).primaryKey().notNull(),
-  bio: varchar("bio", { length: 255 }),
-  location: varchar("location", { length: 255 }),
-  website: varchar("website", { length: 255 }),
-  skills: varchar("skills", { length: 255 }).array(),
-});
+/**
+ * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
+ * database instance for multiple projects.
+ *
+ * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
+ */
+export const createTable = pgTableCreator((name) => `t3bun_${name}`);
 
-export const posts = createTable("posts", {
-  id: serial("id").primaryKey(),
-  authorId: varchar("author_id", { length: 191 }).notNull(),
-  content: varchar("content", { length: 255 }).notNull(),
-  imageUrls: text("image_urls").$type<string[]>(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }),
-});
-
-export const comments = createTable("comments", {
-  id: serial("id").primaryKey(),
-  postId: integer("post_id").notNull(),
-  authorId: varchar("author_id", { length: 191 }).notNull(),
-  content: varchar("content", { length: 255 }).notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }),
-});
-
-export const likes = createTable("likes", {
-  userId: varchar("user_id", { length: 191 }).notNull(),
-  postId: integer("post_id").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-});
-
-export const follows = createTable("follows", {
-  followingUserId: varchar("following_user_id", { length: 191 }).notNull(),
-  followedUserId: varchar("followed_user_id", { length: 191 }).notNull(),
-});
-
-export const searches = createTable("searches", {
-  id: serial("id").primaryKey(),
-  userId: varchar("user_id", { length: 191 }).notNull(),
-  search: varchar("search", { length: 255 }).notNull(),
-});
+export const posts = createTable(
+  "post",
+  {
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 256 }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updatedAt", { withTimezone: true }),
+  },
+  (example) => ({
+    nameIndex: index("name_idx").on(example.name),
+  })
+);
