@@ -9,13 +9,22 @@ export default function PostPage({ params }: { params: { id: string } }) {
 
   if (!post.isLoading) {
     if (post.data) {
+      console.log("IMAGES:");
+      console.log(post.data?.imageUrls);
       const time = new Date(post.data?.created_at).toLocaleString();
-      console.log(time);
       return (
-        <div className={"h-full w-full bg-white/10"}>
-          <div>ahh</div>
+        <div className={"mx-auto my-4 ml-96 h-full"}>
           This is a post page for post id {postId}
-          {post.data?.content}
+          <div className={"pt-12"}>Time: {time}</div>
+          <div>Author: {post.data?.authorId}</div>
+          <div>Content:{post.data?.content}</div>
+          {post.data?.imageUrls
+            ? post.data.imageUrls
+                .split(",")
+                .map((url: string, index: number) => (
+                  <img key={index} src={url.trim()} alt="image" width={400} />
+                ))
+            : null}
         </div>
       );
     } else {
