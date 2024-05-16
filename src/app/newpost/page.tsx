@@ -29,9 +29,12 @@ export default function NewPost() {
     if (blockSubmit) {
       alert("Please wait for image upload to complete.");
     } else if (content !== "") {
-      console.log("image URLS:");
-      console.log(imageUrls);
-      createPost.mutate({ content, imageUrls });
+      if (imageUrls.length > 0) {
+        console.log("image URLS:");
+        console.log(imageUrls);
+      }
+      const time = Date.now();
+      createPost.mutate({ content, imageUrls, time });
     } else {
       alert("Please add content to your post");
     }
