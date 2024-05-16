@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { api } from "~/trpc/react";
-import { getAuth } from "@clerk/nextjs/server";
 import type { NextApiRequest } from "next";
 
 export default function NewPost(req: NextApiRequest) {
@@ -14,9 +13,17 @@ export default function NewPost(req: NextApiRequest) {
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [blockSubmit, setBlockSubmit] = useState(false);
 
+  function successCallback(data: any) {
+    console.log(data[0].id);
+    router.push(`/post/${data[0].id}`);
+  }
+
   const createPost = api.post.create.useMutation({
-    onSuccess: () => {
-      router.refresh();
+    onSuccess: (createdPost) => {
+      successCallback(createdPost);
+    },
+    onError: (err) => {
+      alert(err.message);
     },
   });
 
@@ -28,7 +35,7 @@ export default function NewPost(req: NextApiRequest) {
       console.log(imageUrls);
       console.log(content);
       //Fill type defs and syntax for creating a post
-      createPost.mutate({ content });
+      createPost.mutate({ content, imageUrls });
     } else {
       alert("Please add content to your post");
     }
