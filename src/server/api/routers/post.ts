@@ -4,6 +4,7 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { posts } from "~/server/db/schema";
 import { db } from "~/server/db";
 import { auth } from "@clerk/nextjs/server";
+import { eq } from "drizzle-orm";
 
 export const postApi = createTRPCRouter({
   create: publicProcedure
@@ -16,8 +17,8 @@ export const postApi = createTRPCRouter({
     )
     .mutation(async ({ input }) => {
       const user = auth();
+      console.log(user);
       if (!user.userId) throw new Error("UNAUTHORIZED");
-
       return db
         .insert(posts)
         .values({
@@ -27,5 +28,15 @@ export const postApi = createTRPCRouter({
           created_at: input.time,
         })
         .returning();
+    }),
+  getSingle: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .query(({ input }) => {
+      return db
+        .select()
+        .from(posts)
+        .where(eq(posts.id, input.id))
+        .limit(1)
+        .then((result) => result[0]);
     }),
 });
