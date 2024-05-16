@@ -12,7 +12,7 @@ export const postApi = createTRPCRouter({
       z.object({
         time: z.number(),
         content: z.string(),
-        imageUrls: z.array(z.string()).optional(),
+        image_urls: z.array(z.string()).optional(),
       }),
     )
     .mutation(async ({ input }) => {
@@ -22,9 +22,9 @@ export const postApi = createTRPCRouter({
       return db
         .insert(posts)
         .values({
-          authorId: user.userId,
+          author_id: user.userId,
           content: input.content,
-          imageUrls: input.imageUrls ?? null,
+          image_urls: input.image_urls ?? null,
           created_at: input.time,
         })
         .returning();
