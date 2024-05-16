@@ -15,15 +15,15 @@ export const postApi = createTRPCRouter({
     )
     .mutation(async ({ input }) => {
       const user = auth();
-
       if (!user.userId) throw new Error("UNAUTHORIZED");
 
-      console.log("USER: ", user);
-
-      await db.insert(posts).values({
-        authorId: user.userId,
-        content: input.content,
-        imageUrls: input.imageUrls ?? null,
-      });
+      return db
+        .insert(posts)
+        .values({
+          authorId: user.userId,
+          content: input.content,
+          imageUrls: input.imageUrls ?? null,
+        })
+        .returning();
     }),
 });
