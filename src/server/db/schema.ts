@@ -4,8 +4,8 @@ import {
   serial,
   integer,
   varchar,
-  timestamp,
   text,
+  bigint,
 } from "drizzle-orm/pg-core";
 export const createTable = pgTableCreator((name) => `swe-ing_${name}`);
 
@@ -22,10 +22,10 @@ export const posts = createTable("posts", {
   authorId: varchar("author_id", { length: 191 }).notNull(),
   content: varchar("content", { length: 255 }).notNull(),
   imageUrls: text("image_urls").$type<string[]>(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
+  created_at: bigint("bigint", { mode: "number" })
+    .default(sql`extract(epoch from now())`)
     .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }),
+  // created + updated timestamps
 });
 
 export const comments = createTable("comments", {
@@ -33,18 +33,15 @@ export const comments = createTable("comments", {
   postId: integer("post_id").notNull(),
   authorId: varchar("author_id", { length: 191 }).notNull(),
   content: varchar("content", { length: 255 }).notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }),
+  // created + updated timestamps
 });
 
+//1715880851
+//1715880839
 export const likes = createTable("likes", {
   userId: varchar("user_id", { length: 191 }).notNull(),
   postId: integer("post_id").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
+  // created
 });
 
 export const follows = createTable("follows", {
