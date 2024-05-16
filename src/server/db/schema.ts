@@ -22,9 +22,7 @@ export const posts = createTable("posts", {
   authorId: varchar("author_id", { length: 191 }).notNull(),
   content: varchar("content", { length: 255 }).notNull(),
   imageUrls: text("image_urls").$type<string[]>(),
-  created_at: bigint("bigint", { mode: "number" })
-    .default(sql`extract(epoch from now())`)
-    .notNull(),
+  created_at: bigint("bigint", { mode: "number" }).notNull(),
   // created + updated timestamps
 });
 
