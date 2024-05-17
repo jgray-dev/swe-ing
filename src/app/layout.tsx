@@ -4,7 +4,13 @@ import { GeistSans } from "geist/font/sans";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import {ClerkProvider} from "@clerk/nextjs";
-import Navbar from "~/app/_components/Navbar";
+import NavBar from "~/app/_components/NavBar";
+import React from "react";
+
+
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import { ourFileRouter } from "~/app/api/uploadthing/core";
 
 export const metadata = {
   title: "Create T3 App",
@@ -19,16 +25,17 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en" className={`${GeistSans.variable}`}>
-        <body>
-          <TRPCReactProvider>
-            <Navbar />
-            <div className="">
-              {children}
-            </div>
-          </TRPCReactProvider>
-        </body>
-      </html>
+        <html lang="en" className={`${GeistSans.variable}`}>
+          <body>
+            <TRPCReactProvider>
+              <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+              <NavBar />
+              <div className="bg-black/80">
+                {children}
+              </div>
+            </TRPCReactProvider>
+          </body>
+        </html>
     </ClerkProvider>
   );
 }
