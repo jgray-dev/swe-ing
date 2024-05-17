@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { getPosts } from "~/server/queries";
-import {getNameFromId} from "~/app/_functions/server";
 
 export const dynamic = "force-dynamic";
 
