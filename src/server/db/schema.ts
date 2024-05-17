@@ -1,34 +1,53 @@
-// Example model schema from the Drizzle docs
-// https://orm.drizzle.team/docs/sql-schema-declaration
-
-import { sql } from "drizzle-orm";
 import {
-  index,
   pgTableCreator,
   serial,
-  timestamp,
+  integer,
   varchar,
+  text,
+  bigint,
 } from "drizzle-orm/pg-core";
+export const createTable = pgTableCreator((name) => `swe-ing_${name}`);
 
-/**
- * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
- * database instance for multiple projects.
- *
- * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
- */
-export const createTable = pgTableCreator((name) => `sweing_${name}`);
+export const users = createTable("users", {
+  id: serial("id").primaryKey(),
+  clerk_id: varchar("clerk_id", { length: 191 }).notNull(),
+  bio: varchar("bio", { length: 255 }),
+  location: varchar("location", { length: 255 }),
+  website: varchar("website", { length: 255 }),
+  skills: varchar("skills", { length: 255 }).array(),
+});
 
-export const posts = createTable(
-  "post",
-  {
-    id: serial("id").primaryKey(),
-    name: varchar("name", { length: 256 }),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updatedAt", { withTimezone: true }),
-  },
-  (example) => ({
-    nameIndex: index("name_idx").on(example.name),
-  })
-);
+export const posts = createTable("posts", {
+  id: serial("id").primaryKey(),
+  author_id: varchar("author_id", { length: 191 }).notNull(),
+  author_name: varchar("author_name", { length: 191 }).notNull(),
+  content: varchar("content", { length: 255 }).notNull(),
+  image_urls: text("image_urls").$type<string[]>(),
+  created_at: bigint("created_at", { mode: "number" }).notNull(),
+});
+
+export const comments = createTable("comments", {
+  id: serial("id").primaryKey(),
+  post_id: integer("post_id").notNull(),
+  author_id: varchar("author_id", { length: 191 }).notNull(),
+  content: varchar("content", { length: 255 }).notNull(),
+  created_at: bigint("created_at", { mode: "number" }).notNull(),
+  updated_at: bigint("updated_at", { mode: "number" }).notNull(),
+});
+
+export const likes = createTable("likes", {
+  user_id: varchar("user_id", { length: 191 }).notNull(),
+  post_id: integer("post_id").notNull(),
+});
+
+// If jackson follows Sabrina, jackson is user_id, and sabrina is following_user_id
+export const follows = createTable("follows", {
+  user_id: varchar("user_id", { length: 191 }).notNull(),
+  following_user_id: varchar("following_user_id", { length: 191 }).notNull(),
+});
+
+export const searches = createTable("searches", {
+  id: serial("id").primaryKey(),
+  user_id: varchar("user_id", { length: 191 }).notNull(),
+  searches: text("searches").$type<string[]>(),
+});
