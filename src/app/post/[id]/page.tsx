@@ -6,7 +6,7 @@ import Link from "next/link";
 export default function PostPage({ params }: { params: { id: string } }) {
   const postId = Number(params.id);
   const post = trpc.post.getSingle.useQuery({ id: postId });
-
+  console.log(post.data);
   if (!post.isLoading) {
     if (post.data) {
       const time = new Date(post.data?.created_at).toLocaleString();
