@@ -3,7 +3,7 @@ import Link from "next/link";
 import { FaPlusSquare, FaRegUserCircle } from "react-icons/fa";
 import { IoHome } from "react-icons/io5";
 
-export default function Navbar() {
+export default function NavBar() {
   return (
     <div
       className={
