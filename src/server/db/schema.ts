@@ -20,6 +20,7 @@ export const users = createTable("users", {
 export const posts = createTable("posts", {
   id: serial("id").primaryKey(),
   author_id: varchar("author_id", { length: 191 }).notNull(),
+  author_name: varchar("author_name", { length: 191 }).notNull(),
   content: varchar("content", { length: 255 }).notNull(),
   image_urls: text("image_urls").$type<string[]>(),
   created_at: bigint("created_at", { mode: "number" }).notNull(),
