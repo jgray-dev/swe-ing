@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import { api } from "~/trpc/react";
 
-export function CreatePost() {
+export function T3CREATEPOST() {
   const router = useRouter();
   const [name, setName] = useState("");
 
