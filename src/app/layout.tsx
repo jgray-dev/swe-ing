@@ -23,7 +23,7 @@ export default function RootLayout({
         <body>
           <TRPCReactProvider>
             <Navbar />
-            <div className="mt-16">
+            <div className="">
               {children}
             </div>
           </TRPCReactProvider>
