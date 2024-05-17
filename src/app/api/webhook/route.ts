@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  console.log("REQUEST RECEIVED")
   if (req.method === 'POST') {
     try {
       console.log('Received POST request');
