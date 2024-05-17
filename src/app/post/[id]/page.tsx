@@ -6,20 +6,19 @@ import Link from "next/link";
 export default function PostPage({ params }: { params: { id: string } }) {
   const postId = Number(params.id);
   const post = trpc.post.getSingle.useQuery({ id: postId });
-
+  console.log(post.data);
   if (!post.isLoading) {
     if (post.data) {
-      console.log("IMAGES:");
-      console.log(post.data?.imageUrls);
       const time = new Date(post.data?.created_at).toLocaleString();
       return (
         <div className={"mx-auto my-4 ml-96 h-full"}>
           This is a post page for post id {postId}
           <div className={"pt-12"}>Time: {time}</div>
-          <div>Author: {post.data?.authorId}</div>
+          <div>Author: {post.data?.author_id}</div>
           <div>Content:{post.data?.content}</div>
-          {post.data?.imageUrls
-            ? post.data.imageUrls
+          {post.data?.image_urls
+            ? post.data.image_urls
+                // @ts-ignore
                 .split(",")
                 .map((url: string, index: number) => (
                   <img key={index} src={url.trim()} alt="image" width={400} />

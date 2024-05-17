@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { posts } from "~/server/db/schema";
 import { db } from "~/server/db";
-import { auth } from "@clerk/nextjs/server";
+import {auth, clerkClient} from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 
 export const postApi = createTRPCRouter({
@@ -17,21 +17,23 @@ export const postApi = createTRPCRouter({
     )
     .mutation(async ({ input }) => {
       const user = auth();
-      console.log(user);
       if (!user.userId) throw new Error("UNAUTHORIZED");
+      const profile = await clerkClient.users.getUser(user.userId)
+      console.log("CLERK PROFILE: ", profile)
       return db
         .insert(posts)
         .values({
-          authorId: user.userId,
+          author_id: user.userId,
+          author_name: `${profile.firstName} ${profile.lastName}`,
           content: input.content,
-          imageUrls: input.imageUrls ?? null,
+          image_urls: input.imageUrls ?? null,
           created_at: input.time,
         })
         .returning();
     }),
   getSingle: publicProcedure
     .input(z.object({ id: z.number() }))
-    .query(({ input }) => {
+    .query(async ({ input }) => {
       return db
         .select()
         .from(posts)

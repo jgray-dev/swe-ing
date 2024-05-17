@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function DefaultModal() {
-  return <div>Default</div>;
+  return <Link href="/">Go home</Link>;
 }
