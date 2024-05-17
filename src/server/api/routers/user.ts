@@ -1,28 +1,14 @@
 import { z } from "zod";
 
-import {authedProcedure, createTRPCRouter, publicProcedure} from "~/server/api/trpc";
-import { posts } from "~/server/db/schema";
+import {createTRPCRouter, publicProcedure} from "~/server/api/trpc";
+import {users} from "~/server/db/schema";
 
 export const userRouter = createTRPCRouter({
-  hello: authedProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
-
   create: publicProcedure
-    .input(z.object({ name: z.string().min(1) }))
+    .input(z.object({ clerkId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.insert(posts).values({
-        name: input.name,
+      await ctx.db.insert(users).values({
+        clerk_id: input.clerkId,
       });
     }),
-
-  getLatest: publicProcedure.query(({ ctx }) => {
-    return ctx.db.query.posts.findFirst({
-      orderBy: (posts, { desc }) => [desc(posts.createdAt)],
-    });
-  }),
 });
