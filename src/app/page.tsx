@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { CreatePost } from "~/app/_components/create-post";
+import { T3CREATEPOST } from "~/app/_components/T3-CREATE-POST";
 import { api } from "~/trpc/server";
 
 export default async function Home() {
@@ -41,7 +41,7 @@ export default async function Home() {
             {hello ? hello.greeting : "Loading tRPC query..."}
           </p>
         </div>
-
+        
         <CrudShowcase />
       </div>
     </main>
@@ -59,7 +59,9 @@ async function CrudShowcase() {
         <p>You have no posts yet.</p>
       )}
 
-      <CreatePost />
+      <T3CREATEPOST />
     </div>
   );
 }
+
+
