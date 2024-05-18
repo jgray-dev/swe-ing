@@ -32,14 +32,13 @@ export const postsRouter = createTRPCRouter({
   getHomePage: authedProcedure
     .input(z.object({ page: z.number().min(1).default(1) }))
     .query(async ({ ctx, input }) => {
-      const offset = (input.page - 1) * 25;
+      const offset = (input.page - 1) * 50;
       return ctx.db.query.posts.findMany({
         orderBy: [desc(posts.updated_at)],
         limit: 50,
         offset: offset,
       });
     }),
-
   getSingle: publicProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
