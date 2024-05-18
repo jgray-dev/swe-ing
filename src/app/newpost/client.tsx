@@ -11,6 +11,7 @@ import {api} from "~/trpc/react";
 export default function ClientSide() {
   const router = useRouter();
   const [content, setContent] = useState("");
+  const [tags, setTags] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [blockSubmit, setBlockSubmit] = useState(false);
   
@@ -29,10 +30,11 @@ export default function ClientSide() {
   function handleSubmit() {
     if (!blockSubmit) {
       if (content !== "") {
-        console.log("Meow");
-        console.log(content);
-        console.log(imageUrls.length > 0 ? imageUrls : "No URLS");
-        createPost.mutate({ content, imageUrls });
+        if (content.length > 254) {
+          alert("Post too long. 255 characters max")
+        } else {
+          createPost.mutate({ content, imageUrls, tags });
+        }
       } else {
         console.warn("No content detected. . .");
       }
@@ -68,6 +70,14 @@ export default function ClientSide() {
                 onChange={(e) => setContent(e.target.value)}
                 value={content}
               ></textarea>
+              <textarea
+                className={
+                  "h-16 w-full rounded-md bg-black/10 p-2 text-white placeholder-white/60"
+                }
+                placeholder={"Separate tags using ,"}
+                onChange={(e) => setTags(e.target.value)}
+                value={tags}
+              ></textarea>
               <div className={"group h-8 w-8"}>
                 <UploadDropzone<AppFileRouter, "postImageUploader">
                   className="ut-button:hidden ut-allowed-content:hidden ut-upload-icon:hidden ut-label:hidden absolute z-30 h-6 max-h-12 w-12 max-w-12 border-0 bg-transparent"
@@ -88,7 +98,7 @@ export default function ClientSide() {
                     setBlockSubmit(false);
                   }}
                 />
-                <FaImages className="absolute z-20 h-8 w-8 text-white/80 duration-200 group-hover:text-white" />
+                <FaImages className="absolute z-20 h-8 w-8 text-white/80 duration-200 group-hover:text-white"/>
               </div>
             </div>
             <div className={"h-1/2 select-none px-24 text-white"}></div>
