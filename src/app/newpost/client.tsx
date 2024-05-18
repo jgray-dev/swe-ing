@@ -36,9 +36,9 @@ export default function ClientSide() {
             value={content}
           >
           </textarea>
-          <div className={"w-8 h-8 group bg-red-300"}>
+          <div className={"w-8 h-8 group"}>
             <UploadDropzone<AppFileRouter, "postImageUploader">
-              className="absolute z-30 bg-transparent ut-button:hidden ut-allowed-content:hidden ut-upload-icon:hidden ut-label:hidden max-w-12 max-h-12 w-12 h-12 border-0"
+              className="absolute z-30 bg-transparent ut-button:hidden ut-allowed-content:hidden ut-upload-icon:hidden ut-label:hidden max-w-12 max-h-12 w-12 h-6 border-0"
               endpoint="postImageUploader"
               onBeforeUploadBegin={(files) => {
                 setBlockSubmit(true);
@@ -56,7 +56,7 @@ export default function ClientSide() {
                 setBlockSubmit(false)
               }}
             />
-            <FaImages className="absolute w-8 h-8 text-white/80 group-hover:text-white duration-100 z-20"/>
+            <FaImages className="absolute w-8 h-8 text-white/80 group-hover:text-white duration-200 z-20"/>
           </div>
           
           
@@ -67,7 +67,7 @@ export default function ClientSide() {
         <button
           className={`mt-12 mb-4 h-8 w-full select-none rounded-full bg-white/70 font-bold text-black/90 duration-100 hover:bg-white/80 hover:text-black ${blockSubmit ? "cursor-progress" : "cursor-pointer"}`}
         >
-          Submit
+          Create post
         </button>
       </div>
     </div>
