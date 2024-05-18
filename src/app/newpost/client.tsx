@@ -7,6 +7,7 @@ import type { AppFileRouter } from "~/app/api/uploadthing/core";
 import { FaImages } from "react-icons/fa";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import {api} from "~/trpc/react";
+import {db} from "~/server/db";
 
 export default function ClientSide() {
   const router = useRouter();
@@ -16,14 +17,13 @@ export default function ClientSide() {
   
   
   const createPost = api.posts.create.useMutation({
-    onSuccess: (createdPost) => {
-      console.log("CALLBACK:")
-      console.log(createdPost)
+    onSuccess: (data) => {
       setContent("")
       setImageUrls([])
+      router.push(`/post/${data[0]?.id}`)
     },
     onError: (err) => {
-      alert(err.message);
+      console.error(err.message);
     },
   });
   
