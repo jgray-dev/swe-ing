@@ -7,7 +7,6 @@ import type { AppFileRouter } from "~/app/api/uploadthing/core";
 import { FaImages } from "react-icons/fa";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import {api} from "~/trpc/react";
-import {db} from "~/server/db";
 
 export default function ClientSide() {
   const router = useRouter();
