@@ -2,9 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-
 body {
-    background-image: url("https://utfs.io/f/c023b186-ce5f-4ed9-951c-30a256750f9c-ecsv41.png");
-    background-size: auto 100%;
-    background-position: center;
+  background-image: url("https://utfs.io/f/c023b186-ce5f-4ed9-951c-30a256750f9c-ecsv41.png");
+  background-size: auto 100%;
+  background-position: center;
+}
+
+.backdrop-blur-xs {
+  --tw-backdrop-blur: blur(2px);
+  backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness)
+    var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale)
+    var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert)
+    var(--tw-backdrop-opacity) var(--tw-backdrop-saturate)
+    var(--tw-backdrop-sepia);
 }
