@@ -36,4 +36,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 }
 
-export { handler as GET, handler as POST };
+export { handler as POST };
