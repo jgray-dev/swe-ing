@@ -16,7 +16,7 @@ export const ourFileRouter = {
     }),
 } satisfies FileRouter;
 
-export type OurFileRouter = typeof ourFileRouter;
+export type AppFileRouter = typeof ourFileRouter;
 
 // "use client";
 // import { UploadButton } from "~/utils/uploadthing";
