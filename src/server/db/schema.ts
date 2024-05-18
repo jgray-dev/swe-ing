@@ -10,12 +10,12 @@ export const createTable = pgTableCreator((name) => `sweing_${name}`);
 
 export const users = createTable("users", {
   id: serial("id").primaryKey().notNull(),
-  clerk_id: varchar("clerk_id", { length: 191 }).notNull(),
+  clerk_id: varchar("clerk_id", { length: 191 }).notNull().default(""),
   bio: varchar("bio", { length: 255 }),
   location: varchar("location", { length: 255 }),
   website: varchar("website", { length: 255 }),
-  skills: varchar("skills", { length: 255 }).array().default([]),
-  following: varchar("following").array().default([]),
+  skills: varchar("skills").notNull().default(""),
+  following: varchar("following").notNull().default(""),
 });
 
 export const posts = createTable("posts", {
@@ -23,7 +23,7 @@ export const posts = createTable("posts", {
   author_id: varchar("author_id", { length: 191 }).notNull(),
   author_name: varchar("author_name", { length: 191 }).notNull(),
   author_url: varchar("author_url", { length: 191 }).notNull(),
-  content: varchar("content", { length: 255 }).notNull(),
+  content: varchar("content", { length: 750 }).notNull(),
   image_urls: text("image_urls").$type<string[]>(),
   post_tags: varchar("post_tags").notNull().default(""),
   created_at: bigint("created_at", { mode: "number" }).notNull(),
@@ -49,10 +49,4 @@ export const follows = createTable("follows", {
   id: serial("id").primaryKey().notNull(),
   user_id: varchar("user_id", { length: 191 }).notNull(),
   following_user_id: varchar("following_user_id", { length: 191 }).notNull(),
-});
-
-export const searches = createTable("searches", {
-  id: serial("id").primaryKey().notNull(),
-  user_id: varchar("user_id", { length: 191 }).notNull(),
-  searches: text("searches").$type<string[]>(),
 });
