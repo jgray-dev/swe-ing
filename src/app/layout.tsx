@@ -1,4 +1,5 @@
 import "~/styles/globals.css";
+import "@uploadthing/react/styles.css";
 
 import { GeistSans } from "geist/font/sans";
 
@@ -26,11 +27,11 @@ export default function RootLayout({
   return (
     <ClerkProvider>
         <html lang="en" className={`${GeistSans.variable}`}>
-          <body>
+          <body className={"bg-black"}>
             <TRPCReactProvider>
               <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
               <NavBar />
-              <div className="bg-black/80">
+              <div className="bg-black/90">
                 {children}
               </div>
             </TRPCReactProvider>
