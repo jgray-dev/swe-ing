@@ -6,10 +6,10 @@ import {
   text,
   bigint,
 } from "drizzle-orm/pg-core";
-export const createTable = pgTableCreator((name) => `swe-ing_${name}`);
+export const createTable = pgTableCreator((name) => `sweing_${name}`);
 
 export const users = createTable("users", {
-  id: serial("id").primaryKey(),
+  id: serial("id").primaryKey().notNull(),
   clerk_id: varchar("clerk_id", { length: 191 }).notNull(),
   bio: varchar("bio", { length: 255 }),
   location: varchar("location", { length: 255 }),
@@ -18,16 +18,17 @@ export const users = createTable("users", {
 });
 
 export const posts = createTable("posts", {
-  id: serial("id").primaryKey(),
+  id: serial("id").primaryKey().notNull(),
   author_id: varchar("author_id", { length: 191 }).notNull(),
   author_name: varchar("author_name", { length: 191 }).notNull(),
   content: varchar("content", { length: 255 }).notNull(),
   image_urls: text("image_urls").$type<string[]>(),
   created_at: bigint("created_at", { mode: "number" }).notNull(),
+  updated_at: bigint("updated_at", { mode: "number" }).notNull(),
 });
 
 export const comments = createTable("comments", {
-  id: serial("id").primaryKey(),
+  id: serial("id").primaryKey().notNull(),
   post_id: integer("post_id").notNull(),
   author_id: varchar("author_id", { length: 191 }).notNull(),
   content: varchar("content", { length: 255 }).notNull(),
@@ -36,18 +37,19 @@ export const comments = createTable("comments", {
 });
 
 export const likes = createTable("likes", {
+  id: serial("id").primaryKey().notNull(),
   user_id: varchar("user_id", { length: 191 }).notNull(),
   post_id: integer("post_id").notNull(),
 });
 
-// If jackson follows Sabrina, jackson is user_id, and sabrina is following_user_id
 export const follows = createTable("follows", {
+  id: serial("id").primaryKey().notNull(),
   user_id: varchar("user_id", { length: 191 }).notNull(),
   following_user_id: varchar("following_user_id", { length: 191 }).notNull(),
 });
 
 export const searches = createTable("searches", {
-  id: serial("id").primaryKey(),
+  id: serial("id").primaryKey().notNull(),
   user_id: varchar("user_id", { length: 191 }).notNull(),
   searches: text("searches").$type<string[]>(),
 });
