@@ -8,6 +8,16 @@
 - [ ] User profile
 - [ ] User dashboard
 - [ ] Search
-- [ ] Error handling (sentry)
-- [ ] Analytics (posthog)
-- [ ] Rate limiting? (upstash)
+
+
+
+
+Later type shit
+- [ ] Make real upload image buttons (why does UT do shit this way -_-)
+- [ ] User profiles
+- [ ] Clerk webhooks for db linking
+
+
+
+
+
