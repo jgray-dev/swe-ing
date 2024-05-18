@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getProfilePic, nextPostPage } from "~/server/api/queries";
+import { nextPostPage } from "~/server/api/queries";
 import Link from "next/link";
 
 interface Post {
@@ -30,16 +30,13 @@ export default function HomePage() {
       const scrollTop = div ? div.scrollTop : 0;
       const scrollHeight = div ? div.scrollHeight : 0;
       const clientHeight = div ? div.clientHeight : 0;
-
       if (scrollTop + clientHeight >= scrollHeight - 450 && !loading) {
         setLoading(true);
         void fetchData();
       }
     };
-
     const div = document.getElementById("scrolls");
     div?.addEventListener("scroll", handleScroll);
-
     return () => {
       div?.removeEventListener("scroll", handleScroll);
     };
@@ -48,17 +45,13 @@ export default function HomePage() {
   async function fetchData() {
     if (!loading) {
       const data = await nextPostPage(page);
-      if (Array.isArray(data)) {
-        if (data.length > 0) {
-          setAllPosts((prevPosts) => [...prevPosts, ...data]);
-          setCards((prevCards) => [...prevCards, ...getCards(data)]);
-          setPage((prevPage) => prevPage + 1);
-          setLoading(false);
-        } else {
-          console.warn("End of posts");
-        }
+      if (data.length > 0) {
+        setAllPosts((prevPosts) => [...prevPosts, ...data]);
+        setCards((prevCards) => [...prevCards, ...getCards(data)]);
+        setPage((prevPage) => prevPage + 1);
+        setLoading(false);
       } else {
-        console.warn("Received data is not an array");
+        console.warn("End of posts");
       }
     } else {
       console.warn("User scrolled, but we're already fetching more data");
