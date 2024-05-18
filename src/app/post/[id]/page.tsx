@@ -16,6 +16,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
           <div className={"pt-12"}>Time: {time}</div>
           <div>Author: {post.data?.author_id}</div>
           <div>Content:{post.data?.content}</div>
+          {}
         </div>
       );
     } else {
