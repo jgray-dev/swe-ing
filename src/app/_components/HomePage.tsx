@@ -1,8 +1,8 @@
 "use client";
 
-import Image from 'next/image'
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import {nextPostPage} from "~/server/api/queries";
+import { nextPostPage } from "~/server/api/queries";
 import Link from "next/link";
 
 interface Post {
@@ -64,12 +64,20 @@ export default function HomePage() {
   function getCards(data: Post[]): React.ReactElement[] {
     return data.map((post) => {
       return (
-        <div key={post.created_at + post.id + Math.random()}
-             className={"bg-black/90 backdrop-blur-xs p-2 w-full min-h-fit border border-white/50 text-zinc-200 rounded-lg my-2 duration-300"}>
+        <div
+          key={post.created_at + post.id + Math.random()}
+          className={
+            "backdrop-blur-xs my-2 min-h-fit w-full rounded-lg border border-white/50 bg-black/90 p-2 text-zinc-200 duration-300"
+          }
+        >
           <div className={"flex flex-col"}>
-            <div className={"w-full h-full min-h-36 flex flex-row"}>
+            <div className={"flex h-full min-h-36 w-full flex-row"}>
               <div className={"flex flex-col"}>
-                <div className={"w-20 max-w-20 min-w-20 text-sm border-r border-white/50 flex flex-col items-center pr-2"}>
+                <div
+                  className={
+                    "flex w-20 min-w-20 max-w-20 flex-col items-center border-r border-white/50 pr-2 text-sm"
+                  }
+                >
                   <div className="relative h-12 w-12 overflow-hidden rounded-full">
                     <Link href={`/user/${post.author_id}`}>
                       <Image
@@ -84,53 +92,73 @@ export default function HomePage() {
                   </div>
                   {post.author_name}
                 </div>
-                <div className={"w-20 max-w-20 min-w-20 mr-1 border-t border-r border-white/50 h-fit min-h-0"}>
+                <div
+                  className={
+                    "mr-1 h-fit min-h-0 w-20 min-w-20 max-w-20 border-r border-t border-white/50"
+                  }
+                >
                   <div className={"flex flex-wrap"}>
-                    {post.post_tags ? post.post_tags.split(",").map((tag) => {
+                    {post.post_tags
+                      ? post.post_tags.split(",").map((tag) => {
                           if (tag !== "") {
                             return (
                               <Link key={Math.random()} href={`/search/${tag}`}>
                                 <div
                                   key={Math.random()}
-                                  className="text-xs text-zinc-500 m-0.5 ml-0 text-left bg-white/5 rounded-sm w-fit max-w-20 truncate overflow-x-hidden p-0.5"
+                                  className="m-0.5 ml-0 w-fit max-w-20 overflow-x-hidden truncate rounded-sm bg-white/5 p-0.5 text-left text-xs text-zinc-500"
                                   title={tag}
                                 >
                                   {tag}
                                 </div>
-                              </Link>)
+                              </Link>
+                            );
                           } else {
-                            return null
+                            return null;
                           }
-                        }
-                      )
-                     : null}
+                        })
+                      : null}
                   </div>
                 </div>
               </div>
-              <Link key={post.created_at + post.id + Math.random()} href={`/post/${post.id}`}>
+              <Link
+                key={post.created_at + post.id + Math.random()}
+                href={`/post/${post.id}`}
+              >
                 <div className={"flex flex-col"}>
-                  <div className={"h-full pl-2 text-left truncate max-h-48 text-wrap whitespace-break-spaces"}>{post.content}</div>
+                  <div
+                    className={
+                      "h-full max-h-48 truncate whitespace-break-spaces text-wrap pl-2 text-left"
+                    }
+                  >
+                    {post.content}
+                  </div>
                 </div>
               </Link>
             </div>
-            <div className={"border-t border-white/50 mt-2"}>Like repost share buttons here</div>
+            <div className={"mt-2 border-t border-white/50"}>
+              Like repost share buttons here
+            </div>
           </div>
         </div>
-      )
+      );
     });
   }
 
   return (
     <div>
-    <div
-        className="sm:w-96 no-scrollbar w-screen pt-20 fixed top-0 left-1/2 -translate-x-1/2 h-screen overflow-y-scroll"
-        id={"scrolls"}>
+      <div
+        className="no-scrollbar fixed left-1/2 top-0 h-screen w-screen -translate-x-1/2 overflow-y-scroll pt-20 sm:w-96"
+        id={"scrolls"}
+      >
         <div className={"overflow-y-scroll"}>
           {cards}
-          <div className={"pt-24 pb-12"}>
-            The end. <br/><Link href={"/newpost"} className={"underline"}> How about creating a new post</Link>
+          <div className={"pb-12 pt-24"}>
+            The end. <br />
+            <Link href={"/newpost"} className={"underline"}>
+              {" "}
+              How about creating a new post
+            </Link>
           </div>
-
         </div>
       </div>
     </div>
