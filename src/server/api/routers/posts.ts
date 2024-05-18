@@ -22,6 +22,7 @@ export const postsRouter = createTRPCRouter({
         .values({
           author_id: `${ctx.fullUser.id}`,
           author_name: `${ctx.fullUser.firstName} ${ctx.fullUser.lastName}`,
+          author_url: `${ctx.fullUser.imageUrl?ctx.fullUser.imageUrl:"https://utfs.io/f/84653bfe-fa90-4a62-872d-7a9fc1ff1d08-jv4r0t.webp"}`,
           content: `${input.content}`,
           image_urls: input.imageUrls,
           created_at: Date.now(),
