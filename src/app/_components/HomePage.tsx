@@ -1,15 +1,18 @@
 "use client";
 
+import Image from 'next/image'
 import React, { useEffect, useState } from "react";
-import { nextPostPage } from "~/server/api/queries";
+import {nextPostPage} from "~/server/api/queries";
 import Link from "next/link";
 
 interface Post {
   id: number;
   author_id: string;
   author_name: string;
+  author_url: string;
   content: string;
   image_urls: string[] | null;
+  post_tags: string[] | null;
   created_at: number;
   updated_at: number;
 }
@@ -59,19 +62,46 @@ export default function HomePage() {
   }
 
   function getCards(data: Post[]): React.ReactElement[] {
-    return data.map((post) => (
-      <Link key={post.created_at + post.id + Math.random()} href={`/post/${post.id}`}> 
-      <div key={post.created_at + post.id + Math.random()} className={"bg-black/90 w-full min-h-fit border border-black text-white rounded-lg m-2"}>
-        <div className={"w-full h-full bg-red-400 min-h-48"}>
+    return data.map((post) => {
+      return (
+        <div key={post.created_at + post.id + Math.random()}
+             className={"bg-black/80 p-2 w-full min-h-fit border border-black text-zinc-200 rounded-lg m-2 duration-300 "}>
+          <div className={"flex flex-col"}>
+            <div className={"w-full h-full min-h-48 flex flex-row"}>
+              <div className={"flex flex-col"}>
+                <div className="relative h-10 w-10 overflow-hidden rounded-full">
+                  <Link href={`/user/${post.author_id}`}>
+                    <Image
+                      src={post.author_url}
+                      fill
+                      className="object-cover"
+                      alt=""
+                      sizes="40px"
+                    />
+                  </Link>
+                </div>
+                <div className={"bg-green-400/10"}>
+                  {post.post_tags?post.post_tags.map((tag)=>(<span key={tag} className={"bg-red-400 m-2 text-sm text-zinc-400"}>{tag}</span>)):null}
+                </div>
+              </div>
+              <Link key={post.created_at + post.id + Math.random()} href={`/post/${post.id}`}>
+                <div className={"flex flex-col"}>
+                  <div className={"h-full border-l border-white/50 ml-2 pl-2 text-left"}>{post.content}</div>
+                </div>
+              </Link>
+            </div>
+            <div className={"border-t border-white/50 mt-2"}>Like repost share buttons here</div>
+          </div>
         </div>
-      </div>
-      </Link>
-    ));
+      )
+    });
   }
 
   return (
     <div>
-      <div className="sm:w-96 w-screen pt-20 fixed top-0 left-1/2 -translate-x-1/2 h-screen overflow-y-scroll no-scrollbar" id={"scrolls"}>
+      <div
+        className="sm:w-96 w-screen pt-20 fixed top-0 left-1/2 -translate-x-1/2 h-screen overflow-y-scroll no-scrollbar"
+        id={"scrolls"}>
         <div className={"overflow-y-scroll"}>
           {cards}
         </div>
