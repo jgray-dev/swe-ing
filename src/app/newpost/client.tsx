@@ -30,8 +30,8 @@ export default function ClientSide() {
   function handleSubmit() {
     if (!blockSubmit) {
       if (content !== "") {
-        if (content.length > 254) {
-          alert("Post too long. 255 characters max")
+        if (content.length > 749) {
+          alert("Post too long. 749 characters max")
         } else {
           createPost.mutate({ content, imageUrls, tags });
         }
@@ -64,7 +64,7 @@ export default function ClientSide() {
             <div>
               <textarea
                 className={
-                  "h-48 w-full rounded-md bg-black/10 p-2 text-white placeholder-white/60"
+                  "min-h-48 w-full rounded-md bg-black/10 p-2 text-white placeholder-white/60"
                 }
                 placeholder={"Enter post content here"}
                 onChange={(e) => setContent(e.target.value)}
