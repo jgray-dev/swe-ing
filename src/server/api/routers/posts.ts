@@ -8,12 +8,12 @@ export const postsRouter = createTRPCRouter({
     .input(z.object({ content: z.string().min(1),
       imageUrls: z.array(z.string()).optional() }))
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.insert(posts).values({
+      return ctx.db.insert(posts).values({
         author_id: `${ctx.fullUser.id}`,
         author_name: `${ctx.fullUser.firstName} ${ctx.fullUser.lastName}`,
         content: `${input.content}`,
         image_urls: input.imageUrls,
         created_at: Date.now(),
-      });
+      }).returning();
     }),
 });
