@@ -14,7 +14,8 @@ export const users = createTable("users", {
   bio: varchar("bio", { length: 255 }),
   location: varchar("location", { length: 255 }),
   website: varchar("website", { length: 255 }),
-  skills: varchar("skills", { length: 255 }).array(),
+  skills: varchar("skills", { length: 255 }).array().default([]),
+  following: varchar("following").array().default([]),
 });
 
 export const posts = createTable("posts", {
