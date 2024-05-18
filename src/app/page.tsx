@@ -1,4 +1,3 @@
-// import { api } from "~/trpc/server";
 import HomePage from "~/app/_components/HomePage";
 
 export default async function Home() {
