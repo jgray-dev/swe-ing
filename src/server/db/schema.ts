@@ -14,15 +14,18 @@ export const users = createTable("users", {
   bio: varchar("bio", { length: 255 }),
   location: varchar("location", { length: 255 }),
   website: varchar("website", { length: 255 }),
-  skills: varchar("skills", { length: 255 }).array(),
+  skills: varchar("skills", { length: 255 }).array().default([]),
+  following: varchar("following").array().default([]),
 });
 
 export const posts = createTable("posts", {
   id: serial("id").primaryKey().notNull(),
   author_id: varchar("author_id", { length: 191 }).notNull(),
   author_name: varchar("author_name", { length: 191 }).notNull(),
+  author_url: varchar("author_url", { length: 191 }).notNull(),
   content: varchar("content", { length: 255 }).notNull(),
   image_urls: text("image_urls").$type<string[]>(),
+  post_tags: varchar("post_tags").notNull().default(""),
   created_at: bigint("created_at", { mode: "number" }).notNull(),
   updated_at: bigint("updated_at", { mode: "number" }).notNull(),
 });
