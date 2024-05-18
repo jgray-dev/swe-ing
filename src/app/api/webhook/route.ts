@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { NextResponse } from "next/server";
 import { safeParseJSON } from "@uploadthing/shared";
+import {createProfile, deleteProfile, type profile, updateProfile} from "~/server/api/queries";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     try {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
@@ -17,8 +18,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const bodyBuffer = Buffer.concat(chunks);
       const bodyText = bodyBuffer.toString('utf-8');
       const jsonBody = await safeParseJSON(bodyText);
-      console.log('Request Body:', jsonBody);
-
+      // console.log('Request Body:', jsonBody);
+      const body = jsonBody as profile
+      if (body.type === 'user.updated') {
+        void updatePosts(body)
+        void updateProfile(body)
+      }
+      if (body.type === 'user.created') {
+        void createProfile(body)
+      }
+      if (body.type === 'user.delete') {
+        void deleteProfile(body)
+      }
 
       return NextResponse.json({ message: 'Webhook received' }, { status: 200 });
     } catch (error) {
@@ -31,4 +42,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 }
 
-export { handler as POST };
+export { handler as POST};
