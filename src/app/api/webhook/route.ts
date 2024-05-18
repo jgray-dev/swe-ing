@@ -21,7 +21,6 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
       // console.log('Request Body:', jsonBody);
       const body = jsonBody as profile
       if (body.type === 'user.updated') {
-        void updatePosts(body)
         void updateProfile(body)
       }
       if (body.type === 'user.created') {
