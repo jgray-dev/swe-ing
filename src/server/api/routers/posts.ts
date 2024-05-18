@@ -14,6 +14,7 @@ export const postsRouter = createTRPCRouter({
       z.object({
         content: z.string().min(1),
         imageUrls: z.array(z.string()).optional(),
+        tags: z.string().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -24,6 +25,7 @@ export const postsRouter = createTRPCRouter({
           author_name: `${ctx.fullUser.firstName} ${ctx.fullUser.lastName}`,
           author_url: `${ctx.fullUser.imageUrl?ctx.fullUser.imageUrl:"https://utfs.io/f/84653bfe-fa90-4a62-872d-7a9fc1ff1d08-jv4r0t.webp"}`,
           content: `${input.content}`,
+          post_tags: `${input.tags?input.tags:""}`,
           image_urls: input.imageUrls,
           created_at: Date.now(),
           updated_at: Date.now(),
