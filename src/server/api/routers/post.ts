@@ -20,7 +20,7 @@ export const postRouter = createTRPCRouter({
         author_name: `ahhh`,
         content: `ahhh`,
         created_at: 10,
-      });
+      }).returning();
     }),
 
   getLatest: publicProcedure.query(({ ctx }) => {
