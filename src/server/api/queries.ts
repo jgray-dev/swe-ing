@@ -33,7 +33,7 @@ async function updatePosts(profile: profile) {
 
 export async function updateProfile(profile: profile) {
   console.log("updateProfile()");
-  const response = updatePosts(profile);
+  const response = await updatePosts(profile);
   console.log("Updated posts complete: ")
   console.log(response)
 }
