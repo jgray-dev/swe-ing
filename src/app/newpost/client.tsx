@@ -60,7 +60,8 @@ export default function ClientSide() {
               e.stopPropagation();
             }}
           >
-            <div>
+            <div className={"text-left"}>
+              Post:
               <textarea
                 className={
                   "min-h-48 w-full rounded-md bg-black/10 p-2 text-white placeholder-white/60"
@@ -69,6 +70,7 @@ export default function ClientSide() {
                 onChange={(e) => setContent(e.target.value)}
                 value={content}
               ></textarea>
+              Tags:
               <textarea
                 className={
                   "h-16 w-full rounded-md bg-black/10 p-2 text-white placeholder-white/60"

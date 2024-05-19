@@ -4,6 +4,7 @@ import { db } from "~/server/db";
 import { posts } from "~/server/db/schema";
 import { desc } from "drizzle-orm/sql/expressions/select";
 import { eq } from "drizzle-orm/sql/expressions/conditions";
+import {revalidatePath} from "next/cache";
 
 export async function nextPostPage(page: number) {
   const pageSize = 5;
@@ -29,6 +30,7 @@ export interface profile {
 async function updatePosts(profile: profile) {
   console.log("UPDATE USER PROFILE:");
   console.log(profile);
+  revalidatePath("/")
   return db
     .update(posts)
     .set({
