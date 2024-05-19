@@ -23,23 +23,29 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
       }
       const bodyBuffer = Buffer.concat(chunks);
       const bodyText = bodyBuffer.toString("utf-8");
-      const jsonBody = await safeParseJSON(bodyText);
-      console.log('Request Body:', jsonBody);
-      const body = jsonBody as profile;
-      if (body.type === "user.updated") {
-        void updateProfile(body);
-      }
-      if (body.type === "user.created") {
-        void createProfile(body);
-      }
-      if (body.type === "user.delete") {
-        void deleteProfile(body);
-      }
+      if (bodyText !== "") {
+        const jsonBody = await safeParseJSON(bodyText);
+        const body = jsonBody as profile;
+        if (body.type === "user.updated") {
+          void updateProfile(body);
+        }
+        if (body.type === "user.created") {
+          void createProfile(body);
+        }
+        if (body.type === "user.delete") {
+          void deleteProfile(body);
+        }
 
-      return NextResponse.json(
-        { message: "Webhook received" },
-        { status: 200 },
-      );
+        return NextResponse.json(
+          { message: "Webhook received" },
+          { status: 200 },
+        );
+      } else {
+        return NextResponse.json(
+          { error: "Invalid input" },
+          { status: 500 },
+        );
+      }
     } catch (error) {
       console.error("Error processing webhook:", error);
       return NextResponse.json(
