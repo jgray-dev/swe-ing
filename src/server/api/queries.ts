@@ -21,7 +21,7 @@ export async function nextPostPage(page: number) {
 
 export async function updateProfile(profile: profile) {
   console.log("updateProfile()");
-  const response = db
+  return db
     .update(posts)
     .set({
       author_url: `${profile.data.image_url}`,
@@ -29,8 +29,6 @@ export async function updateProfile(profile: profile) {
     })
     .where(eq(posts.author_id, profile.data.id))
     .returning();
-  console.log("Updated posts complete: ")
-  console.log(response)
 }
 
 export async function createProfile(profile: profile) {
