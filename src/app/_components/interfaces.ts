@@ -8,7 +8,6 @@ export interface profile {
   type: string;
 }
 
-
 export interface Post {
   id: number;
   author_id: string;
