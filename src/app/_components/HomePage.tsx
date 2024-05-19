@@ -4,7 +4,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { nextPostPage } from "~/server/api/queries";
 import Link from "next/link";
-import type {Post} from "~/app/_components/interfaces"
+import type { Post } from "~/app/_components/interfaces";
 
 export default function HomePage() {
   const [loading, setLoading] = useState(false);
