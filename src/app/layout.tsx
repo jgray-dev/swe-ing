@@ -4,10 +4,9 @@ import "@uploadthing/react/styles.css";
 import { GeistSans } from "geist/font/sans";
 
 import { TRPCReactProvider } from "~/trpc/react";
-import {ClerkProvider} from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
 import NavBar from "~/app/_components/NavBar";
 import React from "react";
-
 
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
@@ -26,17 +25,15 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-        <html lang="en" className={`${GeistSans.variable}`}>
-          <body className={"bg-black"}>
-            <TRPCReactProvider>
-              <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
-              <NavBar />
-              <div className="bg-black/95">
-                {children}
-              </div>
-            </TRPCReactProvider>
-          </body>
-        </html>
+      <html lang="en" className={`${GeistSans.variable}`}>
+        <body className={"bg-black"}>
+          <TRPCReactProvider>
+            <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+            <NavBar />
+            <div className="bg-black/95">{children}</div>
+          </TRPCReactProvider>
+        </body>
+      </html>
     </ClerkProvider>
   );
 }

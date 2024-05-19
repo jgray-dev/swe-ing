@@ -25,7 +25,7 @@ export const postsRouter = createTRPCRouter({
           author_name: `${ctx.fullUser.firstName ? ctx.fullUser.firstName : "Unknown"} ${ctx.fullUser.lastName ? ctx.fullUser.lastName : ""} `,
           author_url: `${ctx.fullUser.imageUrl}`,
           content: `${input.content}`,
-          post_tags: `${input.tags?input.tags:""}`,
+          post_tags: `${input.tags ? input.tags : ""}`,
           image_urls: input.imageUrls,
           created_at: Date.now(),
           updated_at: Date.now(),

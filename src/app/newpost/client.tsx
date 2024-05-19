@@ -6,7 +6,7 @@ import { UploadDropzone } from "@uploadthing/react";
 import type { AppFileRouter } from "~/app/api/uploadthing/core";
 import { FaImages } from "react-icons/fa";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
-import {api} from "~/trpc/react";
+import { api } from "~/trpc/react";
 
 export default function ClientSide() {
   const router = useRouter();
@@ -14,24 +14,23 @@ export default function ClientSide() {
   const [tags, setTags] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [blockSubmit, setBlockSubmit] = useState(false);
-  
-  
+
   const createPost = api.posts.create.useMutation({
     onSuccess: (data) => {
-      setContent("")
-      setImageUrls([])
-      router.push(`/post/${data[0]?.id}`)
+      setContent("");
+      setImageUrls([]);
+      router.push(`/post/${data[0]?.id}`);
     },
     onError: (err) => {
       console.error(err.message);
     },
   });
-  
+
   function handleSubmit() {
     if (!blockSubmit) {
       if (content !== "") {
         if (content.length > 749) {
-          alert("Post too long. 749 characters max")
+          alert("Post too long. 749 characters max");
         } else {
           createPost.mutate({ content, imageUrls, tags });
         }
@@ -80,7 +79,7 @@ export default function ClientSide() {
               ></textarea>
               <div className={"group h-8 w-8"}>
                 <UploadDropzone<AppFileRouter, "postImageUploader">
-                  className="ut-button:hidden ut-allowed-content:hidden ut-upload-icon:hidden ut-label:hidden absolute z-30 h-6 max-h-12 w-12 max-w-12 border-0 bg-transparent"
+                  className="absolute z-30 h-6 max-h-12 w-12 max-w-12 border-0 bg-transparent ut-button:hidden ut-allowed-content:hidden ut-label:hidden ut-upload-icon:hidden"
                   endpoint="postImageUploader"
                   onBeforeUploadBegin={(files) => {
                     setBlockSubmit(true);
@@ -98,7 +97,7 @@ export default function ClientSide() {
                     setBlockSubmit(false);
                   }}
                 />
-                <FaImages className="absolute z-20 h-8 w-8 text-white/80 duration-200 group-hover:text-white"/>
+                <FaImages className="absolute z-20 h-8 w-8 text-white/80 duration-200 group-hover:text-white" />
               </div>
             </div>
             <div className={"h-1/2 select-none px-24 text-white"}></div>

@@ -4,8 +4,12 @@ import ClientSide from "~/app/newpost/client";
 
 export default async function NewPost() {
   return (
-    <div className={"w-screen h-screen pt-16 text-center mx-auto bg-black/50 backdrop-blur-xs text-white"}>
-      <ClientSide/>
-  </div>
-  )
+    <div
+      className={
+        "backdrop-blur-xs mx-auto h-screen w-screen bg-black/50 pt-16 text-center text-white"
+      }
+    >
+      <ClientSide />
+    </div>
+  );
 }
