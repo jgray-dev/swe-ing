@@ -19,8 +19,7 @@ export async function nextPostPage(page: number) {
 }
 
 async function updatePosts(profile: profile) {
-  console.log("UPDATE USER PROFILE:");
-  console.log(profile);
+  console.log("updatePosts()");
   revalidatePath("/")
   return db
     .update(posts)
@@ -33,13 +32,15 @@ async function updatePosts(profile: profile) {
 }
 
 export async function updateProfile(profile: profile) {
-  console.log("update profile: ", profile.type);
-  void updatePosts(profile);
+  console.log("updateProfile()");
+  const response = updatePosts(profile);
+  console.log("Updated posts complete: ")
+  console.log(response)
 }
 
 export async function createProfile(profile: profile) {
-  console.log("create profile: ", profile.type);
+  console.log("createProfile()");
 }
 export async function deleteProfile(profile: profile) {
-  console.log("delete profile: ", profile.type);
+  console.log("deleteProfile()");
 }
