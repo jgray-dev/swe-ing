@@ -7,7 +7,7 @@ export default function NavBar() {
   return (
     <div
       className={
-        "fixed top-0 h-16 flex w-full items-center justify-between bg-black/90 backdrop-blur-md p-4 px-8 text-lg font-semibold text-white max-h-16 z-50"
+        "fixed top-0 z-50 flex h-16 max-h-16 w-full items-center justify-between bg-black/90 p-4 px-8 text-lg font-semibold text-white backdrop-blur-md"
       }
     >
       <Link href={"/"}>
