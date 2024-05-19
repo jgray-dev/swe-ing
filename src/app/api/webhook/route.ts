@@ -4,11 +4,12 @@ import { safeParseJSON } from "@uploadthing/shared";
 import {
   createProfile,
   deleteProfile,
-  type profile,
   updateProfile,
 } from "~/server/api/queries";
+import type {profile} from "~/app/_components/interfaces"
 
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
+  console.log("HANDLER CALLED")
   if (req.method === "POST") {
     try {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment

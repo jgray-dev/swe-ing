@@ -5,6 +5,7 @@ import { posts } from "~/server/db/schema";
 import { desc } from "drizzle-orm/sql/expressions/select";
 import { eq } from "drizzle-orm/sql/expressions/conditions";
 import {revalidatePath} from "next/cache";
+import type {profile} from "~/app/_components/interfaces"
 
 export async function nextPostPage(page: number) {
   const pageSize = 5;
@@ -15,16 +16,6 @@ export async function nextPostPage(page: number) {
     .orderBy(desc(posts.updated_at))
     .offset(offset)
     .limit(pageSize);
-}
-
-export interface profile {
-  data: {
-    image_url: string;
-    id: string;
-    first_name: string | null;
-    last_name: string | null;
-  };
-  type: string;
 }
 
 async function updatePosts(profile: profile) {
