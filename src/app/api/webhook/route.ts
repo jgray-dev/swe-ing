@@ -6,10 +6,10 @@ import {
   deleteProfile,
   updateProfile,
 } from "~/server/api/queries";
-import type {profile} from "~/app/_components/interfaces"
+import type { profile } from "~/app/_components/interfaces";
 
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
-  console.log("HANDLER CALLED")
+  console.log("HANDLER CALLED");
   if (req.method === "POST") {
     try {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
@@ -35,16 +35,12 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
         if (body.type === "user.delete") {
           void deleteProfile(body);
         }
-
         return NextResponse.json(
           { message: "Webhook received" },
           { status: 201 },
         );
       } else {
-        return NextResponse.json(
-          { error: "Invalid input" },
-          { status: 500 },
-        );
+        return NextResponse.json({ error: "Invalid input" }, { status: 500 });
       }
     } catch (error) {
       console.error("Error processing webhook:", error);
