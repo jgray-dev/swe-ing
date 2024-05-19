@@ -4,7 +4,6 @@ import { db } from "~/server/db";
 import { posts } from "~/server/db/schema";
 import { desc } from "drizzle-orm/sql/expressions/select";
 import { eq } from "drizzle-orm/sql/expressions/conditions";
-import {revalidatePath} from "next/cache";
 import type {profile} from "~/app/_components/interfaces"
 
 export async function nextPostPage(page: number) {
@@ -20,15 +19,16 @@ export async function nextPostPage(page: number) {
 
 
 export async function updateProfile(profile: profile) {
-  console.log("updateProfile()");
-  return db
-    .update(posts)
+  console.log(profile.data.id)
+  console.log("New name: ", `${profile.data.first_name ? profile.data.first_name : "Unknown"} ${profile.data.last_name ? profile.data.last_name : ""} `);
+  console.log("New URL: ", profile.data.image_url);
+  await db.update(posts)
     .set({
       author_url: `${profile.data.image_url}`,
       author_name: `${profile.data.first_name ? profile.data.first_name : "Unknown"} ${profile.data.last_name ? profile.data.last_name : ""} `,
     })
     .where(eq(posts.author_id, profile.data.id))
-    .returning();
+  console.log("Finished updating profile")
 }
 
 export async function createProfile(profile: profile) {
