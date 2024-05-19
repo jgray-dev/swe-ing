@@ -24,7 +24,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
       const bodyBuffer = Buffer.concat(chunks);
       const bodyText = bodyBuffer.toString("utf-8");
       const jsonBody = await safeParseJSON(bodyText);
-      // console.log('Request Body:', jsonBody);
+      console.log('Request Body:', jsonBody);
       const body = jsonBody as profile;
       if (body.type === "user.updated") {
         void updateProfile(body);
