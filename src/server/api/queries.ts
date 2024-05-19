@@ -18,10 +18,10 @@ export async function nextPostPage(page: number) {
     .limit(pageSize);
 }
 
-async function updatePosts(profile: profile) {
-  console.log("updatePosts()");
-  revalidatePath("/")
-  return db
+
+export async function updateProfile(profile: profile) {
+  console.log("updateProfile()");
+  const response = db
     .update(posts)
     .set({
       author_url: `${profile.data.image_url}`,
@@ -29,11 +29,6 @@ async function updatePosts(profile: profile) {
     })
     .where(eq(posts.author_id, profile.data.id))
     .returning();
-}
-
-export async function updateProfile(profile: profile) {
-  console.log("updateProfile()");
-  const response = await updatePosts(profile);
   console.log("Updated posts complete: ")
   console.log(response)
 }
