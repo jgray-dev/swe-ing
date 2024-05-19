@@ -38,7 +38,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
 
         return NextResponse.json(
           { message: "Webhook received" },
-          { status: 200 },
+          { status: 201 },
         );
       } else {
         return NextResponse.json(
