@@ -6,11 +6,9 @@ import { getDbUser, nextPostPage } from "~/server/api/queries";
 import Link from "next/link";
 import type { like, post } from "~/app/_components/interfaces";
 import { useUser } from "@clerk/shared/react";
-import { CiHeart, CiShare1 } from "react-icons/ci";
+import { CiShare1 } from "react-icons/ci";
 import { GoCommentDiscussion } from "react-icons/go";
 import { PiDotsNine } from "react-icons/pi";
-// import PostContextMenu from "~/app/_components/PostContextMenu";
-import { api } from "~/trpc/react";
 import LikeButton from "~/app/_components/LikeButton";
 
 export default function HomePage() {
@@ -199,7 +197,7 @@ export default function HomePage() {
             >
               <div
                 className={
-                  "line-clamp-[10] h-fit max-h-72 min-h-36 min-w-full max-w-full text-wrap pl-2 text-left"
+                  "line-clamp-[10] h-fit max-h-72 min-h-36 min-w-full break-normal max-w-full text-wrap pl-2 text-left"
                 }
               >
                 {post.content}
@@ -236,7 +234,7 @@ export default function HomePage() {
               <div>
                 <PiDotsNine
                   className={
-                    "h-6 w-6 text-zinc-400 duration-150 hover:text-white motion-safe:hover:scale-110"
+                    "h-6 w-6 text-zinc-400 duration-150 hover:text-white motion-safe:hover:scale-[115%]"
                   }
                   onClick={() => showContextMenu(post.id)}
                 />
@@ -254,7 +252,7 @@ export default function HomePage() {
         className="no-scrollbar fixed left-1/2 top-0 h-screen w-screen -translate-x-1/2 overflow-y-scroll pt-20 sm:w-96"
         id={"scrolls"}
       >
-        <div className={"overflow-y-scroll"}>
+        <div className={"overflow-y-scroll overflow-x-hidden"}>
           {cards}
           <div className={"pb-12 pt-24"}>
             The end. <br/>
