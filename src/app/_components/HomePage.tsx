@@ -104,10 +104,6 @@ export default function HomePage() {
     }
   }
 
-  
-
-  
-
   function showContextMenu(id: number) {
     console.log("context menu for post ", id);
   }
@@ -197,7 +193,7 @@ export default function HomePage() {
             >
               <div
                 className={
-                  "line-clamp-[10] h-fit max-h-72 min-h-36 min-w-full break-normal max-w-full text-wrap pl-2 text-left"
+                  "line-clamp-[10] h-fit max-h-72 min-h-36 min-w-full max-w-full text-wrap break-normal pl-2 text-left"
                 }
               >
                 {post.content}
@@ -206,8 +202,11 @@ export default function HomePage() {
           </div>
           <div className={"mt-2 border-t border-white/50"}>
             <div className={"flex flex-row justify-between px-4 pt-1.5"}>
-              
-              <LikeButton postId={Number(post.id)} dbliked={liked} dblikes={post.likes?post.likes.length:0}/>
+              <LikeButton
+                postId={Number(post.id)}
+                dbliked={liked}
+                dblikes={post.likes ? post.likes.length : 0}
+              />
 
               <div className={"group flex flex-row text-zinc-400"}>
                 <Link href={`/post/${post.id}`}>
@@ -252,10 +251,10 @@ export default function HomePage() {
         className="no-scrollbar fixed left-1/2 top-0 h-screen w-screen -translate-x-1/2 overflow-y-scroll pt-20 sm:w-96"
         id={"scrolls"}
       >
-        <div className={"overflow-y-scroll overflow-x-hidden"}>
+        <div className={"overflow-x-hidden overflow-y-scroll"}>
           {cards}
           <div className={"pb-12 pt-24"}>
-            The end. <br/>
+            The end. <br />
             <Link href={"/newpost"} className={"underline"}>
               {" "}
               How about creating a new post
