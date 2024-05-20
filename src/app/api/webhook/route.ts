@@ -6,7 +6,7 @@ import {
   deleteProfile,
   updateProfile,
 } from "~/server/api/queries";
-import type {profile} from "~/app/_components/interfaces";
+import type { profile } from "~/app/_components/interfaces";
 
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST" || req.method == "OPTIONS") {
@@ -26,13 +26,13 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
         const jsonBody = await safeParseJSON(bodyText);
         const body = jsonBody as profile;
         if (body.type === "user.updated") {
-          void await updateProfile(body);
+          void (await updateProfile(body));
         }
         if (body.type === "user.created") {
-          void await createProfile(body);
+          void (await createProfile(body));
         }
         if (body.type === "user.delete") {
-          void await deleteProfile(body);
+          void (await deleteProfile(body));
         }
         return NextResponse.json(
           { message: `Webhook received` },

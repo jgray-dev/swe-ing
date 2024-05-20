@@ -4,7 +4,7 @@ import { db } from "~/server/db";
 import { posts } from "~/server/db/schema";
 import { desc } from "drizzle-orm/sql/expressions/select";
 import { eq } from "drizzle-orm/sql/expressions/conditions";
-import type {profile} from "~/app/_components/interfaces"
+import type { profile } from "~/app/_components/interfaces";
 
 export async function nextPostPage(page: number) {
   const pageSize = 5;
@@ -17,9 +17,8 @@ export async function nextPostPage(page: number) {
     .limit(pageSize);
 }
 
-
 export async function updateProfile(profile: profile) {
-  console.log("updateProfile()")
+  console.log("updateProfile()");
   return db
     .update(posts)
     .set({

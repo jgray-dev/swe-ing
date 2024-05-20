@@ -22,7 +22,7 @@ export const postsRouter = createTRPCRouter({
         .insert(posts)
         .values({
           author_id: `${ctx.fullUser.id}`,
-          author_name: `${ctx.fullUser.firstName? ctx.fullUser.firstName : "Unknown"} ${ctx.fullUser.lastName? ctx.fullUser.lastName : ""} `,
+          author_name: `${ctx.fullUser.firstName ? ctx.fullUser.firstName : "Unknown"} ${ctx.fullUser.lastName ? ctx.fullUser.lastName : ""} `,
           author_url: `${ctx.fullUser.imageUrl}`,
           content: `${input.content}`,
           post_tags: `${input.tags ? input.tags : ""}`,
