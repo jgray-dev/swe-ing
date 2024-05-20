@@ -31,7 +31,7 @@ export async function updateProfile(profile: profile) {
     .where(eq(users.clerk_id, profile.data.id))
     .returning();
 }
-  
+
 export async function createProfile(profile: profile) {
   const user = await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.clerk_id, profile.data.id),
@@ -52,30 +52,29 @@ export async function createProfile(profile: profile) {
   }
 }
 
-// export async function deleteProfile(profile: profile) {
-//   console.log("deleteProfile()", profile.data.id);
-// const deletedPosts: post[] = await db
-//   .delete(posts)
-//   .where(eq(posts.author, profile.data.id)).returning();
-//
-// for (const post of deletedPosts) {
-//   void await deletePost(post)
-// }
-// await db.delete(users)
-//   .where(eq(users.clerk_id, profile.data.id));
-// await db
-//   .delete(users)
-//   .where(eq(users.clerk_id, profile.data.id))
-// await db
-//   .delete(comments)
-//   .where(eq(comments.author_id, profile.data.id))
-// await db
-//   .delete(likes)
-//   .where(eq(likes.user_id, profile.data.id))
-// await db
-//   .delete(follows)
-//   .where(or(eq(follows.user_id, profile.data.id),eq(follows.following_user_id, profile.data.id)))
-// }
+export async function deleteProfile(profile: profile) {
+  console.log("deleteProfile()", profile.data.id);
+  const user = await db.query.users.findFirst({
+    where: (user, { eq }) => eq(user.clerk_id, profile.data.id),
+  });
+  if (user) {
+    await db.delete(posts).where(eq(posts.author_id, user.id))
+    await db.delete(comments).where(eq(comments.author_id, user.id));
+    await db.delete(likes).where(eq(likes.user_id, user.id));
+    await db
+      .delete(follows)
+      .where(
+        or(
+          eq(follows.user_id, user.id),
+          eq(follows.following_user_id, user.id)
+        )
+      );
+    return db.delete(users).where(eq(users.clerk_id, profile.data.id));
+  } else {
+    console.log("User not found");
+    return null;
+  }
+}
 
 // export async function deletePost(post: post) {
 //   console.log("Cascading (delete) post ", post.id)
