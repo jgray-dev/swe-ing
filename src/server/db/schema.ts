@@ -6,23 +6,24 @@ import {
   text,
   bigint,
 } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+
 export const createTable = pgTableCreator((name) => `sweing_${name}`);
 
 export const users = createTable("users", {
   id: serial("id").primaryKey().notNull(),
-  clerk_id: varchar("clerk_id", { length: 191 }).notNull().default(""),
+  clerk_id: varchar("clerk_id", { length: 191 }).notNull(),
+  name: varchar("name", { length: 191 }).notNull(),
+  image_url: varchar("image_url", { length: 191 }).notNull(),
   bio: varchar("bio", { length: 255 }),
   location: varchar("location", { length: 255 }),
   website: varchar("website", { length: 255 }),
-  skills: varchar("skills").notNull().default(""),
-  following: varchar("following").notNull().default(""),
+  skills: varchar("skills"),
 });
 
 export const posts = createTable("posts", {
   id: serial("id").primaryKey().notNull(),
-  author_id: varchar("author_id", { length: 191 }).notNull(),
-  author_name: varchar("author_name", { length: 191 }).notNull(),
-  author_url: varchar("author_url", { length: 191 }).notNull(),
+  author_id: integer("author_id").notNull().default(0),
   content: varchar("content", { length: 750 }).notNull(),
   image_urls: text("image_urls").$type<string[]>(),
   post_tags: varchar("post_tags").notNull().default(""),
@@ -50,3 +51,55 @@ export const follows = createTable("follows", {
   user_id: varchar("user_id", { length: 191 }).notNull(),
   following_user_id: varchar("following_user_id", { length: 191 }).notNull(),
 });
+
+// Relationships:
+
+// Give every post multiple comments
+export const postCommentRelations = relations(posts, ({ many }) => ({
+  comments: many(comments),
+}));
+
+//Give every comment a single post
+export const commentPostRelations = relations(comments, ({ one }) => ({
+  post: one(posts, {
+    fields: [comments.post_id],
+    references: [posts.id],
+  }),
+}));
+
+// Give every "like" a single post
+export const likePostRelations = relations(likes, ({ one }) => ({
+  post: one(posts, {
+    fields: [likes.post_id],
+    references: [posts.id],
+  }),
+  user: one(users, {
+    fields: [likes.user_id],
+    references: [users.id],
+  }),
+}));
+
+// Give every "follow" a user and a following user
+export const followRelations = relations(follows, ({ one }) => ({
+  user: one(users, {
+    fields: [follows.user_id],
+    references: [users.id],
+  }),
+  following_users: one(users, {
+    fields: [follows.following_user_id],
+    references: [users.id],
+  }),
+}));
+
+// Give every "post" a single author
+export const postAuthorRelations = relations(posts, ({ one }) => ({
+  author: one(users, {
+    fields: [posts.author_id],
+    references: [users.id],
+  }),
+}));
+
+// Give every user multiple posts
+export const authorPostRelations = relations(users, ({ many }) => ({
+  posts: many(posts),
+}));
