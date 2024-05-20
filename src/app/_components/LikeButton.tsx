@@ -3,6 +3,8 @@
 import React, {useState} from "react";
 import {CiHeart} from "react-icons/ci";
 import {api} from "~/trpc/react";
+import {FaHeart, FaRegHeart} from "react-icons/fa";
+import {GiTechnoHeart} from "react-icons/gi";
 
 interface LikeButtonProps {
   postId: number;
@@ -40,11 +42,14 @@ export default function LikeButton({ postId, dbliked, dblikes }: LikeButtonProps
       className={"group flex flex-row text-zinc-400 w-12 min-w-12 max-w-12"}
       onClick={() => likePost()}
     >
-      <CiHeart
-        className={`mr-1.5 h-6 w-6 duration-150 ${liked ? "text-red-500 " : "group-hover:text-white"}`}
-      />
+      {liked ? <FaHeart
+          className={`mr-1.5 h-6 w-6 duration-150 text-red-500 motion-safe:group-hover:scale-110`}
+        />
+        :
+          <FaRegHeart className={`mr-1.5 h-6 w-6 duration-150 group-hover:text-red-500 motion-safe:group-hover:scale-110`}/>}
+
       <span
-        className={`invisible absolute inline-flex h-6 w-6 rounded-full ${liked ? "bg-transparent" : "bg-red-400/40"} group-hover:visible group-hover:animate-ping`}
+        className={`invisible -translate-y-0.5 absolute inline-flex h-6 w-6 rounded-full ${liked ? "bg-transparent" : "bg-red-400/25"} group-hover:visible group-hover:animate-ping`}
       ></span>
       <span className={"duration-150 group-hover:text-white"}>
       {likes}
