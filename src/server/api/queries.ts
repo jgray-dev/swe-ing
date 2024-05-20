@@ -19,16 +19,15 @@ export async function nextPostPage(page: number) {
 
 
 export async function updateProfile(profile: profile) {
-  console.log(profile.data.id)
-  console.log("New name: ", `${profile.data.first_name ? profile.data.first_name : "Unknown"} ${profile.data.last_name ? profile.data.last_name : ""} `);
-  console.log("New URL: ", profile.data.image_url);
-  await db.update(posts)
+  console.log("updateProfile()")
+  return db
+    .update(posts)
     .set({
       author_url: `${profile.data.image_url}`,
       author_name: `${profile.data.first_name ? profile.data.first_name : "Unknown"} ${profile.data.last_name ? profile.data.last_name : ""} `,
     })
     .where(eq(posts.author_id, profile.data.id))
-  console.log("Finished updating profile")
+    .returning();
 }
 
 export async function createProfile(profile: profile) {
