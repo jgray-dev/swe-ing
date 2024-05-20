@@ -17,6 +17,7 @@ export default function HomePage() {
     setLoading(true);
   }, []);
 
+  console.log(cards)
   useEffect(() => {
     const handleScroll = () => {
       const div = document.getElementById("scrolls");
@@ -26,6 +27,7 @@ export default function HomePage() {
       if (scrollTop + clientHeight >= scrollHeight - 250 && !loading) {
         setLoading(true);
         void fetchData();
+        setPage((prevPage) => prevPage + 1);
       }
     };
     const div = document.getElementById("scrolls");
@@ -33,15 +35,19 @@ export default function HomePage() {
     return () => {
       div?.removeEventListener("scroll", handleScroll);
     };
-  }, [loading, allPosts, page]);
+  }, [loading]);
 
   async function fetchData() {
     if (!loading) {
       const data = await nextPostPage(page);
       if (data.length > 0) {
-        setAllPosts((prevPosts) => [...prevPosts, ...data]);
-        setCards((prevCards) => [...prevCards, ...getCards(data)]);
-        setPage((prevPage) => prevPage + 1);
+        const newPosts = data.filter(
+          (newPost) => !allPosts.some((post) => post.id === newPost.id)
+        );
+        if (newPosts.length > 0) {
+          setAllPosts((prevPosts) => [...prevPosts, ...newPosts]);
+          setCards([...cards, ...getCards(newPosts)]);
+        }
         setLoading(false);
       } else {
         console.warn("End of posts");
@@ -87,7 +93,7 @@ export default function HomePage() {
                     "mr-1 h-fit min-h-0 w-20 min-w-20 max-w-20 border-r border-t border-white/50"
                   }
                 >
-                  <div className={"flex flex-wrap"}>
+                  <div className={"flex flex-wrap max-h-24 overflow-y-hidden"}>
                     {post.post_tags
                       ? post.post_tags.split(",").map((tag) => {
                           if (tag !== "") {
@@ -95,7 +101,7 @@ export default function HomePage() {
                               <Link key={Math.random()} href={`/search/${tag}`}>
                                 <div
                                   key={Math.random()}
-                                  className="m-0.5 ml-0 w-fit max-w-20 overflow-x-hidden truncate rounded-sm bg-white/5 p-0.5 text-left text-xs text-zinc-500"
+                                  className="mx-0.5 mt-1 ml-0 w-fit max-w-20 overflow-x-hidden truncate rounded-sm bg-white/5 p-0.5 text-left text-xs text-zinc-500"
                                   title={tag}
                                 >
                                   {tag}
@@ -116,7 +122,7 @@ export default function HomePage() {
               >
                 <div
                   className={
-                    "min-h-36 h-fit max-h-72 min-w-full max-w-full text-wrap line-clamp-[10] pl-2 text-left "
+                    "min-h-36 h-fit max-h-72 min-w-full max-w-full text-wrap line-clamp-[10] pl-2 text-left"
                   }
                 >
                   {post.content}
