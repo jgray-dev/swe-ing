@@ -58,7 +58,7 @@ export async function deleteProfile(profile: profile) {
     where: (user, { eq }) => eq(user.clerk_id, profile.data.id),
   });
   if (user) {
-    await db.delete(posts).where(eq(posts.author_id, user.id))
+    await db.delete(posts).where(eq(posts.author_id, user.id));
     await db.delete(comments).where(eq(comments.author_id, user.id));
     await db.delete(likes).where(eq(likes.user_id, user.id));
     await db
@@ -66,8 +66,8 @@ export async function deleteProfile(profile: profile) {
       .where(
         or(
           eq(follows.user_id, user.id),
-          eq(follows.following_user_id, user.id)
-        )
+          eq(follows.following_user_id, user.id),
+        ),
       );
     return db.delete(users).where(eq(users.clerk_id, profile.data.id));
   } else {
