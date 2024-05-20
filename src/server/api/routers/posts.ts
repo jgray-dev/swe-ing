@@ -18,21 +18,26 @@ export const postsRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return ctx.db
-        .insert(posts)
-        .values({
-          author_id: `${ctx.fullUser.id}`,
-          author_name: `${ctx.fullUser.firstName ? ctx.fullUser.firstName : "Unknown"} ${ctx.fullUser.lastName ? ctx.fullUser.lastName : ""} `,
-          author_url: `${ctx.fullUser.imageUrl}`,
-          content: `${input.content}`,
-          post_tags: `${input.tags ? input.tags : ""}`,
-          image_urls: input.imageUrls,
-          created_at: Date.now(),
-          updated_at: Date.now(),
-        })
-        .returning();
+      const user = await ctx.db.query.users.findFirst({
+        where: (user, { eq }) => eq(user.clerk_id, ctx.fullUser.id),
+      });
+      if (user) {
+        return ctx.db
+          .insert(posts)
+          .values({
+            author_id: user.id,
+            content: `${input.content}`,
+            post_tags: `${input.tags ? input.tags : ""}`,
+            image_urls: input.imageUrls,
+            created_at: Date.now(),
+            updated_at: Date.now(),
+          })
+          .returning();
+      } else {
+        return null;
+      }
     }),
-  getHomePage: authedProcedure
+  getHomePage: publicProcedure
     .input(z.object({ page: z.number().min(1).default(1) }))
     .query(async ({ ctx, input }) => {
       const offset = (input.page - 1) * 50;
@@ -42,11 +47,15 @@ export const postsRouter = createTRPCRouter({
         offset: offset,
       });
     }),
-  getSingle: publicProcedure
+  getSingle: authedProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
       return ctx.db.query.posts.findFirst({
         where: (post, { eq }) => eq(post.id, input.id),
+        with: {
+          comments: true,
+          author: true,
+        },
       });
     }),
 });
