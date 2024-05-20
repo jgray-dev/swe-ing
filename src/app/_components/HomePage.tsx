@@ -24,11 +24,13 @@ export default function HomePage() {
     if (isSignedIn) {
       setUserId(user.id);
     }
+    //eslint-disable-next-line
   }, [isSignedIn]);
 
   useEffect(() => {
     void fetchData();
     setLoading(true);
+    //eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -48,6 +50,7 @@ export default function HomePage() {
     return () => {
       div?.removeEventListener("scroll", handleScroll);
     };
+    //eslint-disable-next-line
   }, [loading]);
 
   async function fetchData() {
@@ -62,6 +65,7 @@ export default function HomePage() {
           (newPost) => !allPosts.some((post) => post.id === newPost.id),
         );
         if (newPosts.length > 0) {
+          console.log("new posts", newPosts);
           setAllPosts((prevPosts) => [...prevPosts, ...newPosts]);
           setCards([...cards, ...getCards(newPosts)]);
         }
@@ -83,7 +87,10 @@ export default function HomePage() {
   }
   async function sharePost(id: number, title: string) {
     console.log("share post ", id);
-    await navigator.share({'url': `https://swe.ing/post/${id}`, 'title': `${title}`})
+    await navigator.share({
+      url: `https://swe.ing/post/${id}`,
+      title: `${title}`,
+    });
   }
 
   function getCards(data: post[]): React.ReactElement[] {
@@ -100,7 +107,7 @@ export default function HomePage() {
               <div className={"flex flex-col"}>
                 <div
                   className={
-                    "flex w-20 min-w-20 max-w-20 flex-col items-center border-r border-white/50 pr-2 text-sm"
+                    "flex w-20 min-w-20 max-w-20 flex-col items-center border-r border-white/50 pr-2 text-xs"
                   }
                 >
                   <div className="relative h-12 w-12 overflow-hidden rounded-full">
@@ -162,31 +169,55 @@ export default function HomePage() {
             </div>
             <div className={"mt-2 border-t border-white/50"}>
               <div className={"flex flex-row justify-between px-4 pt-1.5"}>
-                <CiHeart
-                  className={
-                    "h-6 w-6 text-zinc-400 duration-150 hover:text-white"
-                  }
+                <div
+                  className={"group flex flex-row text-zinc-400"}
                   onClick={() => likePost(post.id)}
-                />
-                <Link href={`/post/${post.id}`}>
-                  <GoCommentDiscussion
+                >
+                  <CiHeart
                     className={
-                      "h-6 w-6 text-zinc-400 duration-150 hover:text-white"
+                      "mr-1.5 h-6 w-6 duration-150 group-hover:text-white"
                     }
                   />
-                </Link>
-                <CiShare1
-                  className={
-                    "h-6 w-6 text-zinc-400 duration-150 hover:text-white"
-                  }
-                  onClick={() => sharePost(post.id, post.content)}
-                />
-                <PiDotsNine
-                  className={
-                    "h-6 w-6 text-zinc-400 duration-150 hover:text-white"
-                  }
-                  onClick={() => showContextMenu(post.id)}
-                />
+                  <span
+                    className={
+                      "invisible absolute inline-flex h-6 w-6 rounded-full bg-red-400/30 group-hover:visible group-hover:animate-ping"
+                    }
+                  ></span>
+                  <span className={"duration-150 group-hover:text-white"}>
+                    {post.likes ? post.likes.length : 0}
+                  </span>
+                </div>
+
+                <div className={"group flex flex-row text-zinc-400"}>
+                  <Link href={`/post/${post.id}`}>
+                    <GoCommentDiscussion
+                      className={
+                        "mr-1.5 h-6 w-6 duration-150 group-hover:text-white motion-safe:group-hover:-translate-y-[5%] motion-safe:group-hover:rotate-3"
+                      }
+                    />
+                  </Link>
+                  <span className={"duration-150 group-hover:text-white"}>
+                    {post.comments ? post.comments.length : 0}
+                  </span>
+                </div>
+
+                <div>
+                  <CiShare1
+                    className={
+                      "h-6 w-6 text-zinc-400 duration-150 hover:text-white motion-safe:hover:-translate-y-0.5 motion-safe:hover:translate-x-0.5"
+                    }
+                    onClick={() => sharePost(post.id, post.content)}
+                  />
+                </div>
+
+                <div>
+                  <PiDotsNine
+                    className={
+                      "h-6 w-6 text-zinc-400 duration-150 hover:text-white motion-safe:hover:scale-110"
+                    }
+                    onClick={() => showContextMenu(post.id)}
+                  />
+                </div>
               </div>
             </div>
           </div>
