@@ -6,10 +6,10 @@ import {
   deleteProfile,
   updateProfile,
 } from "~/server/api/queries";
-import type { profile } from "~/app/_components/interfaces";
+import type {profile} from "~/app/_components/interfaces";
 
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === "POST") {
+  if (req.method === "POST" || req.method == "OPTIONS") {
     try {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
       const reader = req.body.getReader();
@@ -26,16 +26,16 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
         const jsonBody = await safeParseJSON(bodyText);
         const body = jsonBody as profile;
         if (body.type === "user.updated") {
-          void updateProfile(body);
+          void await updateProfile(body);
         }
         if (body.type === "user.created") {
-          void createProfile(body);
+          void await createProfile(body);
         }
         if (body.type === "user.delete") {
-          void deleteProfile(body);
+          void await deleteProfile(body);
         }
         return NextResponse.json(
-          { message: "Webhook received" },
+          { message: `Webhook received` },
           { status: 200 },
         );
       } else {
