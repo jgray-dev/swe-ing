@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm/sql/expressions/conditions";
 import type { profile } from "~/app/_components/interfaces";
 
 export async function nextPostPage(page: number) {
-  const pageSize = 50;
+  const pageSize = 15;
   const offset = (page - 1) * pageSize;
   return db
     .select()
