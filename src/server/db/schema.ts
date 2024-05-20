@@ -34,7 +34,7 @@ export const posts = createTable("posts", {
 export const comments = createTable("comments", {
   id: serial("id").primaryKey().notNull(),
   post_id: integer("post_id").notNull(),
-  author_id: varchar("author_id", { length: 191 }).notNull(),
+  author_id: integer("author_id").notNull().default(0),
   content: varchar("content", { length: 255 }).notNull(),
   created_at: bigint("created_at", { mode: "number" }).notNull(),
   updated_at: bigint("updated_at", { mode: "number" }).notNull(),
@@ -42,14 +42,14 @@ export const comments = createTable("comments", {
 
 export const likes = createTable("likes", {
   id: serial("id").primaryKey().notNull(),
-  user_id: varchar("user_id", { length: 191 }).notNull(),
-  post_id: integer("post_id").notNull(),
+  user_id: integer("user_id").notNull().default(0),
+  post_id: integer("post_id").notNull().default(0),
 });
 
 export const follows = createTable("follows", {
   id: serial("id").primaryKey().notNull(),
-  user_id: varchar("user_id", { length: 191 }).notNull(),
-  following_user_id: varchar("following_user_id", { length: 191 }).notNull(),
+  user_id: integer("user_id").notNull().default(0),
+  following_user_id: integer("following_user_id").notNull().default(0),
 });
 
 // Relationships:
@@ -78,14 +78,14 @@ export const likePostRelations = relations(likes, ({ one }) => ({
     references: [users.id],
   }),
 }));
-
+//
 // Give every "follow" a user and a following user
 export const followRelations = relations(follows, ({ one }) => ({
   user: one(users, {
     fields: [follows.user_id],
     references: [users.id],
   }),
-  following_users: one(users, {
+  following_user: one(users, {
     fields: [follows.following_user_id],
     references: [users.id],
   }),
