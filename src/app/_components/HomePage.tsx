@@ -4,20 +4,33 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { nextPostPage } from "~/server/api/queries";
 import Link from "next/link";
-import type { Post } from "~/app/_components/interfaces";
+import type { post } from "~/app/_components/interfaces";
+import { useUser } from "@clerk/shared/react";
+import { CiHeart, CiShare1 } from "react-icons/ci";
+import { GoCommentDiscussion } from "react-icons/go";
+import { PiDotsNine } from "react-icons/pi";
+import PostContextMenu from "~/app/_components/PostContextMenu";
 
 export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [allPosts, setAllPosts] = useState<Array<Post>>([]);
+  const [allPosts, setAllPosts] = useState<Array<post>>([]);
   const [cards, setCards] = useState<React.ReactElement[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [contextMenu, setContextMenu] = useState(<></>);
+
+  const { isSignedIn, user } = useUser();
+  useEffect(() => {
+    if (isSignedIn) {
+      setUserId(user.id);
+    }
+  }, [isSignedIn]);
 
   useEffect(() => {
     void fetchData();
     setLoading(true);
   }, []);
 
-  console.log(cards)
   useEffect(() => {
     const handleScroll = () => {
       const div = document.getElementById("scrolls");
@@ -42,9 +55,10 @@ export default function HomePage() {
       const data = await nextPostPage(page);
       if (data.length > 0) {
         const newPosts = data.filter(
-          (newPost) => !allPosts.some((post) => post.id === newPost.id)
+          (newPost) => !allPosts.some((post) => post.id === newPost.id),
         );
         if (newPosts.length > 0) {
+          console.log("newPosts: ", newPosts);
           setAllPosts((prevPosts) => [...prevPosts, ...newPosts]);
           setCards([...cards, ...getCards(newPosts)]);
         }
@@ -57,7 +71,18 @@ export default function HomePage() {
     }
   }
 
-  function getCards(data: Post[]): React.ReactElement[] {
+  function likePost(id: number) {
+    console.log("like post ", id);
+  }
+  function showContextMenu(id: number) {
+    setContextMenu(<PostContextMenu />);
+    console.log("context menu for post ", id);
+  }
+  function sharePost(id: number) {
+    console.log("share post ", id);
+  }
+
+  function getCards(data: post[]): React.ReactElement[] {
     return data.map((post) => {
       return (
         <div
@@ -77,7 +102,8 @@ export default function HomePage() {
                   <div className="relative h-12 w-12 overflow-hidden rounded-full">
                     <Link href={`/user/${post.author_id}`}>
                       <Image
-                        src={post.author_url}
+                        // @ts-expect-error fuck typescript
+                        src={post.author.image_url}
                         fill
                         loading={"lazy"}
                         className="object-cover"
@@ -86,14 +112,15 @@ export default function HomePage() {
                       />
                     </Link>
                   </div>
-                  {post.author_name}
+                  {/*@ts-expect-error fuck typescript*/}
+                  {post.author.name}
                 </div>
                 <div
                   className={
                     "mr-1 h-fit min-h-0 w-20 min-w-20 max-w-20 border-r border-t border-white/50"
                   }
                 >
-                  <div className={"flex flex-wrap max-h-24 overflow-y-hidden"}>
+                  <div className={"flex max-h-24 flex-wrap overflow-y-hidden"}>
                     {post.post_tags
                       ? post.post_tags.split(",").map((tag) => {
                           if (tag !== "") {
@@ -101,7 +128,7 @@ export default function HomePage() {
                               <Link key={Math.random()} href={`/search/${tag}`}>
                                 <div
                                   key={Math.random()}
-                                  className="mx-0.5 mt-1 ml-0 w-fit max-w-20 overflow-x-hidden truncate rounded-sm bg-white/5 p-0.5 text-left text-xs text-zinc-500"
+                                  className="mx-0.5 ml-0 mt-1 w-fit max-w-20 overflow-x-hidden truncate rounded-sm bg-white/5 p-0.5 text-left text-xs text-zinc-500"
                                   title={tag}
                                 >
                                   {tag}
@@ -122,7 +149,7 @@ export default function HomePage() {
               >
                 <div
                   className={
-                    "min-h-36 h-fit max-h-72 min-w-full max-w-full text-wrap line-clamp-[10] pl-2 text-left"
+                    "line-clamp-[10] h-fit max-h-72 min-h-36 min-w-full max-w-full text-wrap pl-2 text-left"
                   }
                 >
                   {post.content}
@@ -130,7 +157,33 @@ export default function HomePage() {
               </Link>
             </div>
             <div className={"mt-2 border-t border-white/50"}>
-              Like repost share buttons here
+              <div className={"flex flex-row justify-between px-4 pt-1.5"}>
+                <CiHeart
+                  className={
+                    "h-6 w-6 text-zinc-400 duration-150 hover:text-white"
+                  }
+                  onClick={() => likePost(post.id)}
+                />
+                <Link href={`/post/${post.id}`}>
+                  <GoCommentDiscussion
+                    className={
+                      "h-6 w-6 text-zinc-400 duration-150 hover:text-white"
+                    }
+                  />
+                </Link>
+                <CiShare1
+                  className={
+                    "h-6 w-6 text-zinc-400 duration-150 hover:text-white"
+                  }
+                  onClick={() => sharePost(post.id)}
+                />
+                <PiDotsNine
+                  className={
+                    "h-6 w-6 text-zinc-400 duration-150 hover:text-white"
+                  }
+                  onClick={() => showContextMenu(post.id)}
+                />
+              </div>
             </div>
           </div>
         </div>
