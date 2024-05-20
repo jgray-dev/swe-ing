@@ -9,7 +9,7 @@ import type { profile } from "~/app/_components/interfaces";
 export async function getDbUser(clerkId: string) {
   return db.query.users.findFirst({
     where: eq(users.clerk_id, clerkId),
-  })
+  });
 }
 
 export async function nextPostPage(page: number) {
@@ -93,5 +93,3 @@ export async function deleteProfile(profile: profile) {
 //     .delete(posts)
 //     .where(eq(posts.id, post.id))
 // }
-
-
