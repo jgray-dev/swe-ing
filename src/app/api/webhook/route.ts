@@ -36,7 +36,7 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
         }
         return NextResponse.json(
           { message: "Webhook received" },
-          { status: 201 },
+          { status: 200 },
         );
       } else {
         return NextResponse.json({ error: "Invalid input" }, { status: 500 });
