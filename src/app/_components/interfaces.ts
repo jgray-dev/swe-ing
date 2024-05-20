@@ -26,4 +26,6 @@ export interface post {
     website: string;
     skills: string;
   };
+  comments?: string[]
+  likes?: string[]
 }
