@@ -16,6 +16,8 @@ export interface post {
   post_tags: string;
   created_at: number;
   updated_at: number;
+  comments?: string[]
+  likes?: like[]
   author?: {
     id: number;
     clerk_id: string;
@@ -26,6 +28,14 @@ export interface post {
     website: string;
     skills: string;
   };
-  comments?: string[]
-  likes?: string[]
+}
+
+
+export async function delay(ms: number) {
+  return new Promise( resolve => setTimeout(resolve, ms) );
+}
+
+export interface like {
+  post_id: number;
+  user_id: number;
 }
