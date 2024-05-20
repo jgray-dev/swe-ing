@@ -1,10 +1,10 @@
 "use client";
 
-import React, {useState} from "react";
-import {CiHeart} from "react-icons/ci";
-import {api} from "~/trpc/react";
-import {FaHeart, FaRegHeart} from "react-icons/fa";
-import {GiTechnoHeart} from "react-icons/gi";
+import React, { useState } from "react";
+import { CiHeart } from "react-icons/ci";
+import { api } from "~/trpc/react";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { GiTechnoHeart } from "react-icons/gi";
 
 interface LikeButtonProps {
   postId: number;
@@ -12,7 +12,11 @@ interface LikeButtonProps {
   dblikes: number;
 }
 
-export default function LikeButton({ postId, dbliked, dblikes }: LikeButtonProps): React.ReactElement {
+export default function LikeButton({
+  postId,
+  dbliked,
+  dblikes,
+}: LikeButtonProps): React.ReactElement {
   const [liked, setLiked] = useState(dbliked);
   const [likes, setLikes] = useState(dblikes);
   const createPostLike = api.likes.create.useMutation({
@@ -26,7 +30,7 @@ export default function LikeButton({ postId, dbliked, dblikes }: LikeButtonProps
       console.error(err.message);
     },
   });
-  
+
   async function likePost() {
     if (liked) {
       setLiked(false);
@@ -39,22 +43,23 @@ export default function LikeButton({ postId, dbliked, dblikes }: LikeButtonProps
   }
   return (
     <div
-      className={"group flex flex-row text-zinc-400 w-12 min-w-12 max-w-12"}
+      className={"group flex w-12 min-w-12 max-w-12 flex-row text-zinc-400"}
       onClick={() => likePost()}
     >
-      {liked ? <FaHeart
-          className={`mr-1.5 h-6 w-6 duration-150 text-red-500 motion-safe:group-hover:scale-110`}
+      {liked ? (
+        <FaHeart
+          className={`mr-1.5 h-6 w-6 text-red-500 duration-150 motion-safe:group-hover:scale-110`}
         />
-        :
-          <FaRegHeart className={`mr-1.5 h-6 w-6 duration-150 group-hover:text-red-500 motion-safe:group-hover:scale-110`}/>}
+      ) : (
+        <FaRegHeart
+          className={`mr-1.5 h-6 w-6 duration-150 group-hover:text-red-500 motion-safe:group-hover:scale-110`}
+        />
+      )}
 
       <span
-        className={`invisible -translate-y-0.5 absolute inline-flex h-6 w-6 rounded-full ${liked ? "bg-transparent" : "bg-red-400/25"} group-hover:visible group-hover:animate-ping`}
+        className={`invisible absolute inline-flex h-6 w-6 -translate-y-0.5 rounded-full ${liked ? "bg-transparent" : "bg-red-400/25"} group-hover:visible group-hover:animate-ping`}
       ></span>
-      <span className={"duration-150 group-hover:text-white"}>
-      {likes}
-      </span>
+      <span className={"duration-150 group-hover:text-white"}>{likes}</span>
     </div>
-  )
+  );
 }
-  
