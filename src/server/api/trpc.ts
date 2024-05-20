@@ -33,13 +33,18 @@ export const createTRPCRouter = t.router;
 export const publicProcedure = t.procedure;
 
 export const authedProcedure = t.procedure.use(async function isAuthed(opts) {
-  const user = auth();
-  if (!user.userId) throw new Error("Unauthorized database action");
-  const fullUser = await clerkClient.users.getUser(user.userId);
-  return opts.next({
-    ctx: {
-      user: user,
-      fullUser: fullUser,
-    },
-  });
+  let user = undefined;
+  try {
+    user = auth();
+    const fullUser = await clerkClient.users.getUser(`${user.userId}`);
+    return opts.next({
+      ctx: {
+        user: user,
+        fullUser: fullUser,
+      },
+    });
+  } catch {
+    console.error("Error getting user from Clerk");
+    throw new Error("Error getting user from Clerk");
+  }
 });
