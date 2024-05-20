@@ -37,7 +37,6 @@ export const comments = createTable("comments", {
   author_id: integer("author_id").notNull().default(0),
   content: varchar("content", { length: 255 }).notNull(),
   created_at: bigint("created_at", { mode: "number" }).notNull(),
-  updated_at: bigint("updated_at", { mode: "number" }).notNull(),
 });
 
 export const likes = createTable("likes", {
@@ -57,6 +56,7 @@ export const follows = createTable("follows", {
 // Give every post multiple comments
 export const postCommentRelations = relations(posts, ({ many }) => ({
   comments: many(comments),
+  likes: many(likes),
 }));
 
 //Give every comment a single post
@@ -78,7 +78,7 @@ export const likePostRelations = relations(likes, ({ one }) => ({
     references: [users.id],
   }),
 }));
-//
+
 // Give every "follow" a user and a following user
 export const followRelations = relations(follows, ({ one }) => ({
   user: one(users, {
