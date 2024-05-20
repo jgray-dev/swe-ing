@@ -16,6 +16,8 @@ export async function nextPostPage(page: number) {
     offset: offset,
     with: {
       author: true,
+      comments: true,
+      likes: true,
     },
   });
 }
