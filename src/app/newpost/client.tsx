@@ -18,8 +18,8 @@ export default function ClientSide() {
   const createPost = api.posts.create.useMutation({
     onSuccess: (data) => {
       if (!data) {
-        alert("Erorr creating post")
-        return
+        alert("Erorr creating post");
+        return;
       }
       setContent("");
       setImageUrls([]);
@@ -68,7 +68,7 @@ export default function ClientSide() {
               Post:
               <textarea
                 className={
-                  "min-h-48 w-full rounded-md bg-black/10 p-2 text-white placeholder-white/60 focus:outline-none outline-none border border-white/50 focus:border-white/80"
+                  "min-h-48 w-full rounded-md border border-white/50 bg-black/10 p-2 text-white placeholder-white/60 outline-none focus:border-white/80 focus:outline-none"
                 }
                 placeholder={"Enter post content here"}
                 onChange={(e) => setContent(e.target.value)}
@@ -77,7 +77,7 @@ export default function ClientSide() {
               Tags:
               <textarea
                 className={
-                  "h-16 w-full rounded-md bg-black/10 p-2 text-white placeholder-white/60 focus:outline-none outline-none border border-white/50 focus:border-white/80"
+                  "h-16 w-full rounded-md border border-white/50 bg-black/10 p-2 text-white placeholder-white/60 outline-none focus:border-white/80 focus:outline-none"
                 }
                 placeholder={"Separate tags using ,"}
                 onChange={(e) => setTags(e.target.value)}
