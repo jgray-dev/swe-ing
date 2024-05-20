@@ -14,6 +14,7 @@ export default function HomePage() {
 
   useEffect(() => {
     void fetchData();
+    setLoading(true);
   }, []);
 
   useEffect(() => {
@@ -56,7 +57,7 @@ export default function HomePage() {
         <div
           key={post.created_at + post.id + Math.random()}
           className={
-            "backdrop-blur-xs my-2 min-h-fit w-full rounded-lg border border-white/50 bg-black/90 p-2 text-zinc-200 duration-300"
+            "backdrop-blur-xs my-2 min-h-fit w-[99%] translate-x-[0.5%] rounded-lg border border-white/50 bg-black/90 p-1.5 text-zinc-200 duration-300"
           }
         >
           <div className={"flex flex-col"}>
@@ -113,14 +114,12 @@ export default function HomePage() {
                 key={post.created_at + post.id + Math.random()}
                 href={`/post/${post.id}`}
               >
-                <div className={"flex flex-col"}>
-                  <div
-                    className={
-                      "h-full max-h-48 truncate whitespace-break-spaces text-wrap pl-2 text-left"
-                    }
-                  >
-                    {post.content}
-                  </div>
+                <div
+                  className={
+                    "min-h-36 h-fit max-h-72 min-w-full max-w-full text-wrap line-clamp-[10] pl-2 text-left "
+                  }
+                >
+                  {post.content}
                 </div>
               </Link>
             </div>
