@@ -5,7 +5,6 @@ import { comments, follows, likes, posts, users } from "~/server/db/schema";
 import { desc } from "drizzle-orm/sql/expressions/select";
 import { eq, or } from "drizzle-orm/sql/expressions/conditions";
 import type { post, profile } from "~/app/_components/interfaces";
-import { api } from "~/trpc/server";
 
 export async function nextPostPage(page: number) {
   const pageSize = 15;
@@ -21,17 +20,18 @@ export async function nextPostPage(page: number) {
   });
 }
 
-// export async function updateProfile(profile: profile) {
-//   console.log("updateProfile()");
-// return db
-//   .update(posts)
-//   .set({
-//     author_url: `${profile.data.image_url}`,
-//     author_name: `${profile.data.first_name ? profile.data.first_name : "Unknown"} ${profile.data.last_name ? profile.data.last_name : ""} `,
-//   })
-//   .where(eq(posts.author_id, profile.data.id))
-//   .returning();
-
+export async function updateProfile(profile: profile) {
+  console.log("updateProfile()");
+  return db
+    .update(users)
+    .set({
+      image_url: `${profile.data.image_url}`,
+      name: `${profile.data.first_name ? profile.data.first_name : "Unknown"} ${profile.data.last_name ? profile.data.last_name : ""} `,
+    })
+    .where(eq(users.clerk_id, profile.data.id))
+    .returning();
+}
+  
 export async function createProfile(profile: profile) {
   const user = await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.clerk_id, profile.data.id),
