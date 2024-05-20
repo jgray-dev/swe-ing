@@ -13,7 +13,6 @@ interface LikeButtonProps {
 export default function LikeButton({ postId, dbliked, dblikes }: LikeButtonProps): React.ReactElement {
   const [liked, setLiked] = useState(dbliked);
   const [likes, setLikes] = useState(dblikes);
-
   const createPostLike = api.likes.create.useMutation({
     onSuccess: (data) => {
       if (!data) {
