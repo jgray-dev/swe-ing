@@ -81,8 +81,9 @@ export default function HomePage() {
     setContextMenu(<PostContextMenu />);
     console.log("context menu for post ", id);
   }
-  function sharePost(id: number) {
+  async function sharePost(id: number, title: string) {
     console.log("share post ", id);
+    await navigator.share({'url': `https://swe.ing/post/${id}`, 'title': `${title}`})
   }
 
   function getCards(data: post[]): React.ReactElement[] {
@@ -178,7 +179,7 @@ export default function HomePage() {
                   className={
                     "h-6 w-6 text-zinc-400 duration-150 hover:text-white"
                   }
-                  onClick={() => sharePost(post.id)}
+                  onClick={() => sharePost(post.id, post.content)}
                 />
                 <PiDotsNine
                   className={
