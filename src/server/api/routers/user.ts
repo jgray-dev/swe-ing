@@ -3,12 +3,21 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { users } from "~/server/db/schema";
 
-export const userRouter = createTRPCRouter({
+export const usersRouter = createTRPCRouter({
   create: publicProcedure
-    .input(z.object({ clerkId: z.string() }))
+    .input(
+      z.object({
+        clerkId: z.string(),
+        firstName: z.string(),
+        lastName: z.string(),
+        imageUrl: z.string(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       await ctx.db.insert(users).values({
         clerk_id: input.clerkId,
+        name: `${input.firstName ? input.firstName : "Unknown"} ${input.lastName ? input.lastName : ""}`,
+        image_url: input.imageUrl,
       });
     }),
 });
