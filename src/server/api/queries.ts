@@ -4,12 +4,17 @@ import { db } from "~/server/db";
 import { comments, follows, likes, posts, users } from "~/server/db/schema";
 import { desc } from "drizzle-orm/sql/expressions/select";
 import { eq, or } from "drizzle-orm/sql/expressions/conditions";
-import type { post, profile } from "~/app/_components/interfaces";
+import type { profile } from "~/app/_components/interfaces";
+
+export async function getDbUser(clerkId: string) {
+  return db.query.users.findFirst({
+    where: eq(users.clerk_id, clerkId),
+  })
+}
 
 export async function nextPostPage(page: number) {
   const pageSize = 15;
   const offset = (page - 1) * pageSize;
-
   return db.query.posts.findMany({
     orderBy: desc(posts.updated_at),
     limit: pageSize,
@@ -88,3 +93,5 @@ export async function deleteProfile(profile: profile) {
 //     .delete(posts)
 //     .where(eq(posts.id, post.id))
 // }
+
+
