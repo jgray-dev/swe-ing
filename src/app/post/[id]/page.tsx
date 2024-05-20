@@ -6,9 +6,9 @@ import Link from "next/link";
 export default function PostPage({ params }: { params: { id: string } }) {
   const postId = Number(params.id);
   const post = api.posts.getSingle.useQuery({ id: postId });
-  console.log(post.data);
   if (!post.isLoading) {
     if (post.data) {
+      console.log(post.data);
       const time = new Date(post.data?.created_at).toLocaleString();
       return (
         <div className={"h-screen w-screen pt-16 text-white"}>
