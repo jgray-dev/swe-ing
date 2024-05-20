@@ -53,12 +53,15 @@ export default function HomePage() {
   async function fetchData() {
     if (!loading) {
       const data = await nextPostPage(page);
+      if (!data) {
+        console.warn("No data returned from server");
+        return;
+      }
       if (data.length > 0) {
         const newPosts = data.filter(
           (newPost) => !allPosts.some((post) => post.id === newPost.id),
         );
         if (newPosts.length > 0) {
-          console.log("newPosts: ", newPosts);
           setAllPosts((prevPosts) => [...prevPosts, ...newPosts]);
           setCards([...cards, ...getCards(newPosts)]);
         }
