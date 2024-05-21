@@ -1,4 +1,4 @@
-import {bigint, integer, serial, varchar} from "drizzle-orm/pg-core";
+import { bigint, integer, serial, varchar } from "drizzle-orm/pg-core";
 
 export interface profile {
   data: {
@@ -42,13 +42,12 @@ export interface like {
 }
 
 export interface comment {
-  post_id: number,
-  author_id: number,
-  content: string,
-  created_at: number,
-  author?: user
+  post_id: number;
+  author_id: number;
+  content: string;
+  created_at: number;
+  author?: user;
 }
-
 
 export interface user {
   id?: number;
