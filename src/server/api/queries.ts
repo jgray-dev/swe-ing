@@ -20,7 +20,7 @@ export async function nextPostPage(page: number, post_id: number) {
     where: eq(comments.post_id, post_id),
     offset: offset,
     limit: pageSize,
-  })
+  });
 }
 
 export async function nextHomePage(page: number) {
