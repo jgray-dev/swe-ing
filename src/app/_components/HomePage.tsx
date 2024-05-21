@@ -191,6 +191,7 @@ export default function HomePage() {
               href={`/post/${post.id}`}
             >
               <div
+                id={`${key + "CONTENT"}`}
                 className={
                   "line-clamp-[10] h-fit max-h-72 min-h-36 min-w-full max-w-full text-wrap break-normal pl-2 text-left"
                 }
@@ -206,7 +207,6 @@ export default function HomePage() {
                 dbliked={liked}
                 dblikes={post.likes ? post.likes.length : 0}
               />
-
               <div className={"group flex flex-row text-zinc-400"}>
                 <Link href={`/post/${post.id}`}>
                   <GoCommentDiscussion
