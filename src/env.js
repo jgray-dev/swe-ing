@@ -11,7 +11,7 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
-    OPENAI_API_KEY: z.string()
+    OPENAI_API_KEY: z.string(),
   },
 
   /**
