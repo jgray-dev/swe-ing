@@ -125,13 +125,13 @@ export default function HomePage() {
       user_id = userId;
     }
     const liked = post.likes?.some((like) => like.user_id === user_id) ?? false;
-    const key = (post.created_at + post.id) / Math.random()
+    const key = (post.created_at + post.id) / Math.random();
     return (
       <div
         id={`${key}`}
         key={key}
         className={
-          "z-10 backdrop-blur-xs my-2 min-h-fit w-[99%] translate-x-[0.5%] rounded-lg border border-white/50 bg-black/90 p-1.5 text-zinc-200 duration-300"
+          "backdrop-blur-xs z-10 my-2 min-h-fit w-[99%] translate-x-[0.5%] rounded-lg border border-white/50 bg-black/90 p-1.5 text-zinc-200 duration-300"
         }
       >
         <div className={"flex flex-col"}>
@@ -142,7 +142,7 @@ export default function HomePage() {
                   "flex w-20 min-w-20 max-w-20 flex-col items-center border-r border-white/50 pr-2 text-xs"
                 }
               >
-                <div className="relative h-12 w-12 overflow-hidden rounded-full select-none">
+                <div className="relative h-12 w-12 select-none overflow-hidden rounded-full">
                   <Link href={`/user/${post.author_id}`}>
                     <Image
                       // @ts-expect-error fuck typescript
@@ -201,7 +201,11 @@ export default function HomePage() {
             </Link>
           </div>
           <div className={"mt-2 border-t border-white/50"}>
-            <div className={"flex flex-row justify-between px-4 pt-1.5 select-none"}>
+            <div
+              className={
+                "flex select-none flex-row justify-between px-4 pt-1.5"
+              }
+            >
               <LikeButton
                 postId={Number(post.id)}
                 dbliked={liked}
@@ -248,8 +252,11 @@ export default function HomePage() {
         <div className={"overflow-x-hidden overflow-y-scroll"}>
           {cards}
           <div className={"pb-20 pt-24"}>
-            {(!end && (loading || cards.length == 0))?"Loading more post":""}
-            <br /><br /><br />The end. <br />
+            {!end && (loading || cards.length == 0) ? "Loading more post" : ""}
+            <br />
+            <br />
+            <br />
+            The end. <br />
             <Link href={"/newpost"} className={"underline"}>
               {" "}
               How about creating a new post
