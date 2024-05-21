@@ -46,6 +46,11 @@ export default function PostPage({ params }: { params: { id: string } }) {
       >
         <div className={"overflow-x-hidden overflow-y-scroll"}>
           <div className={"pb-12 pt-24"}>
+            POST PAGE <br />
+            POST PAGE <br />
+            POST PAGE <br />
+            POST PAGE <br />
+            POST PAGE <br />
             The end. <br />
             <Link href={"/newpost"} className={"underline"}>
               {" "}
