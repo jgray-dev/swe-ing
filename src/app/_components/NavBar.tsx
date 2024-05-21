@@ -12,7 +12,7 @@ export default function NavBar() {
   return (
     <div
       className={
-        "fixed top-0 z-50 flex h-16 max-h-16 w-full items-center justify-between border-b border-white/50 bg-black/50 p-4 px-8 text-lg font-semibold text-white backdrop-blur-md"
+        "fixed top-0 z-50 flex h-16 max-h-16 w-full items-center justify-between border-b border-white/50 bg-black/60 p-4 px-8 text-lg font-semibold text-white backdrop-blur-md"
       }
     >
       <Link href={"/"}>
