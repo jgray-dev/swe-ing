@@ -6,8 +6,6 @@ import { IoWarningOutline } from "react-icons/io5";
 import { IoIosLink } from "react-icons/io";
 import {dbDeletePost, dbReportPost} from "~/server/api/queries";
 import {HiOutlineXMark} from "react-icons/hi2";
-import {FaPencil} from "react-icons/fa6";
-import {LuPencilLine} from "react-icons/lu";
 
 interface ContextMenuProps {
   post: post;
@@ -65,19 +63,19 @@ export default function ContextMenu({ post, user_id, id }: ContextMenuProps) {
 
   async function copyPostLink() {
     setOpen(!open);
-    const textArea = document.createElement("textarea");
-    textArea.value = `https://swe.ing/post/${post.id}`;
-    document.body.appendChild(textArea);
-    textArea.select();
+    // const textArea = document.createElement("textarea");
+    // textArea.value = `https://swe.ing/post/${post.id}`;
+    // document.body.appendChild(textArea);
+    // textArea.select();
     try {
-      document.execCommand("copy");
+      await navigator.clipboard.writeText(`https://swe.ing/post/${post.id}`);
       console.log("Text copied to clipboard");
       //TODO: Alert text copied successfully
     } catch (error) {
-      console.error("Error copying text: ", error);
+      alert("Your environment does not support the clipboard");
       //TODO: Alert error copying link
     }
-    document.body.removeChild(textArea);
+    // document.body.removeChild(textArea);
   }
 
   return !open ? (
