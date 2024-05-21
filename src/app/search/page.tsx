@@ -2,6 +2,7 @@
 
 import ClientSide from "~/app/search/client";
 
+
 export default async function Search() {
   return (
     <div
