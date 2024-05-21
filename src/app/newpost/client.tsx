@@ -111,7 +111,9 @@ export default function ClientSide() {
               className={`mb-4 mt-12 h-8 w-full select-none rounded-full bg-white/70 font-bold text-black/90 duration-100 hover:bg-white/80 hover:text-black ${blockSubmit ? "cursor-progress" : "cursor-pointer"}`}
               onClick={() => handleSubmit()}
             >
-              Create post
+              <div>
+                {blockSubmit ? "Image uploading..." : "Create post"}
+              </div>
             </button>
           </div>
         </div>
