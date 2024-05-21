@@ -53,6 +53,7 @@ export const postsRouter = createTRPCRouter({
       return ctx.db.query.posts.findFirst({
         where: (post, { eq }) => eq(post.id, input.id),
         with: {
+          likes: true,
           comments: true,
           author: true,
         },
