@@ -5,7 +5,7 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import Link from "next/link";
-import {FaPlusSquare, FaSearch} from "react-icons/fa";
+import { FaPlusSquare, FaSearch } from "react-icons/fa";
 import { IoHome } from "react-icons/io5";
 
 export default function NavBar() {
@@ -22,7 +22,6 @@ export default function NavBar() {
         <Link href={`/search`}>
           <FaSearch className="h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-white" />
         </Link>
-        
       </div>
       <div>
         <Link href={`/newpost`}>
