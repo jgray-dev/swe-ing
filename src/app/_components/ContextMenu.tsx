@@ -63,10 +63,6 @@ export default function ContextMenu({ post, user_id, id }: ContextMenuProps) {
 
   async function copyPostLink() {
     setOpen(!open);
-    // const textArea = document.createElement("textarea");
-    // textArea.value = `https://swe.ing/post/${post.id}`;
-    // document.body.appendChild(textArea);
-    // textArea.select();
     try {
       await navigator.clipboard.writeText(`https://swe.ing/post/${post.id}`);
       console.log("Text copied to clipboard");
@@ -75,7 +71,6 @@ export default function ContextMenu({ post, user_id, id }: ContextMenuProps) {
       alert("Your environment does not support the clipboard");
       //TODO: Alert error copying link
     }
-    // document.body.removeChild(textArea);
   }
 
   return !open ? (
