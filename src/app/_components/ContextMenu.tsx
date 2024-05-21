@@ -1,6 +1,6 @@
 import type { post } from "~/app/_components/interfaces";
 import { PiDotsNine } from "react-icons/pi";
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CiEdit, CiTrash } from "react-icons/ci";
 import { IoWarningOutline } from "react-icons/io5";
 import { IoIosLink } from "react-icons/io";
@@ -100,16 +100,16 @@ export default function ContextMenu({ post, user_id, id }: ContextMenuProps) {
       <div className={"absolute bottom-10 right-0 h-full w-full  pt-10"}>
         <div
           className={
-            "m-0.5 h-full sm:w-fit w-screen pr-24 rounded-md bg-black/70 backdrop-blur-md"
+            "m-0.5 h-full w-screen rounded-md bg-black/70 pr-24 backdrop-blur-md sm:w-fit"
           }
         >
-        <textarea
-          ref={textareaRef}
-          className={
-            " z-50 ml-[86px] h-full w-full translate-x-[2.5px] resize-none rounded-md bg-transparent pl-2 pt-1 focus:outline-none"
-          }
-          defaultValue={post.content}
-        ></textarea>
+          <textarea
+            ref={textareaRef}
+            className={
+              " z-50 ml-[86px] h-full w-full translate-x-[2.5px] resize-none rounded-md bg-transparent pl-2 pt-1 focus:outline-none"
+            }
+            defaultValue={post.content}
+          ></textarea>
           <div className={"pb-4"}>
             <button
               className={
