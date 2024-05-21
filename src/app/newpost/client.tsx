@@ -67,17 +67,18 @@ export default function ClientSide() {
           >
             <div
               className={
-                "group flex flex-row text-left text-zinc-400 border-transparent border-b hover:border-white/50 w-fit duration-150 cursor-pointer"
+                "group flex w-fit cursor-pointer flex-row border-b border-transparent text-left text-zinc-400 duration-150 hover:border-white/50"
               }
               onClick={() => {
                 router.back();
               }}
             >
               <HiOutlineXMark
-                className={`h-6 w-6 group-hover:text-red-400 duration-150`}
-                
+                className={`h-6 w-6 duration-150 group-hover:text-red-400`}
               />
-              <span className={"group-hover:text-red-200 duration-150"}>Cancel</span>
+              <span className={"duration-150 group-hover:text-red-200"}>
+                Cancel
+              </span>
             </div>
             <div className={"text-left"}>
               Post:
