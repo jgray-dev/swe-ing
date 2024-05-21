@@ -103,8 +103,7 @@ export default function HomePage() {
       setLoading(false);
     }
   }
-  
-  
+
   async function sharePost(id: number, title: string) {
     const share = {
       url: `https://swe.ing/post/${id}`,
@@ -229,8 +228,7 @@ export default function HomePage() {
               </div>
 
               <div>
-                <ContextMenu post={post} user_id={user_id}/>
-                
+                <ContextMenu post={post} user_id={user_id} />
               </div>
             </div>
           </div>
