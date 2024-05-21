@@ -1,24 +1,50 @@
-"use server"
+"use server";
 
 import { db } from "~/server/db";
-import {comments, follows, likes, posts, reports, users} from "~/server/db/schema";
+import {
+  comments,
+  follows,
+  likes,
+  posts,
+  reports,
+  users,
+} from "~/server/db/schema";
 import { desc } from "drizzle-orm/sql/expressions/select";
-import {and, eq, or} from "drizzle-orm/sql/expressions/conditions";
+import { and, eq, or } from "drizzle-orm/sql/expressions/conditions";
 import type { profile, post } from "~/app/_components/interfaces";
 
+export async function dbEditPost(post: post, content: string, user_id: number) {
+  console.log("EDIT POST ", post.id);
+  console.log("NEW COTNENT ", content);
+  try {
+    await db
+      .update(posts)
+      .set({
+        content: content,
+        updated_at: Date.now()
+      })
+      .where(and(eq(posts.author_id, user_id), eq(posts.id, post.id)));
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export async function dbReportPost(post: post, user_id: number) {
   const oldReport = await db.query.reports.findFirst({
-    where: and(eq(reports.post_id, post.id), eq(reports.reporter_id, user_id))
-  })
+    where: and(eq(reports.post_id, post.id), eq(reports.reporter_id, user_id)),
+  });
   if (!oldReport) {
-    return db.insert(reports).values({
-      post_id: post.id,
-      reporter_id: user_id,
-      reported_at: Date.now()
-    }).returning();
+    return db
+      .insert(reports)
+      .values({
+        post_id: post.id,
+        reporter_id: user_id,
+        reported_at: Date.now(),
+      })
+      .returning();
   } else {
-    return "duplicate"
+    return "duplicate";
   }
 }
 
@@ -32,7 +58,7 @@ export async function dbDeletePost(post: post) {
   await db.delete(comments).where(eq(comments.post_id, post.id));
   await db.delete(likes).where(eq(likes.post_id, post.id));
   await db.delete(posts).where(eq(posts.id, post.id));
-  return ("Deleted")
+  return "Deleted";
 }
 
 export async function nextPostPage(page: number, post_id: number) {
