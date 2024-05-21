@@ -1,8 +1,8 @@
 "use server";
 
-import ClientSide from "~/app/newpost/client";
+import ClientSide from "~/app/search/client";
 
-export default async function NewPost() {
+export default async function Search() {
   return (
     <div
       className={
