@@ -12,6 +12,8 @@ import {
 import { desc } from "drizzle-orm/sql/expressions/select";
 import { and, eq, or } from "drizzle-orm/sql/expressions/conditions";
 import type { profile, post } from "~/app/_components/interfaces";
+import {getEmbedding} from "~/app/_components/embedding";
+import {l2Distance} from "pgvector/drizzle-orm";
 
 export async function dbEditPost(post: post, content: string, user_id: number) {
   console.log("EDIT POST ", post.id);
@@ -79,6 +81,9 @@ export async function nextHomePage(page: number) {
     orderBy: desc(posts.updated_at),
     limit: pageSize,
     offset: offset,
+    columns: {
+      embedding: false,
+    },
     with: {
       author: true,
       comments: true,
@@ -90,6 +95,9 @@ export async function nextHomePage(page: number) {
 export async function getSinglePost(post_id: number) {
   return db.query.posts.findFirst({
     where: eq(posts.id, post_id),
+    columns: {
+      embedding: false,
+    }
   });
 }
 
@@ -159,3 +167,15 @@ export async function deleteProfile(profile: profile) {
 //     .delete(posts)
 //     .where(eq(posts.id, post.id))
 // }
+
+
+export async function searchEmbeddings(search: string) {
+  const searchEmbedding = await getEmbedding(search)
+  console.log(searchEmbedding)
+  const results = await db.select()
+    .from(posts)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    .orderBy(l2Distance(posts.embedding, searchEmbedding))
+    .limit(3);
+  return results
+}
