@@ -1,15 +1,38 @@
-"use server";
+"use server"
 
 import { db } from "~/server/db";
-import { comments, follows, likes, posts, users } from "~/server/db/schema";
+import {comments, follows, likes, posts, reports, users} from "~/server/db/schema";
 import { desc } from "drizzle-orm/sql/expressions/select";
-import { eq, or } from "drizzle-orm/sql/expressions/conditions";
-import type { profile } from "~/app/_components/interfaces";
+import {and, eq, or} from "drizzle-orm/sql/expressions/conditions";
+import type { profile, post } from "~/app/_components/interfaces";
+
+
+export async function dbReportPost(post: post, user_id: number) {
+  const oldReport = await db.query.reports.findFirst({
+    where: and(eq(reports.post_id, post.id), eq(reports.reporter_id, user_id))
+  })
+  if (!oldReport) {
+    return db.insert(reports).values({
+      post_id: post.id,
+      reporter_id: user_id,
+      reported_at: Date.now()
+    }).returning();
+  } else {
+    return "duplicate"
+  }
+}
 
 export async function getDbUser(clerkId: string) {
   return db.query.users.findFirst({
     where: eq(users.clerk_id, clerkId),
   });
+}
+
+export async function dbDeletePost(post: post) {
+  await db.delete(comments).where(eq(comments.post_id, post.id));
+  await db.delete(likes).where(eq(likes.post_id, post.id));
+  await db.delete(posts).where(eq(posts.id, post.id));
+  return ("Deleted")
 }
 
 export async function nextPostPage(page: number, post_id: number) {
