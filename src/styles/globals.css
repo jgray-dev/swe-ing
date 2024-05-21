@@ -32,6 +32,9 @@ body {
     backface-visibility: hidden;
     perspective: 1000px;
   }
+  .rounded-context {
+    border-radius: 0.4rem 0.4rem 0 0.4rem;
+  }
 }
 
 @keyframes shake {
