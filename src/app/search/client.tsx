@@ -4,23 +4,23 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/nextjs";
 import { HiOutlineXMark } from "react-icons/hi2";
-import {searchEmbeddings} from "~/server/api/queries";
+import { searchEmbeddings } from "~/server/api/queries";
 
 export default function ClientSide() {
   const router = useRouter();
   const [content, setContent] = useState("");
 
   async function handleSubmit() {
-      if (content !== "") {
-        if (content.length > 749) {
-          alert("Post too long. 749 characters max");
-        } else {
-          const results = await searchEmbeddings(content)
-          console.log(results)
-        }
+    if (content !== "") {
+      if (content.length > 749) {
+        alert("Post too long. 749 characters max");
       } else {
-        console.warn("No content detected. . .");
+        const results = await searchEmbeddings(content);
+        console.log(results);
       }
+    } else {
+      console.warn("No content detected. . .");
+    }
   }
 
   return (
@@ -43,17 +43,18 @@ export default function ClientSide() {
           >
             <div
               className={
-                "group flex flex-row text-left text-zinc-400 border-transparent border-b hover:border-white/50 w-fit duration-150 cursor-pointer"
+                "group flex w-fit cursor-pointer flex-row border-b border-transparent text-left text-zinc-400 duration-150 hover:border-white/50"
               }
               onClick={() => {
                 router.back();
               }}
             >
               <HiOutlineXMark
-                className={`h-6 w-6 group-hover:text-red-400 duration-150`}
-                
+                className={`h-6 w-6 duration-150 group-hover:text-red-400`}
               />
-              <span className={"group-hover:text-red-200 duration-150"}>Cancel</span>
+              <span className={"duration-150 group-hover:text-red-200"}>
+                Cancel
+              </span>
             </div>
             <div className={"text-left"}>
               Search:
@@ -68,7 +69,7 @@ export default function ClientSide() {
             </div>
             <div className={"h-1/2 select-none px-24 text-white"}></div>
             <button
-              className={`mb-4 mt-12 h-8 w-full select-none rounded-full bg-white/70 font-bold text-black/90 duration-100 hover:bg-white/80 hover:text-black cursor-pointer`}
+              className={`mb-4 mt-12 h-8 w-full cursor-pointer select-none rounded-full bg-white/70 font-bold text-black/90 duration-100 hover:bg-white/80 hover:text-black`}
               onClick={() => handleSubmit()}
             >
               <div>Search</div>
