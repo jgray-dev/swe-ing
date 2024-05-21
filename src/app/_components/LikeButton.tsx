@@ -1,10 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { CiHeart } from "react-icons/ci";
 import { api } from "~/trpc/react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { GiTechnoHeart } from "react-icons/gi";
 
 interface LikeButtonProps {
   postId: number;
@@ -48,11 +46,11 @@ export default function LikeButton({
     >
       {liked ? (
         <FaHeart
-          className={`mr-1.5 h-6 w-6 text-red-500 duration-150 motion-safe:group-hover:scale-110`}
+          className={`mr-1.5 h-6 w-6 text-red-500 duration-150`}
         />
       ) : (
         <FaRegHeart
-          className={`mr-1.5 h-6 w-6 duration-150 group-hover:text-red-500 motion-safe:group-hover:scale-110`}
+          className={`mr-1.5 h-6 w-6 duration-150 group-hover:text-red-500 motion-safe:group-hover:animate-shake`}
         />
       )}
 
