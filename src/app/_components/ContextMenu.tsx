@@ -1,36 +1,83 @@
 import type { post } from "~/app/_components/interfaces";
 import { PiDotsNine } from "react-icons/pi";
-import React, { useState } from "react";
-import { CiTrash } from "react-icons/ci";
+import React, {useEffect, useState} from "react";
+import {CiEdit, CiTrash} from "react-icons/ci";
 import { IoWarningOutline } from "react-icons/io5";
 import { IoIosLink } from "react-icons/io";
+import {dbDeletePost, dbReportPost} from "~/server/api/queries";
+import {HiOutlineXMark} from "react-icons/hi2";
+import {FaPencil} from "react-icons/fa6";
+import {LuPencilLine} from "react-icons/lu";
 
 interface ContextMenuProps {
   post: post;
   user_id: number | undefined;
+  id: string;
 }
 
 
-export default function ContextMenu({ post, user_id }: ContextMenuProps) {
+export default function ContextMenu({ post, user_id, id }: ContextMenuProps) {
   const [open, setOpen] = useState(false);
   const [isAuthor, setIsAuthor] = useState(user_id === post.author_id);
 
-  function showContextMenu(id: number) {
-    setOpen(!open);
+  useEffect(() => {
+    setIsAuthor(user_id === post.author_id)
+    //eslint-disable-next-line
+  }, []);
+  
+  
+  async function editPost() {
+    console.log("edit post", isAuthor)
   }
 
-  function deletePost() {
-    console.log("delete post");
+  async function deletePost() {
+    console.log("delete post", isAuthor);
     setOpen(!open);
+    if (isAuthor) {
+      const resp = await dbDeletePost(post)
+      console.log(resp)
+      if (resp === "Deleted") {
+       const element = document.getElementById(id)
+        if (element) {
+          element.remove() 
+        } else {
+          console.error("element is null")
+        }
+      }
+    }
   }
 
-  function reportPost() {
-    console.log("report post");
+  async function reportPost() {
     setOpen(!open);
+    if (user_id) {
+      const resp = await dbReportPost(post, user_id)
+      if (resp === "duplicate") {
+        //TODO: Alert duplicate report
+        console.log("duplicate report")
+      } else {
+        //TODO: Alert report created
+        console.log("Report created", resp)
+      }
+    } else {
+      console.error("Unable to report - no user_id")
+    }
   }
-  function copyPostLink() {
-    console.log("copy post link");
+
+  async function copyPostLink() {
     setOpen(!open);
+    const textArea = document.createElement("textarea");
+    textArea.value = `https://swe.ing/post/${post.id}`;
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+      document.execCommand("copy");
+      console.log("Text copied to clipboard");
+      //TODO: Alert text copied successfully
+    } catch (error) {
+      console.error("Error copying text: ", error);
+      //TODO: Alert error copying link
+    }
+    document.body.removeChild(textArea);
   }
 
   return !open ? (
@@ -38,23 +85,23 @@ export default function ContextMenu({ post, user_id }: ContextMenuProps) {
       className={
         "h-6 w-6 text-zinc-400 duration-150 hover:text-white motion-safe:hover:scale-[115%]"
       }
-      onClick={() => showContextMenu(post.id)}
+      onClick={() => setOpen(!open)}
     />
   ) : (
-    <div className={"relative z-50"}>
-      <PiDotsNine
+    <div className={"relative"}>
+      <HiOutlineXMark
         className={
           "h-6 w-6 text-zinc-400 duration-150 hover:text-white motion-safe:hover:scale-[115%]"
         }
-        onClick={() => showContextMenu(post.id)}
+        onClick={() => setOpen(!open)}
       />
       <div
         className={
-          "absolute right-0 top-[100%] z-10 w-fit min-w-40 select-none rounded-md border border-white bg-black/90 p-4 text-center shadow-lg backdrop-blur-lg transition-opacity duration-300"
+          "z-50 absolute right-6 bottom-7 w-fit min-w-40 select-none rounded-context border border-white bg-black/90 p-4 text-center shadow-lg backdrop-blur-xs transition-opacity duration-300"
         }
-      >
+      >{isAuthor ?
         <div
-          className={"group flex cursor-pointer flex-row duration-200"}
+          className={"group flex cursor-pointer flex-row duration-200 mb-2"}
           onClick={() => deletePost()}
         >
           <div
@@ -62,12 +109,28 @@ export default function ContextMenu({ post, user_id }: ContextMenuProps) {
               "group flex flex-row border-b border-transparent text-zinc-300 duration-200 hover:text-red-500 group-hover:border-red-500"
             }
           >
-            <CiTrash className={"hover: mr-1 h-5 w-5"} />
+            <CiTrash className={"hover: mr-1 h-5 w-5"}/>
             <span>Delete post</span>
           </div>
-        </div>
+        </div>:null
+      }
+        {isAuthor ?
+          <div
+            className={"group flex cursor-pointer flex-row duration-200 mb-2"}
+            onClick={() => editPost()}
+          >
+            <div
+              className={
+                "group flex flex-row border-b border-transparent text-zinc-300 duration-200 hover:text-emerald-500 group-hover:border-emerald-500"
+              }
+            >
+              <CiEdit   className={"hover: mr-1 h-5 w-5 -translate-x-0.5"}/>
+              <span>Edit post</span>
+            </div>
+          </div>:null
+        }
         <div
-          className={"group mt-2 flex cursor-pointer flex-row duration-200"}
+          className={"group flex cursor-pointer flex-row duration-200"}
           onClick={() => reportPost()}
         >
           <div
@@ -75,7 +138,7 @@ export default function ContextMenu({ post, user_id }: ContextMenuProps) {
               "group flex flex-row border-b border-transparent text-zinc-300 duration-200 hover:text-orange-400 group-hover:border-orange-400"
             }
           >
-            <IoWarningOutline className={"hover: mr-1 h-5 w-5"} />
+            <IoWarningOutline className={"hover: mr-1 h-5 w-5"}/>
             <span>Report post</span>
           </div>
         </div>
