@@ -12,7 +12,18 @@ export async function getDbUser(clerkId: string) {
   });
 }
 
-export async function nextPostPage(page: number) {
+export async function nextPostPage(page: number, post_id: number) {
+  const pageSize = 15;
+  const offset = (page - 1) * pageSize;
+  return db.query.comments.findMany({
+    orderBy: desc(comments.created_at),
+    where: eq(comments.post_id, post_id),
+    offset: offset,
+    limit: pageSize,
+  })
+}
+
+export async function nextHomePage(page: number) {
   const pageSize = 15;
   const offset = (page - 1) * pageSize;
   return db.query.posts.findMany({
@@ -24,6 +35,12 @@ export async function nextPostPage(page: number) {
       comments: true,
       likes: true,
     },
+  });
+}
+
+export async function getSinglePost(post_id: number) {
+  return db.query.posts.findFirst({
+    where: eq(posts.id, post_id),
   });
 }
 
