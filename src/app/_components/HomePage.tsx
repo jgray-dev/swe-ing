@@ -2,14 +2,14 @@
 
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { getDbUser, nextPostPage } from "~/server/api/queries";
+import { getDbUser, nextHomePage } from "~/server/api/queries";
 import Link from "next/link";
 import type { like, post } from "~/app/_components/interfaces";
 import { useUser } from "@clerk/shared/react";
 import { CiShare1 } from "react-icons/ci";
 import { GoCommentDiscussion } from "react-icons/go";
-import { PiDotsNine } from "react-icons/pi";
 import LikeButton from "~/app/_components/LikeButton";
+import ContextMenu from "~/app/_components/ContextMenu";
 
 export default function HomePage() {
   const [loading, setLoading] = useState(false);
@@ -70,7 +70,7 @@ export default function HomePage() {
 
   async function fetchData(user_id?: number) {
     setLoading(true);
-    const data = await nextPostPage(page);
+    const data = await nextHomePage(page);
     if (!data) {
       console.warn("No data returned from server");
       return;
@@ -103,10 +103,8 @@ export default function HomePage() {
       setLoading(false);
     }
   }
-
-  function showContextMenu(id: number) {
-    console.log("context menu for post ", id);
-  }
+  
+  
   async function sharePost(id: number, title: string) {
     const share = {
       url: `https://swe.ing/post/${id}`,
@@ -231,12 +229,8 @@ export default function HomePage() {
               </div>
 
               <div>
-                <PiDotsNine
-                  className={
-                    "h-6 w-6 text-zinc-400 duration-150 hover:text-white motion-safe:hover:scale-[115%]"
-                  }
-                  onClick={() => showContextMenu(post.id)}
-                />
+                <ContextMenu post={post} user_id={user_id}/>
+                
               </div>
             </div>
           </div>
