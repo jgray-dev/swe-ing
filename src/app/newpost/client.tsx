@@ -31,7 +31,7 @@ export default function ClientSide() {
     },
   });
 
-  function handleSubmit() {
+  async function handleSubmit() {
     if (!blockSubmit) {
       if (content !== "") {
         if (content.length > 749) {
