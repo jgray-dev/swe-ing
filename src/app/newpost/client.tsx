@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { UploadDropzone } from "@uploadthing/react";
 import type { AppFileRouter } from "~/app/api/uploadthing/core";
 import { FaImages } from "react-icons/fa";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/nextjs";
 import { api } from "~/trpc/react";
+import { HiOutlineXMark } from "react-icons/hi2";
 
 export default function ClientSide() {
   const router = useRouter();
@@ -49,7 +50,7 @@ export default function ClientSide() {
   return (
     <div>
       <SignedOut>
-        <></>
+        <RedirectToSignIn />
       </SignedOut>
       <SignedIn>
         <div
@@ -64,6 +65,20 @@ export default function ClientSide() {
               e.stopPropagation();
             }}
           >
+            <div
+              className={
+                "group flex flex-row text-left text-zinc-400 border-transparent border-b hover:border-white/50 w-fit duration-150 cursor-pointer"
+              }
+              onClick={() => {
+                router.back();
+              }}
+            >
+              <HiOutlineXMark
+                className={`h-6 w-6 group-hover:text-red-400 duration-150`}
+                
+              />
+              <span className={"group-hover:text-red-200 duration-150"}>Cancel</span>
+            </div>
             <div className={"text-left"}>
               Post:
               <textarea
