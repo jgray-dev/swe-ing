@@ -22,7 +22,6 @@ export default function PostPage({ params }: { params: { id: string } }) {
   const [commentCards, setCommentCards] = useState<React.ReactElement[]>([]);
   const [postCard, setPostCard] = useState<React.ReactElement>(<></>);
 
-
   async function sharePost(id: number, title: string) {
     const share = {
       url: `https://swe.ing/post/${id}`,
@@ -35,10 +34,10 @@ export default function PostPage({ params }: { params: { id: string } }) {
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     setPostId(Number(params.id));
-  },[])
-  
+  }, []);
+
   return (
     <div className={"h-screen w-screen pt-20 text-white"}>
       <div
@@ -58,7 +57,6 @@ export default function PostPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
-
 
 // "use client";
 //
