@@ -7,6 +7,7 @@ import {
 } from "~/server/api/trpc";
 import { posts } from "~/server/db/schema";
 import { desc } from "drizzle-orm/sql/expressions/select";
+import {getEmbedding} from "~/app/_components/embedding";
 
 export const postsRouter = createTRPCRouter({
   create: authedProcedure
@@ -22,6 +23,8 @@ export const postsRouter = createTRPCRouter({
         where: (user, { eq }) => eq(user.clerk_id, ctx.fullUser.id),
       });
       if (user) {
+        const embedding = await getEmbedding(input.content)
+        console.log(embedding)
         return ctx.db
           .insert(posts)
           .values({
@@ -31,6 +34,7 @@ export const postsRouter = createTRPCRouter({
             image_urls: input.imageUrls,
             created_at: Date.now(),
             updated_at: Date.now(),
+            embedding: embedding,
           })
           .returning();
       } else {
@@ -43,6 +47,9 @@ export const postsRouter = createTRPCRouter({
       const offset = (input.page - 1) * 50;
       return ctx.db.query.posts.findMany({
         orderBy: [desc(posts.updated_at)],
+        with: {
+          embedding: false,
+        },
         limit: 50,
         offset: offset,
       });
