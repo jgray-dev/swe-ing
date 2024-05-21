@@ -45,10 +45,10 @@ export default function LikeButton({
       onClick={() => likePost()}
     >
       {liked ? (
-        <FaHeart className={`mr-1.5 h-6 w-6 text-red-500 duration-150`} />
+        <FaHeart className={`mr-1.5 h-6 w-6 text-red-600 duration-150`} />
       ) : (
         <FaRegHeart
-          className={`motion-safe:group-hover:animate-shake mr-1.5 h-6 w-6 duration-150 group-hover:text-red-500`}
+          className={`motion-safe:group-hover:animate-shake mr-1.5 h-6 w-6 duration-150 group-hover:text-red-600`}
         />
       )}
 
