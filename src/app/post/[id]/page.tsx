@@ -3,13 +3,7 @@
 import { api } from "~/trpc/react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import type { comment, post } from "~/app/_components/interfaces";
 import { useUser } from "@clerk/shared/react";
-import Image from "next/image";
-import { GoCommentDiscussion } from "react-icons/go";
-import { CiShare1 } from "react-icons/ci";
-import { PiDotsNine } from "react-icons/pi";
-import LikeButton from "~/app/_components/LikeButton";
 
 export default function PostPage({ params }: { params: { id: string } }) {
   const [postId, setPostId] = useState<number>(Number(params.id));
