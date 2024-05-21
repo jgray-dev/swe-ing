@@ -51,6 +51,14 @@ export const follows = createTable("follows", {
   following_user_id: integer("following_user_id").notNull().default(0),
 });
 
+export const reports = createTable("reports", {
+  id: serial("id").primaryKey().notNull(),
+  post_id: bigint("post_id", { mode: "number" }).notNull(),
+  reporter_id: bigint("reporter_id", { mode: "number" }).notNull(),
+  reported_at: bigint("reported_at", { mode: "number" }).notNull(),
+});
+
+
 // Relationships:
 
 // Give every post multiple comments
