@@ -10,6 +10,7 @@ interface ContextMenuProps {
   user_id: number | undefined;
 }
 
+
 export default function ContextMenu({ post, user_id }: ContextMenuProps) {
   const [open, setOpen] = useState(false);
   const [isAuthor, setIsAuthor] = useState(user_id === post.author_id);
