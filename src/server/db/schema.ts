@@ -7,8 +7,7 @@ import {
   bigint,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import {vector} from "pgvector/drizzle-orm";
-
+import { vector } from "pgvector/drizzle-orm";
 
 export const createTable = pgTableCreator((name) => `sweing_${name}`);
 
@@ -31,7 +30,7 @@ export const posts = createTable("posts", {
   post_tags: varchar("post_tags").notNull().default(""),
   created_at: bigint("created_at", { mode: "number" }).notNull(),
   updated_at: bigint("updated_at", { mode: "number" }).notNull(),
-  embedding: vector("embedding", {dimensions: 1536})
+  embedding: vector("embedding", { dimensions: 1536 }),
 });
 
 export const comments = createTable("comments", {
@@ -61,9 +60,6 @@ export const reports = createTable("reports", {
   reported_at: bigint("reported_at", { mode: "number" }).notNull(),
 });
 
-
-
-
 //1536
 // export const embeddings = createTable("embeddings", {
 //   id: serial("id").primaryKey().notNull(),
@@ -84,8 +80,6 @@ export const reports = createTable("reports", {
 //     references: [embeddings.id],
 //   }),
 // }));
-
-
 
 // Relationships:
 
