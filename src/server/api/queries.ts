@@ -18,7 +18,7 @@ import {
   getPostEmbeddings,
 } from "~/app/_components/embedding";
 import { l2Distance } from "pgvector/drizzle-orm";
-import {auth} from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 
 export async function dbEditPost(post: post, content: string, user_id: number) {
   console.log("EDIT POST ", post.id);
@@ -209,12 +209,12 @@ export async function searchEmbeddings(search: string) {
 }
 
 export async function updateEmbed() {
-  const user = auth()
-  console.log(user.userId)
+  const user = auth();
+  console.log(user.userId);
   if (user?.userId) {
-    void await updateUserEmbed(user?.userId)
+    void (await updateUserEmbed(user?.userId));
   } else {
-    return 0
+    return 0;
   }
 }
 
@@ -230,12 +230,13 @@ export async function updateUserEmbed(userId: string) {
       .set({
         embedding: userEmbedding,
       })
-      .where(and(eq(users.clerk_id, userId), eq(users.id, user.id))).returning()
-    console.log("updated user", newUser)
+      .where(and(eq(users.clerk_id, userId), eq(users.id, user.id)))
+      .returning();
+    console.log("updated user", newUser);
   } else {
-    console.log("No user id in db")
+    console.log("No user id in db");
   }
-  return 0
+  return 0;
 }
 
 // const embeddings = await getPostEmbeddings(newLikes)
