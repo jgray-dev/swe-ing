@@ -1,11 +1,10 @@
-import { bigint, integer, serial, varchar } from "drizzle-orm/pg-core";
-
 export interface profile {
   data: {
     image_url: string;
     id: string;
-    first_name: string | null;
-    last_name: string | null;
+    first_name?: string;
+    last_name?: string;
+    user_id?: string;
   };
   type: string;
 }
