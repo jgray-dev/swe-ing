@@ -16,12 +16,6 @@ export async function getEmbedding(text: string, tags?: string) {
 
 export async function getAverageEmbedding(embeddings: number[][]) {
   const average: number[] = [];
-  const temp:number[] = []
-  for (const embed of embeddings) {
-    // @ts-expect-error fuck typescript
-    temp.push(embed[0])
-  }
-  console.log(temp)
   for (let i = 0; i < 1536; i++) {
     let sum = 0;
     let count = 0;
@@ -35,7 +29,6 @@ export async function getAverageEmbedding(embeddings: number[][]) {
     }
     average[i] = count > 0 ? sum / count : 0;
   }
-  console.log(average[0])
   return average;
 }
 
