@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   RedirectToSignIn,
   SignedIn,
@@ -8,17 +8,16 @@ import {
 import Link from "next/link";
 import { FaPlusSquare, FaSearch } from "react-icons/fa";
 import { IoHome } from "react-icons/io5";
-import { updateEmbed} from "~/server/api/queries";
-import {TfiReload} from "react-icons/tfi";
+import { updateEmbed } from "~/server/api/queries";
+import { TfiReload } from "react-icons/tfi";
 
 export default function NavBar() {
-  
   async function refreshEmbed() {
-    const resp = await updateEmbed()
+    const resp = await updateEmbed();
     if (resp === 0) {
-      alert("Failed to refresh user embed (user?.userId)")
+      alert("Failed to refresh user embed (user?.userId)");
     } else {
-      console.info("Refreshed user's embed.")
+      console.info("Refreshed user's embed.");
     }
   }
   return (
@@ -31,7 +30,7 @@ export default function NavBar() {
         <IoHome className="h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-white" />
       </Link>
       <div onClick={() => refreshEmbed()}>
-          <TfiReload className="h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-white" />
+        <TfiReload className="h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-white" />
       </div>
       <div>
         <Link href={`/search`}>
