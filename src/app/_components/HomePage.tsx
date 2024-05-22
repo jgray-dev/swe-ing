@@ -42,7 +42,7 @@ export default function HomePage() {
           } else {
             //TODO: Alert user of error and refresh page
             router.refresh()
-            console.error("Error fetching user from local database");
+            console.error("Error fetching user from local database", user.id);
           }
         });
       }
