@@ -4,7 +4,8 @@ import { safeParseJSON } from "@uploadthing/shared";
 import {
   createProfile,
   deleteProfile,
-  updateProfile, updateUserEmbed,
+  updateProfile,
+  updateUserEmbed,
 } from "~/server/api/queries";
 import type { profile } from "~/app/_components/interfaces";
 

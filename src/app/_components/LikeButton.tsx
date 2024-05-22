@@ -37,7 +37,6 @@ export default function LikeButton({
       setLiked(true);
       setLikes(likes + 1);
     }
-    console.log(postId)
     void createPostLike.mutateAsync({ post_id: postId });
   }
   return (
