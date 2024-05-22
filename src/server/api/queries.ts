@@ -127,6 +127,7 @@ export async function createProfile(profile: profile) {
       clerk_id: profile.data.id,
       name: `${profile.data.first_name ? profile.data.first_name : "Unknown"} ${profile.data.last_name ? profile.data.last_name : ""} `,
       image_url: profile.data.image_url,
+      recent_likes: []
     });
     console.log("Created user: ", newUser);
     return newUser;
