@@ -10,8 +10,10 @@ import { CiShare1 } from "react-icons/ci";
 import { GoCommentDiscussion } from "react-icons/go";
 import LikeButton from "~/app/_components/LikeButton";
 import ContextMenu from "~/app/_components/ContextMenu";
+import {useRouter} from "next/navigation";
 
 export default function HomePage() {
+  const router = useRouter()
   const [loading, setLoading] = useState(false);
   const [end, setEnd] = useState(false);
   const [page, setPage] = useState(1);
@@ -38,6 +40,8 @@ export default function HomePage() {
             setLoading(true);
             void (await fetchData(data.id));
           } else {
+            //TODO: Alert user of error and refresh page
+            router.refresh()
             console.error("Error fetching user from local database");
           }
         });
@@ -121,6 +125,7 @@ export default function HomePage() {
   }
 
   function getCard(post: post, user_id?: number): React.ReactElement {
+    console.log(post)
     if (userId) {
       user_id = userId;
     }
