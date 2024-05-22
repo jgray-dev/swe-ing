@@ -40,7 +40,7 @@ export const likesRouter = createTRPCRouter({
         }
         // Like the post
         const newLikes = [input.post_id, ...(user.recent_likes ?? [])];
-        const recentLikes = newLikes.slice(0, 20);
+        const recentLikes = newLikes.slice(0, 50);
         await ctx.db.insert(likes).values({
           user_id: user.id,
           post_id: input.post_id,
