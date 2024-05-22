@@ -30,6 +30,7 @@ export default function ClientSide() {
       console.error(err.message);
     },
   });
+  u;
 
   async function handleSubmit() {
     if (!blockSubmit) {
@@ -38,9 +39,9 @@ export default function ClientSide() {
           alert("Please keep posts under 750 characters");
         } else {
           if (content.length < 25) {
-            createPost.mutate({ content, imageUrls, tags });
+            alert("Please add more content before posting");
           } else {
-            alert("Please keep posts above 25 characters");
+            createPost.mutate({ content, imageUrls, tags });
           }
         }
       } else {
