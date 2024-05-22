@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import {getDbUser, nextHomePage, updateUserEmbed} from "~/server/api/queries";
+import { getDbUser, nextHomePage, updateUserEmbed } from "~/server/api/queries";
 import Link from "next/link";
 import type { like, post } from "~/app/_components/interfaces";
 import { useUser } from "@clerk/shared/react";
@@ -10,10 +10,10 @@ import { CiShare1 } from "react-icons/ci";
 import { GoCommentDiscussion } from "react-icons/go";
 import LikeButton from "~/app/_components/LikeButton";
 import ContextMenu from "~/app/_components/ContextMenu";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
-  const router = useRouter()
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [end, setEnd] = useState(false);
   const [page, setPage] = useState(1);
@@ -34,8 +34,8 @@ export default function HomePage() {
   async function firstLoad() {
     if (!userId) {
       if (isSignedIn) {
-        await updateUserEmbed(user.id)
-        console.info(`Updating ${user.id}'s embed`)
+        await updateUserEmbed(user.id);
+        console.info(`Updating ${user.id}'s embed`);
         await dbUser(user.id).then(async (data) => {
           if (data) {
             setUserId(data.id);
@@ -43,7 +43,7 @@ export default function HomePage() {
             void (await fetchData(data.id));
           } else {
             //TODO: Alert user of error and refresh page
-            router.refresh()
+            router.refresh();
             console.error("Error fetching user from local database", user.id);
           }
         });
