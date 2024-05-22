@@ -20,6 +20,7 @@ export default function NavBar() {
   const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
   async function refreshEmbed() {
     const resp = await updateEmbed();
     if (resp === 0) {
