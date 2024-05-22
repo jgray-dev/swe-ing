@@ -34,10 +34,14 @@ export default function ClientSide() {
   async function handleSubmit() {
     if (!blockSubmit) {
       if (content !== "") {
-        if (content.length > 749) {
-          alert("Post too long. 749 characters max");
+        if (content.length > 750) {
+          alert("Please keep posts under 750 characters");
         } else {
-          createPost.mutate({ content, imageUrls, tags });
+          if (content.length < 25) {
+            alert("Please add more content before posting");
+          } else {
+            createPost.mutate({ content, imageUrls, tags });
+          }
         }
       } else {
         console.warn("No content detected. . .");
