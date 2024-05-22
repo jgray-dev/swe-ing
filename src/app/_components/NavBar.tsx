@@ -9,11 +9,16 @@ import Link from "next/link";
 import { FaPlusSquare, FaSearch } from "react-icons/fa";
 import { IoHome } from "react-icons/io5";
 import {RiSeedlingLine} from "react-icons/ri";
-import {seedData} from "~/server/api/queries";
+import {seedAllData} from "~/server/api/queries";
 
 
 
 export default function NavBar() {
+  
+  async function seedData() {
+    void await seedAllData()
+    alert("finished seeding data")
+  }
   return (
     <div
       className={
