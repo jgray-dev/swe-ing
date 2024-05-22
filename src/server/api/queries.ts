@@ -196,7 +196,9 @@ export async function deleteProfile(profile: profile) {
 //     .where(eq(posts.id, post.id))
 // }
 
-export async function searchEmbeddings(search: string) {
+export async function searchEmbeddings(page: number, search: string) {
+  const pageSize = 30;
+  const offset = (page - 1) * pageSize;
   const searchEmbedding = await getEmbedding(search);
   return (
     db
@@ -204,7 +206,8 @@ export async function searchEmbeddings(search: string) {
       .from(posts)
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       .orderBy(l2Distance(posts.embedding, searchEmbedding))
-      .limit(15)
+      .limit(pageSize)
+      .offset(offset)
   );
 }
 
