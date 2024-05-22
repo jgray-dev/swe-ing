@@ -232,7 +232,7 @@ export async function updateUserEmbed(userId: string) {
       })
       .where(and(eq(users.clerk_id, userId), eq(users.id, user.id)))
       .returning();
-    console.log("updated user", newUser);
+    console.log("updated user");
   } else {
     console.log("No user id in db");
   }
