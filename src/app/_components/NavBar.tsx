@@ -1,21 +1,15 @@
 "use client";
-import {
-  RedirectToSignIn,
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  UserButton,
-} from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
-import { FaPlusSquare } from "react-icons/fa";
-import {IoHome, IoHomeOutline} from "react-icons/io5";
-import { updateEmbed } from "~/server/api/queries";
-import { TfiReload } from "react-icons/tfi";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { updateEmbed } from "~/server/api/queries";
+
+import { IoHomeOutline } from "react-icons/io5";
+import { TfiReload } from "react-icons/tfi";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { IoIosSearch } from "react-icons/io";
-import { useRouter } from "next/navigation";
-import {CiSquarePlus} from "react-icons/ci";
+import { CiSquarePlus } from "react-icons/ci";
 
 export default function NavBar() {
   const router = useRouter();
@@ -27,13 +21,15 @@ export default function NavBar() {
     if (resp === 0) {
       alert("Failed to refresh user embed (user?.userId)");
     } else {
+      router.refresh();
+      router.push("/");
       console.info("Refreshed user's embed.");
     }
   }
 
   function submitSearch() {
     router.push(`/search/${searchQuery}`);
-    setSearchQuery("")
+    setSearchQuery("");
     console.log(searchQuery);
     setSearchOpen(false);
   }
