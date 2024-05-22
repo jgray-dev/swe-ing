@@ -20,6 +20,8 @@ export const users = createTable("users", {
   location: varchar("location", { length: 255 }),
   website: varchar("website", { length: 255 }),
   skills: varchar("skills"),
+  recent_likes: integer("recent_likes").array(),
+  embedding: vector("embedding"),
 });
 
 export const posts = createTable("posts", {
@@ -30,7 +32,7 @@ export const posts = createTable("posts", {
   post_tags: varchar("post_tags").notNull().default(""),
   created_at: bigint("created_at", { mode: "number" }).notNull(),
   updated_at: bigint("updated_at", { mode: "number" }).notNull(),
-  embedding: vector("embedding", { dimensions: 1536 }),
+  embedding: vector("embedding"),
 });
 
 export const comments = createTable("comments", {
