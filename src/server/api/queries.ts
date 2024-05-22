@@ -12,7 +12,11 @@ import {
 import { desc } from "drizzle-orm/sql/expressions/select";
 import { and, eq, or } from "drizzle-orm/sql/expressions/conditions";
 import type { profile, post } from "~/app/_components/interfaces";
-import {getAverageEmbedding, getEmbedding, getPostEmbeddings} from "~/app/_components/embedding";
+import {
+  getAverageEmbedding,
+  getEmbedding,
+  getPostEmbeddings,
+} from "~/app/_components/embedding";
 import { l2Distance } from "pgvector/drizzle-orm";
 
 export async function dbEditPost(post: post, content: string, user_id: number) {
@@ -78,7 +82,9 @@ export async function nextHomePage(page: number, user_id?: number) {
   const pageSize = 30;
   const offset = (page - 1) * pageSize;
   if (user_id) {
-    const user = await db.query.users.findFirst({where: eq(users.id, user_id)})
+    const user = await db.query.users.findFirst({
+      where: eq(users.id, user_id),
+    });
     if (user?.embedding) {
       return db.query.posts.findMany({
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -146,7 +152,7 @@ export async function createProfile(profile: profile) {
       clerk_id: profile.data.id,
       name: `${profile.data.first_name ? profile.data.first_name : "Unknown"} ${profile.data.last_name ? profile.data.last_name : ""} `,
       image_url: profile.data.image_url,
-      recent_likes: []
+      recent_likes: [],
     });
     console.log("Created user: ", newUser);
     return newUser;
@@ -191,29 +197,32 @@ export async function deleteProfile(profile: profile) {
 export async function searchEmbeddings(search: string) {
   const searchEmbedding = await getEmbedding(search);
   console.log(searchEmbedding);
-  return db
-    .select()
-    .from(posts)
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    .orderBy(l2Distance(posts.embedding, searchEmbedding))
-    .limit(15);
+  return (
+    db
+      .select()
+      .from(posts)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      .orderBy(l2Distance(posts.embedding, searchEmbedding))
+      .limit(15)
+  );
 }
 
 export async function updateUserEmbed(userId: string) {
-  const user = await db.query.users.findFirst({where: eq(users.clerk_id, userId)})
+  const user = await db.query.users.findFirst({
+    where: eq(users.clerk_id, userId),
+  });
   if (user) {
-    console.log("Updating user embed")
-    const embeddings = await getPostEmbeddings(user.recent_likes)
-    const userEmbedding = await getAverageEmbedding(embeddings)
-    await db.update(users)
+    console.log("Updating user embed");
+    const embeddings = await getPostEmbeddings(user.recent_likes);
+    const userEmbedding = await getAverageEmbedding(embeddings);
+    await db
+      .update(users)
       .set({
-        embedding: userEmbedding
+        embedding: userEmbedding,
       })
-      .where(and(eq(users.clerk_id, userId),eq(users.id, user.id)))
+      .where(and(eq(users.clerk_id, userId), eq(users.id, user.id)));
   }
 }
-
-
 
 // const embeddings = await getPostEmbeddings(newLikes)
 // const userEmbedding = await getAverageEmbedding(embeddings)
@@ -224,26 +233,6 @@ export async function updateUserEmbed(userId: string) {
 //     embedding: userEmbedding
 //   })
 //   .where(eq(users.id, user.id));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 const tweets = [
   "Just spent the entire day debugging a single line of code. Turns out, I missed a semicolon. #ProgrammerLife",
@@ -295,7 +284,8 @@ const tweets = [
   "JavaScript template literals are like mad libs for your code. Fill in the blanks and watch the magic happen.",
   "I think the key to being a good programmer is being able to think like a computer. It's all about logic and algorithms.",
   "Watching the sunset and feeling grateful for another day.",
-  "When you realize you've been coding for 8 hours straight and forgot to eat lunch. Oops.","The advancements in AI are both exciting and frightening. It's like watching science fiction become reality.",
+  "When you realize you've been coding for 8 hours straight and forgot to eat lunch. Oops.",
+  "The advancements in AI are both exciting and frightening. It's like watching science fiction become reality.",
   "Just attended a fascinating webinar on the ethics of AI. It's a conversation we all need to be having.",
   "I wonder how long it will be before AI is writing all our code for us. Job security, anyone?",
   "Experimenting with a new AI-powered chatbot for our website. The possibilities are endless!",
@@ -402,27 +392,23 @@ const tweets = [
   "Attending a meditation workshop next month. I'm skeptical but willing to give it a try.",
   "I love how art has the power to provoke, inspire, and heal. It's a universal language.",
   "Just read an article about the importance of failure. It's a tough pill to swallow, but so true.",
-  "I'm excited to see what the future holds. With all the challenges we face, I still believe in the power of human ingenuity and compassion."
+  "I'm excited to see what the future holds. With all the challenges we face, I still believe in the power of human ingenuity and compassion.",
 ];
 
-
-
-
 export async function seedAllData() {
-  console.log("Seeding data")
-  for (const content in tweets) {
-    const embedding = await getEmbedding(content);
-    void await db.insert(posts)
-      .values({
-        author_id: 9,
-        content: content,
-        post_tags: "",
-        image_urls: [],
-        created_at: Date.now(),
-        updated_at: Date.now(),
-        embedding: embedding,
-      })
+  console.log("Seeding data");
+  for (let i = 0; i < tweets.length; i++) {
+    const embedding = await getEmbedding(`${tweets[i]}`);
+    void (await db.insert(posts).values({
+      author_id: 9,
+      content: `${tweets[i]}`,
+      post_tags: "",
+      image_urls: [],
+      created_at: Date.now(),
+      updated_at: Date.now(),
+      embedding: embedding,
+    }));
   }
-  console.log("finished")
-  return 1
+  console.log("finished");
+  return 1;
 }
