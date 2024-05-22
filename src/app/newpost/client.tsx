@@ -30,7 +30,6 @@ export default function ClientSide() {
       console.error(err.message);
     },
   });
-  u;
 
   async function handleSubmit() {
     if (!blockSubmit) {
