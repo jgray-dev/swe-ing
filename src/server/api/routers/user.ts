@@ -19,6 +19,7 @@ export const usersRouter = createTRPCRouter({
         clerk_id: input.clerkId,
         name: `${input.firstName ? input.firstName : "Unknown"} ${input.lastName ? input.lastName : ""}`,
         image_url: input.imageUrl,
+        recent_likes: [],
       });
     }),
 });
