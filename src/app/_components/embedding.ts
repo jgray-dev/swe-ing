@@ -2,8 +2,8 @@
 
 import { embed } from "ai";
 import { openai } from "@ai-sdk/openai";
-import {db} from "~/server/db";
-import {inArray} from "drizzle-orm/sql/expressions/conditions";
+import { db } from "~/server/db";
+import { inArray } from "drizzle-orm/sql/expressions/conditions";
 
 export async function getEmbedding(text: string, tags?: string) {
   const { embedding } = await embed({
@@ -12,7 +12,6 @@ export async function getEmbedding(text: string, tags?: string) {
   });
   return embedding;
 }
-
 
 export async function getAverageEmbedding(embeddings: number[][]) {
   const average: number[] = [];
@@ -32,7 +31,6 @@ export async function getAverageEmbedding(embeddings: number[][]) {
   return average;
 }
 
-
 export async function getPostEmbeddings(postIds: number[]) {
   if (postIds.length === 0) {
     return [];
@@ -43,8 +41,8 @@ export async function getPostEmbeddings(postIds: number[]) {
       embedding: true,
     },
   });
-  const returnList:number[][] = []
+  const returnList: number[][] = [];
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  allPosts.forEach((post)=>returnList.push(post.embedding))
-  return returnList
+  allPosts.forEach((post) => returnList.push(post.embedding));
+  return returnList;
 }
