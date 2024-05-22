@@ -12,7 +12,7 @@ import {
 import { desc } from "drizzle-orm/sql/expressions/select";
 import { and, eq, or } from "drizzle-orm/sql/expressions/conditions";
 import type { profile, post } from "~/app/_components/interfaces";
-import { getEmbedding } from "~/app/_components/embedding";
+import {getAverageEmbedding, getEmbedding, getPostEmbeddings} from "~/app/_components/embedding";
 import { l2Distance } from "pgvector/drizzle-orm";
 
 export async function dbEditPost(post: post, content: string, user_id: number) {
@@ -63,20 +63,39 @@ export async function dbDeletePost(post: post) {
   return "Deleted";
 }
 
-export async function nextPostPage(page: number, post_id: number) {
-  const pageSize = 15;
-  const offset = (page - 1) * pageSize;
-  return db.query.comments.findMany({
-    orderBy: desc(comments.created_at),
-    where: eq(comments.post_id, post_id),
-    offset: offset,
-    limit: pageSize,
-  });
-}
+// export async function nextPostPage(page: number, post_id: number) {
+//   const pageSize = 15;
+//   const offset = (page - 1) * pageSize;
+//   return db.query.comments.findMany({
+//     orderBy: desc(comments.created_at),
+//     where: eq(comments.post_id, post_id),
+//     offset: offset,
+//     limit: pageSize,
+//   });
+// }
 
-export async function nextHomePage(page: number) {
-  const pageSize = 15;
+export async function nextHomePage(page: number, user_id?: number) {
+  const pageSize = 30;
   const offset = (page - 1) * pageSize;
+  if (user_id) {
+    const user = await db.query.users.findFirst({where: eq(users.id, user_id)})
+    if (user?.embedding) {
+      return db.query.posts.findMany({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        orderBy: l2Distance(posts.embedding, user.embedding),
+        limit: pageSize,
+        offset: offset,
+        columns: {
+          embedding: false,
+        },
+        with: {
+          author: true,
+          comments: true,
+          likes: true,
+        },
+      });
+    }
+  }
   return db.query.posts.findMany({
     orderBy: desc(posts.updated_at),
     limit: pageSize,
@@ -92,14 +111,14 @@ export async function nextHomePage(page: number) {
   });
 }
 
-export async function getSinglePost(post_id: number) {
-  return db.query.posts.findFirst({
-    where: eq(posts.id, post_id),
-    columns: {
-      embedding: false,
-    },
-  });
-}
+// export async function getSinglePost(post_id: number) {
+//   return db.query.posts.findFirst({
+//     where: eq(posts.id, post_id),
+//     columns: {
+//       embedding: false,
+//     },
+//   });
+// }
 
 export async function updateProfile(profile: profile) {
   console.log("updateProfile()");
@@ -172,11 +191,36 @@ export async function deleteProfile(profile: profile) {
 export async function searchEmbeddings(search: string) {
   const searchEmbedding = await getEmbedding(search);
   console.log(searchEmbedding);
-  const results = await db
+  return db
     .select()
     .from(posts)
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     .orderBy(l2Distance(posts.embedding, searchEmbedding))
-    .limit(3);
-  return results;
+    .limit(15);
 }
+
+export async function updateUserEmbed(userId: string) {
+  const user = await db.query.users.findFirst({where: eq(users.clerk_id, userId)})
+  if (user) {
+    console.log("Updating user embed")
+    const embeddings = await getPostEmbeddings(user.recent_likes)
+    const userEmbedding = await getAverageEmbedding(embeddings)
+    await db.update(users)
+      .set({
+        embedding: userEmbedding
+      })
+      .where(and(eq(users.clerk_id, userId),eq(users.id, user.id)))
+  }
+}
+
+
+
+// const embeddings = await getPostEmbeddings(newLikes)
+// const userEmbedding = await getAverageEmbedding(embeddings)
+//
+// await ctx.db.update(users)
+//   .set({
+//     recent_likes: newLikes,
+//     embedding: userEmbedding
+//   })
+//   .where(eq(users.id, user.id));
