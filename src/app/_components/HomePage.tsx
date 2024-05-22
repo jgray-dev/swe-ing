@@ -35,7 +35,6 @@ export default function HomePage() {
     if (!userId) {
       if (isSignedIn) {
         await updateUserEmbed(user.id);
-        console.info(`Updating ${user.id}'s embed`);
         await dbUser(user.id).then(async (data) => {
           if (data) {
             setUserId(data.id);
