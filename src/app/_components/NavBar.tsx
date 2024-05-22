@@ -8,16 +8,18 @@ import {
 import Link from "next/link";
 import { FaPlusSquare, FaSearch } from "react-icons/fa";
 import { IoHome } from "react-icons/io5";
-import {RiSeedlingLine} from "react-icons/ri";
-import {seedAllData} from "~/server/api/queries";
-
-
+import { updateEmbed} from "~/server/api/queries";
+import {TfiReload} from "react-icons/tfi";
 
 export default function NavBar() {
   
-  async function seedData() {
-    void await seedAllData()
-    alert("finished seeding data")
+  async function refreshEmbed() {
+    const resp = await updateEmbed()
+    if (resp === 0) {
+      alert("Failed to refresh user embed (user?.userId)")
+    } else {
+      console.info("Refreshed user's embed.")
+    }
   }
   return (
     <div
@@ -28,8 +30,8 @@ export default function NavBar() {
       <Link href={"/"}>
         <IoHome className="h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-white" />
       </Link>
-      <div onClick={() => seedData()}>
-          <RiSeedlingLine  className="h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-white" />
+      <div onClick={() => refreshEmbed()}>
+          <TfiReload className="h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-white" />
       </div>
       <div>
         <Link href={`/search`}>
