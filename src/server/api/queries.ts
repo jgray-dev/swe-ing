@@ -18,6 +18,7 @@ import {
   getPostEmbeddings,
 } from "~/app/_components/embedding";
 import { l2Distance } from "pgvector/drizzle-orm";
+import {auth} from "@clerk/nextjs/server";
 
 export async function dbEditPost(post: post, content: string, user_id: number) {
   console.log("EDIT POST ", post.id);
@@ -85,7 +86,8 @@ export async function nextHomePage(page: number, user_id?: number) {
     const user = await db.query.users.findFirst({
       where: eq(users.id, user_id),
     });
-    if (user?.embedding) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (user?.embedding[0] !== 0 && user?.embedding) {
       return db.query.posts.findMany({
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         orderBy: l2Distance(posts.embedding, user.embedding),
@@ -196,7 +198,6 @@ export async function deleteProfile(profile: profile) {
 
 export async function searchEmbeddings(search: string) {
   const searchEmbedding = await getEmbedding(search);
-  console.log(searchEmbedding);
   return (
     db
       .select()
@@ -207,21 +208,34 @@ export async function searchEmbeddings(search: string) {
   );
 }
 
+export async function updateEmbed() {
+  const user = auth()
+  console.log(user.userId)
+  if (user?.userId) {
+    void await updateUserEmbed(user?.userId)
+  } else {
+    return 0
+  }
+}
+
 export async function updateUserEmbed(userId: string) {
   const user = await db.query.users.findFirst({
     where: eq(users.clerk_id, userId),
   });
   if (user) {
-    console.log("Updating user embed");
     const embeddings = await getPostEmbeddings(user.recent_likes);
     const userEmbedding = await getAverageEmbedding(embeddings);
-    await db
+    const newUser = await db
       .update(users)
       .set({
         embedding: userEmbedding,
       })
-      .where(and(eq(users.clerk_id, userId), eq(users.id, user.id)));
+      .where(and(eq(users.clerk_id, userId), eq(users.id, user.id))).returning()
+    console.log("updated user", newUser)
+  } else {
+    console.log("No user id in db")
   }
+  return 0
 }
 
 // const embeddings = await getPostEmbeddings(newLikes)
