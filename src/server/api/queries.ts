@@ -412,7 +412,7 @@ export async function seedAllData() {
   console.log("Seeding data")
   for (const content in tweets) {
     const embedding = await getEmbedding(content);
-    void db.insert(posts)
+    void await db.insert(posts)
       .values({
         author_id: 9,
         content: content,
