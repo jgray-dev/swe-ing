@@ -79,7 +79,7 @@ export async function dbDeletePost(post: post) {
 // }
 
 export async function nextHomePage(page: number, user_id?: number) {
-  const pageSize = 30;
+  const pageSize = 50;
   const offset = (page - 1) * pageSize;
   if (user_id) {
     const user = await db.query.users.findFirst({
@@ -397,18 +397,18 @@ const tweets = [
 
 export async function seedAllData() {
   console.log("Seeding data");
-  for (let i = 0; i < tweets.length; i++) {
-    const embedding = await getEmbedding(`${tweets[i]}`);
-    void (await db.insert(posts).values({
-      author_id: 9,
-      content: `${tweets[i]}`,
-      post_tags: "",
-      image_urls: [],
-      created_at: Date.now(),
-      updated_at: Date.now(),
-      embedding: embedding,
-    }));
-  }
-  console.log("finished");
-  return 1;
+  // for (let i = 0; i < tweets.length; i++) {
+  //   const embedding = await getEmbedding(`${tweets[i]}`);
+  //   void (await db.insert(posts).values({
+  //     author_id: 9,
+  //     content: `${tweets[i]}`,
+  //     post_tags: "",
+  //     image_urls: [],
+  //     created_at: Date.now(),
+  //     updated_at: Date.now(),
+  //     embedding: embedding,
+  //   }));
+  // }
+  // console.log("finished");
+  // return 1;
 }

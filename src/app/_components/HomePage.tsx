@@ -55,7 +55,7 @@ export default function HomePage() {
       const scrollTop = div ? div.scrollTop : 0;
       const scrollHeight = div ? div.scrollHeight : 0;
       const clientHeight = div ? div.clientHeight : 0;
-      if (scrollTop + clientHeight >= scrollHeight - 750 && !loading) {
+      if (scrollTop + clientHeight >= scrollHeight - 1250 && !loading) {
         console.log("Loading more posts");
         void fetchData(userId);
         setPage((prevPage) => prevPage + 1);
