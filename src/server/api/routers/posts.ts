@@ -7,7 +7,7 @@ import {
 } from "~/server/api/trpc";
 import { posts } from "~/server/db/schema";
 import { desc } from "drizzle-orm/sql/expressions/select";
-import { getEmbedding } from "~/app/_components/embedding";
+import {getAverageEmbedding, getEmbedding} from "~/app/_components/embedding";
 
 export const postsRouter = createTRPCRouter({
   create: authedProcedure
@@ -23,8 +23,9 @@ export const postsRouter = createTRPCRouter({
         where: (user, { eq }) => eq(user.clerk_id, ctx.fullUser.id),
       });
       if (user) {
-        const embedding = await getEmbedding(input.content);
-        console.log(embedding);
+        const embedding = await getEmbedding(input.content, input.tags);
+        // console.log(embedding);
+        void getAverageEmbedding([[...embedding], [...embedding]]);
         return ctx.db
           .insert(posts)
           .values({
