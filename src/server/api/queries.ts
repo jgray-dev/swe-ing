@@ -295,18 +295,126 @@ const tweets = [
   "JavaScript template literals are like mad libs for your code. Fill in the blanks and watch the magic happen.",
   "I think the key to being a good programmer is being able to think like a computer. It's all about logic and algorithms.",
   "Watching the sunset and feeling grateful for another day.",
-  "When you realize you've been coding for 8 hours straight and forgot to eat lunch. Oops."
+  "When you realize you've been coding for 8 hours straight and forgot to eat lunch. Oops.","The advancements in AI are both exciting and frightening. It's like watching science fiction become reality.",
+  "Just attended a fascinating webinar on the ethics of AI. It's a conversation we all need to be having.",
+  "I wonder how long it will be before AI is writing all our code for us. Job security, anyone?",
+  "Experimenting with a new AI-powered chatbot for our website. The possibilities are endless!",
+  "The more I learn about AI, the more I realize how much I still have to learn. It's a humbling field.",
+  "Can we talk about how creepy it is when ads start showing you things you were just talking about? AI is always listening.",
+  "I'm convinced that AI will be the key to solving some of the world's biggest problems. Climate change, disease, poverty - AI could be our secret weapon.",
+  "Just read an article about an AI that can compose classical music. As a musician, I'm both impressed and a little offended.",
+  "I wonder if AI will ever be able to truly understand and mimic human emotions. Or will it always be a pale imitation?",
+  "Teaching my kids about AI and the importance of being responsible with technology. It's never too early to start learning.",
+  "The more advanced AI becomes, the more important it is that we have diverse voices involved in its development. We can't afford to leave anyone behind.",
+  "I'm fascinated by the idea of AI-generated art. Will it ever be able to capture the soul and emotion of human-created art?",
+  "Just watched a documentary on the history of AI. It's amazing to see how far we've come and to imagine where we might be headed.",
+  "I can't help but wonder what the job market will look like in 10, 20, 30 years as AI continues to advance. Will we all be out of work?",
+  "Attending a conference on AI in healthcare next month. Excited to learn about the latest breakthroughs and innovations.",
+  "Sometimes I worry that we're becoming too reliant on AI. What happens when the machines inevitably fail or make a mistake?",
+  "I'm convinced that the key to advancing AI is collaboration. No one company or country can do it alone.",
+  "Just had a fascinating conversation with a coworker about the potential for AI in space exploration. The possibilities are endless!",
+  "I wonder if AI will ever be able to truly pass the Turing test. Will we ever have conversations with machines and not realize it?",
+  "The more I learn about AI, the more I realize that the future is not something to be feared, but something to be excited about.",
+
+  // Web Development (20 tweets)
+  "Just discovered a new CSS trick that's going to save me so much time. Where has this been all my life?",
+  "Spent the day debugging a responsive design issue. The struggle is real.",
+  "I love how web development is constantly evolving. There's always something new to learn and experiment with.",
+  "Just launched a new web app for a client. Seeing it come to life is such a rewarding feeling.",
+  "Attending a web development conference next week. Can't wait to geek out with like-minded people.",
+  "I think every web developer should have a solid understanding of accessibility. It's not just a nice-to-have, it's a must-have.",
+  "Just spent way too much time trying to center a div. Web development is not for the faint of heart.",
+  "I'm convinced that the key to being a good web developer is being able to think like a user. Empathy is everything.",
+  "Experimenting with a new JavaScript framework. The learning curve is steep but the payoff is worth it.",
+  "Just had a client ask me to make their website 'pop' more. Sure, let me just add some sparkles and confetti.",
+  "I love how web development allows me to be both creative and analytical. It's the perfect blend of art and science.",
+  "Attending a hackathon this weekend. Can't wait to see what kind of crazy ideas people come up with.",
+  "Just spent the day teaching a group of high school students about web development. Seeing their excitement and curiosity was so rewarding.",
+  "I think the biggest challenge in web development is keeping up with the constant changes and new technologies. It's a never-ending race.",
+  "Just discovered a new tool that's going to revolutionize my workflow. I feel like a kid on Christmas morning.",
+  "I'm convinced that the future of web development is in AI and machine learning. The possibilities are endless.",
+  "Spent the day working on a website for a nonprofit. Using my skills for good is the best feeling.",
+  "I love how web development is a global community. I can collaborate with people from all over the world without ever leaving my desk.",
+  "Just fixed a bug that's been haunting me for days. The sense of relief is indescribable.",
+  "I think the key to being a successful web developer is being able to adapt and learn quickly. The landscape is always changing.",
+
+  // Data Science (20 tweets)
+  "Just started learning Python for data science. Wish me luck!",
+  "I find it fascinating how data science can uncover hidden patterns and insights in seemingly random data.",
+  "Attending a data science meetup tonight. Excited to learn from others in the field.",
+  "I'm convinced that data literacy is going to be a crucial skill in the coming years. We all need to be able to understand and interpret data.",
+  "Just finished a project using machine learning to predict customer churn. The results were eye-opening.",
+  "I love how data science combines math, statistics, and computer science. It's like a nerdy trifecta.",
+  "Spent the day cleaning and preprocessing data. Not the most glamorous part of data science, but so important.",
+  "I think the biggest challenge in data science is communicating results to non-technical stakeholders. It's an art in itself.",
+  "Just read an article about the ethical implications of big data. It's a conversation we all need to be having.",
+  "I'm fascinated by the idea of using data science for social good. How can we use data to make the world a better place?",
+  "Experimenting with a new data visualization library. A picture really is worth a thousand words.",
+  "I think the key to being a good data scientist is being able to ask the right questions. Curiosity is everything.",
+  "Just attended a workshop on deep learning. My brain hurts but in a good way.",
+  "I love how data science is a collaborative field. No one person can know everything, so we all have to work together.",
+  "Spent the day working on a predictive model for a healthcare client. The potential to save lives is both exciting and humbling.",
+  "I'm convinced that the future of data science is in the cloud. The ability to process massive amounts of data quickly and cheaply is a game-changer.",
+  "Just had a eureka moment while working on a data problem. Those moments make all the hard work worth it.",
+  "I think the biggest misconception about data science is that it's all about the algorithms. In reality, it's just as much about domain expertise and communication.",
+  "Attending a conference on data ethics next month. It's a critical topic that we all need to be thinking about.",
+  "I love how data science is a field that welcomes people from all backgrounds. Diversity of thought is so important.",
+
+  // Cybersecurity (20 tweets)
+  "Just attended a terrifying webinar on the latest cyber threats. Time to update all my passwords... again.",
+  "I'm convinced that cybersecurity is going to be one of the most important fields in the coming years. The stakes are just too high.",
+  "Spent the day teaching my coworkers about phishing scams. It's scary how sophisticated they've gotten.",
+  "I think the biggest challenge in cybersecurity is staying one step ahead of the bad guys. It's a constant game of cat and mouse.",
+  "Just read an article about a major data breach. It's a reminder of how vulnerable we all are.",
+  "I love how cybersecurity is a field that requires both technical skills and psychological understanding. You have to be able to think like a hacker.",
+  "Attending a cybersecurity conference next week. Excited to learn about the latest tools and techniques.",
+  "I'm fascinated by the idea of using AI and machine learning for cybersecurity. The potential is huge.",
+  "Just finished a project helping a client recover from a ransomware attack. It's satisfying to know I'm helping keep people safe.",
+  "I think the key to being a good cybersecurity professional is being able to communicate complex concepts to non-technical people. It's an essential skill.",
+  "Experimenting with a new security tool. It's like a digital arms race out there.",
+  "I love how cybersecurity is a field that's always evolving. There's always something new to learn and explore.",
+  "Spent the day doing a deep dive on encryption algorithms. My brain is fried but in a good way.",
+  "I'm convinced that the future of cybersecurity is in the cloud. The ability to scale and adapt quickly is crucial.",
+  "Just had a conversation with a friend who doesn't believe in using antivirus software. I may have scared them straight.",
+  "I think the biggest misconception about cybersecurity is that it's all about the technology. In reality, the human element is just as important.",
+  "Attending a workshop on social engineering next month. It's scary how easily people can be manipulated.",
+  "I love how cybersecurity is a field that requires collaboration across industries and borders. The threats are global, so the solutions have to be too.",
+  "Just read about a new type of cyber attack. The creativity of hackers never ceases to amaze me.",
+  "I'm excited to be mentoring a group of high school students interested in cybersecurity. We need more diverse voices in this field.",
+
+  // Random (20 tweets)
+  "Just tried a new coffee shop downtown. The latte art was almost too pretty to drink. Almost.",
+  "I'm convinced that the key to happiness is a good night's sleep and a great cup of coffee in the morning.",
+  "Spent the day organizing my closet. Why do I have so many shoes I never wear?",
+  "I think the biggest challenge in life is figuring out what you're passionate about and then having the courage to pursue it.",
+  "Just finished a great book. There's nothing like getting lost in a good story.",
+  "I love how social media allows us to connect with people all over the world. It's a reminder of how much we all have in common.",
+  "Attending a wine tasting event next weekend. I'm no sommelier, but I do know what I like.",
+  "I'm fascinated by the idea of minimalism. How much stuff do we really need to be happy?",
+  "Just had a great conversation with a stranger at the dog park. Sometimes the best conversations happen when you least expect them.",
+  "I think the key to a good relationship is communication and laughter. And maybe a shared love of pizza.",
+  "Experimenting with a new recipe tonight. Cooking is like therapy for me.",
+  "I love how music has the power to transport you to another time and place. It's like a time machine for your emotions.",
+  "Spent the day volunteering at a local charity. Giving back to the community always feels good.",
+  "I'm convinced that the future is going to be shaped by the small, everyday actions we take. Every little bit counts.",
+  "Just had a moment of gratitude for all the incredible people in my life. I'm so lucky.",
+  "I think the biggest misconception about success is that it's about money or fame. In reality, it's about living a life true to yourself.",
+  "Attending a meditation workshop next month. I'm skeptical but willing to give it a try.",
+  "I love how art has the power to provoke, inspire, and heal. It's a universal language.",
+  "Just read an article about the importance of failure. It's a tough pill to swallow, but so true.",
+  "I'm excited to see what the future holds. With all the challenges we face, I still believe in the power of human ingenuity and compassion."
 ];
 
 
 
 
-export async function seedData() {
+export async function seedAllData() {
+  console.log("Seeding data")
   for (const content in tweets) {
     const embedding = await getEmbedding(content);
     void db.insert(posts)
       .values({
-        author_id: 8,
+        author_id: 9,
         content: content,
         post_tags: "",
         image_urls: [],
@@ -315,4 +423,6 @@ export async function seedData() {
         embedding: embedding,
       })
   }
+  console.log("finished")
+  return 1
 }
