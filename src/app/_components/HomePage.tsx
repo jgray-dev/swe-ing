@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { getDbUser, nextHomePage } from "~/server/api/queries";
+import {getDbUser, nextHomePage, updateUserEmbed} from "~/server/api/queries";
 import Link from "next/link";
 import type { like, post } from "~/app/_components/interfaces";
 import { useUser } from "@clerk/shared/react";
@@ -34,6 +34,8 @@ export default function HomePage() {
   async function firstLoad() {
     if (!userId) {
       if (isSignedIn) {
+        await updateUserEmbed(user.id)
+        console.info(`Updating ${user.id}'s embed`)
         await dbUser(user.id).then(async (data) => {
           if (data) {
             setUserId(data.id);
@@ -56,7 +58,6 @@ export default function HomePage() {
       const scrollHeight = div ? div.scrollHeight : 0;
       const clientHeight = div ? div.clientHeight : 0;
       if (scrollTop + clientHeight >= scrollHeight - 1250 && !loading) {
-        console.log("Loading more posts");
         void fetchData(userId);
         setPage((prevPage) => prevPage + 1);
       }
