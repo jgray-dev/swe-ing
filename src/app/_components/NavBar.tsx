@@ -1,3 +1,4 @@
+"use client"
 import {
   RedirectToSignIn,
   SignedIn,
@@ -7,8 +8,12 @@ import {
 import Link from "next/link";
 import { FaPlusSquare, FaSearch } from "react-icons/fa";
 import { IoHome } from "react-icons/io5";
+import {RiSeedlingLine} from "react-icons/ri";
 
 export default function NavBar() {
+  function seedData() {
+  console.log("seeding data");
+  }
   return (
     <div
       className={
@@ -18,6 +23,9 @@ export default function NavBar() {
       <Link href={"/"}>
         <IoHome className="h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-white" />
       </Link>
+      <div onClick={() => seedData()}>
+          <RiSeedlingLine  className="h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-white" />
+      </div>
       <div>
         <Link href={`/search`}>
           <FaSearch className="h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-white" />
