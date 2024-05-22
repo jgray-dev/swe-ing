@@ -8,13 +8,14 @@ import {
 } from "@clerk/nextjs";
 import Link from "next/link";
 import { FaPlusSquare } from "react-icons/fa";
-import { IoHome } from "react-icons/io5";
+import {IoHome, IoHomeOutline} from "react-icons/io5";
 import { updateEmbed } from "~/server/api/queries";
 import { TfiReload } from "react-icons/tfi";
 import { useState } from "react";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { IoIosSearch } from "react-icons/io";
 import { useRouter } from "next/navigation";
+import {CiSquarePlus} from "react-icons/ci";
 
 export default function NavBar() {
   const router = useRouter();
@@ -32,7 +33,9 @@ export default function NavBar() {
 
   function submitSearch() {
     router.push(`/search/${searchQuery}`);
+    setSearchQuery("")
     console.log(searchQuery);
+    setSearchOpen(false);
   }
 
   return (
@@ -44,7 +47,7 @@ export default function NavBar() {
       {!searchOpen ? (
         <>
           <Link href={"/"}>
-            <IoHome className="h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-white" />
+            <IoHomeOutline className="h-7 w-7 cursor-pointer stroke-zinc-400 duration-200 hover:stroke-white" />
           </Link>
           <div onClick={() => refreshEmbed()}>
             <TfiReload className="h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-white" />
@@ -57,7 +60,7 @@ export default function NavBar() {
           </div>
           <div>
             <Link href={`/newpost`}>
-              <FaPlusSquare className="h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-white" />
+              <CiSquarePlus className="h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-white" />
             </Link>
           </div>
           <div>
@@ -84,12 +87,14 @@ export default function NavBar() {
             }}
           ></input>
           <IoIosSearch
-            className="mt-0.5 h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-red-400 sm:ml-3 sm:mr-3"
+            className="mt-0.5 h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-green-700 sm:ml-3 sm:mr-3"
             onClick={() => submitSearch()}
+            title={`Search for ${searchQuery}`}
           />
           <HiOutlineXMark
-            className=" mt-0.5 h-8 w-8 cursor-pointer stroke-zinc-400 hover:stroke-red-400"
+            className="mb-0.5 h-8 w-8 cursor-pointer stroke-zinc-400 hover:stroke-red-400"
             onClick={() => setSearchOpen(false)}
+            title={`Cancel search`}
           />
         </div>
       )}
