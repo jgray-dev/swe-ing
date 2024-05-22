@@ -2,7 +2,6 @@
 
 import { embed } from "ai";
 import { openai } from "@ai-sdk/openai";
-import type {user} from "~/app/_components/interfaces"
 import {db} from "~/server/db";
 import {inArray} from "drizzle-orm/sql/expressions/conditions";
 
@@ -38,11 +37,6 @@ export async function getAverageEmbedding(embeddings: number[][]) {
   }
   console.log(average[0])
   return average;
-}
-
-
-export async function getUserEmbedding(user: user) {
-  console.log(user.recent_likes)
 }
 
 
