@@ -20,7 +20,7 @@ export const users = createTable("users", {
   location: varchar("location", { length: 255 }),
   website: varchar("website", { length: 255 }),
   skills: varchar("skills"),
-  recent_likes: integer("recent_likes").array(),
+  recent_likes: integer("recent_likes").array().notNull(),
   embedding: vector("embedding"),
 });
 
