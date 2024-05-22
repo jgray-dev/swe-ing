@@ -50,7 +50,7 @@ export interface comment {
 }
 
 export interface user {
-  id?: number;
+  id: number;
   clerk_id: string;
   name: string;
   image_url: string;
@@ -58,4 +58,5 @@ export interface user {
   location?: string;
   website?: string;
   skills?: string;
+  recent_likes?: number[];
 }
