@@ -4,7 +4,7 @@ import { safeParseJSON } from "@uploadthing/shared";
 import {
   createProfile,
   deleteProfile,
-  updateProfile,
+  updateProfile, updateUserEmbed,
 } from "~/server/api/queries";
 import type { profile } from "~/app/_components/interfaces";
 
@@ -37,6 +37,12 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
         if (body.type === "user.deleted") {
           console.log("Delete account webhook called");
           void (await deleteProfile(body));
+        }
+        if (body.type === "session.created") {
+          console.log("Session created for user ", body.data.user_id);
+          if (body.data.user_id) {
+            void (await updateUserEmbed(body.data.user_id));
+          }
         }
         return NextResponse.json(
           { message: `Webhook received` },
