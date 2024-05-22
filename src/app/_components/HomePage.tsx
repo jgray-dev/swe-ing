@@ -74,7 +74,8 @@ export default function HomePage() {
 
   async function fetchData(user_id?: number) {
     setLoading(true);
-    const data = await nextHomePage(page);
+    console.log("genextHomePage")
+    const data = await nextHomePage(page, user_id);
     if (!data) {
       console.warn("No data returned from server");
       return;
@@ -125,7 +126,6 @@ export default function HomePage() {
   }
 
   function getCard(post: post, user_id?: number): React.ReactElement {
-    console.log(post)
     if (userId) {
       user_id = userId;
     }
