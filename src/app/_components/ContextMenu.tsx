@@ -1,4 +1,4 @@
-import type { post } from "~/app/_components/interfaces";
+import type { post } from "~/app/_functions/interfaces";
 import { PiDotsNine } from "react-icons/pi";
 import React, { useEffect, useRef, useState } from "react";
 import { CiEdit, CiTrash } from "react-icons/ci";
