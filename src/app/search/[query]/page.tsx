@@ -11,7 +11,7 @@ export default function SearchPage({ params }: { params: { query: string } }) {
   useEffect(() => {
     void getData();
   }, []);
-  
+
   async function getData() {
     if (!end) {
       const results = await searchEmbeddings(query);
