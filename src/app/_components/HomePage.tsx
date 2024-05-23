@@ -2,15 +2,21 @@
 
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { getDbUser, nextHomePage, updateUserEmbed } from "~/server/api/queries";
+import {
+  getDbUser,
+  getHomePageOrder,
+  nextHomePage,
+  updateUserEmbed,
+} from "~/server/api/queries";
 import Link from "next/link";
-import type { like, post } from "~/app/_components/interfaces";
+import type { like, post } from "~/app/_functions/interfaces";
 import { useUser } from "@clerk/shared/react";
 import { CiShare1 } from "react-icons/ci";
 import { GoCommentDiscussion } from "react-icons/go";
 import LikeButton from "~/app/_components/LikeButton";
 import ContextMenu from "~/app/_components/ContextMenu";
 import { useRouter } from "next/navigation";
+import { getTime } from "~/app/_functions/functions";
 
 export default function HomePage() {
   const router = useRouter();
@@ -21,6 +27,7 @@ export default function HomePage() {
   const [cards, setCards] = useState<React.ReactElement[]>([]);
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
   const [userId, setUserId] = useState<number | undefined>(undefined);
+  const [postOrder, setPostOrder] = useState<number[]>([]);
   const { user, isSignedIn } = useUser();
 
   async function dbUser(clerkId: string) {
@@ -34,12 +41,13 @@ export default function HomePage() {
   async function firstLoad() {
     if (!userId) {
       if (isSignedIn) {
-        await updateUserEmbed(user.id);
         await dbUser(user.id).then(async (data) => {
           if (data) {
             setUserId(data.id);
             setLoading(true);
-            void (await fetchData(data.id));
+            const hpo = await getHomePageOrder(data.id);
+            setPostOrder(hpo);
+            void (await fetchData(data.id, hpo));
           } else {
             //TODO: Alert user of error and refresh page
             router.refresh();
@@ -50,14 +58,20 @@ export default function HomePage() {
     }
   }
 
+  let localLoading = false;
   useEffect(() => {
     const handleScroll = () => {
       const div = document.getElementById("scrolls");
       const scrollTop = div ? div.scrollTop : 0;
       const scrollHeight = div ? div.scrollHeight : 0;
       const clientHeight = div ? div.clientHeight : 0;
-      if (scrollTop + clientHeight >= scrollHeight - 1250 && !loading) {
-        void fetchData(userId);
+      if (
+        scrollTop + clientHeight >= scrollHeight - 1250 &&
+        !loading &&
+        !localLoading
+      ) {
+        localLoading = true;
+        void fetchData(userId, postOrder);
         setPage((prevPage) => prevPage + 1);
       }
     };
@@ -72,13 +86,14 @@ export default function HomePage() {
     //eslint-disable-next-line
   }, [loading]);
 
-  async function fetchData(user_id?: number) {
+  async function fetchData(user_id?: number, postOrder?: number[]) {
     setLoading(true);
-    const data = await nextHomePage(page, user_id);
+    const data = await nextHomePage(page, user_id, postOrder);
     if (!data) {
       console.warn("No data returned from server");
       return;
     }
+    console.log(data);
     if (data.length > 0) {
       const newPosts = data.filter(
         (newPost) => !allPosts.some((post) => post.id === newPost.id),
@@ -161,6 +176,10 @@ export default function HomePage() {
                 </div>
                 {/*@ts-expect-error fuck typescript*/}
                 {post.author.name}
+                <br />
+                <span className={"text-sm text-zinc-400"}>
+                  {getTime(post.updated_at)} ago
+                </span>
               </div>
               <div
                 className={

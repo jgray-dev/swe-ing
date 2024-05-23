@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { searchEmbeddings } from "~/server/api/queries";
 
 export default function SearchPage({ params }: { params: { query: string } }) {
-  const [page, setPage] = useState(1);
   const [end, setEnd] = useState(false);
   const [cards, setCards] = useState<React.ReactElement[]>([]);
   const query = decodeURIComponent(params.query);
@@ -12,13 +11,13 @@ export default function SearchPage({ params }: { params: { query: string } }) {
   useEffect(() => {
     void getData();
   }, []);
+
   async function getData() {
     if (!end) {
-      const results = await searchEmbeddings(page, query);
-      if (results.length < 30) {
+      const results = await searchEmbeddings(query);
+      if (results.length === 0) {
         setEnd(true);
       }
-      setPage(page + 1);
       console.log(results);
     } else {
       console.warn("End of results");

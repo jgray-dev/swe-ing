@@ -3,7 +3,7 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { updateEmbed } from "~/server/api/queries";
+import { seedAllData, updateEmbed } from "~/server/api/queries";
 
 import { IoHomeOutline } from "react-icons/io5";
 import { TfiReload } from "react-icons/tfi";
@@ -17,14 +17,15 @@ export default function NavBar() {
   const [searchQuery, setSearchQuery] = useState("");
 
   async function refreshEmbed() {
-    const resp = await updateEmbed();
-    if (resp === 0) {
-      alert("Failed to refresh user embed (user?.userId)");
-    } else {
-      router.refresh();
-      router.push("/");
-      console.info("Refreshed user's embed.");
-    }
+    void seedAllData()
+    // const resp = await updateEmbed();
+    // if (resp === 0) {
+    //   alert("Failed to refresh user embed (user?.userId)");
+    // } else {
+    //   router.refresh();
+    //   router.push("/");
+    //   console.info("Refreshed user's embed.");
+    // }
   }
 
   function submitSearch() {
@@ -46,7 +47,7 @@ export default function NavBar() {
             <IoHomeOutline className="h-7 w-7 cursor-pointer stroke-zinc-400 duration-200 hover:stroke-white" />
           </Link>
           <div onClick={() => refreshEmbed()}>
-            <TfiReload className="h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-white" />
+            <TfiReload className="uration-500 h-7 w-7 cursor-pointer fill-zinc-400 duration-200 ease-in-out hover:-rotate-180 hover:fill-white" />
           </div>
           <div>
             <IoIosSearch

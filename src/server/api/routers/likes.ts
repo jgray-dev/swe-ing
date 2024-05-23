@@ -2,10 +2,6 @@ import { authedProcedure, createTRPCRouter } from "~/server/api/trpc";
 import { z } from "zod";
 import { likes, users } from "~/server/db/schema";
 import { and, eq } from "drizzle-orm/sql/expressions/conditions";
-import {
-  getAverageEmbedding,
-  getPostEmbeddings,
-} from "~/app/_components/embedding";
 
 export const likesRouter = createTRPCRouter({
   create: authedProcedure
@@ -47,7 +43,7 @@ export const likesRouter = createTRPCRouter({
         }
         // Like the post
         const newLikes = [input.post_id, ...(user.recent_likes ?? [])];
-        const recentLikes = newLikes.slice(0, 50);
+        const recentLikes = newLikes.slice(0, 10);
         await ctx.db.insert(likes).values({
           user_id: user.id,
           post_id: input.post_id,
