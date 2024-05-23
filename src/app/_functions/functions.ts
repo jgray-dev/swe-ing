@@ -1,5 +1,5 @@
 export function getTime(updatedTime: number) {
-  const seconds = Math.round(Date.now()- updatedTime)
+  const seconds = Math.round(Date.now() - updatedTime);
   const minute = 60;
   const hour = minute * 60;
   const day = hour * 24;
