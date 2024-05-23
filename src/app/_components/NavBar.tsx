@@ -3,7 +3,7 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import {seedAllData, updateEmbed} from "~/server/api/queries";
+import { seedAllData, updateEmbed } from "~/server/api/queries";
 
 import { IoHomeOutline } from "react-icons/io5";
 import { TfiReload } from "react-icons/tfi";
@@ -47,7 +47,7 @@ export default function NavBar() {
             <IoHomeOutline className="h-7 w-7 cursor-pointer stroke-zinc-400 duration-200 hover:stroke-white" />
           </Link>
           <div onClick={() => refreshEmbed()}>
-            <TfiReload className="h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-white hover:-rotate-180 uration-500 ease-in-out" />
+            <TfiReload className="uration-500 h-7 w-7 cursor-pointer fill-zinc-400 duration-200 ease-in-out hover:-rotate-180 hover:fill-white" />
           </div>
           <div>
             <IoIosSearch
