@@ -83,7 +83,6 @@ export async function dbDeletePost(post: post) {
 //   });
 // }
 
-
 export async function getHomePageOrder(user_id?: number) {
   if (user_id) {
     const user = await db.query.users.findFirst({
@@ -96,33 +95,37 @@ export async function getHomePageOrder(user_id?: number) {
           "posts",
           userEmbedding as number[],
         );
-        return relevant.map((id) => Number(id))
+        return relevant.map((id) => Number(id));
       } else {
-        console.log("NO USER ID FOUND. NOTHING TO RETURN (2)")
-        return []
+        console.log("NO USER ID FOUND. NOTHING TO RETURN (2)");
+        return [];
       }
     } else {
-      console.log("NO USER ID FOUND. NOTHING TO RETURN (1)")
-      return []
+      console.log("NO USER ID FOUND. NOTHING TO RETURN (1)");
+      return [];
     }
   } else {
-    console.log("NO USER ID FOUND. NOTHING TO RETURN (0)")
-    return []
+    console.log("NO USER ID FOUND. NOTHING TO RETURN (0)");
+    return [];
   }
 }
 
-export async function nextHomePage(page: number, user_id?: number, postIds?: number[]) {
+export async function nextHomePage(
+  page: number,
+  user_id?: number,
+  postIds?: number[],
+) {
   const pageSize = 50;
-  const offset = (page - 1) * 50
+  const offset = (page - 1) * 50;
   if (user_id) {
     const user = await db.query.users.findFirst({
       where: eq(users.id, user_id),
     });
-    if (user?.id && postIds && postIds?.length>0) {
-      console.log("Current page slice: ", offset, offset+pageSize)
-      postIds = postIds.slice(offset, offset+pageSize)
-      console.log(postIds)
-      if (postIds?.length>0) {
+    if (user?.id && postIds && postIds?.length > 0) {
+      console.log("Current page slice: ", offset, offset + pageSize);
+      postIds = postIds.slice(offset, offset + pageSize);
+      console.log(postIds);
+      if (postIds?.length > 0) {
         const uoPosts = await db.query.posts.findMany({
           where: inArray(posts.id, postIds),
           with: {
@@ -139,17 +142,17 @@ export async function nextHomePage(page: number, user_id?: number, postIds?: num
           return indexA - indexB;
         });
       } else {
-        console.log("postIds length after slice (getHomePage)")
+        console.log("postIds length after slice (getHomePage)");
         return null;
       }
     } else {
-      console.log("user?.id && postIds (getHomePage)")
+      console.log("user?.id && postIds (getHomePage)");
     }
   } else {
-    console.log("no userID (getHomePage)")
+    console.log("no userID (getHomePage)");
   }
   // No userID or postIds list or whatever - return chronological home page
-  console.log("Returning chrono home feed")
+  console.log("Returning chrono home feed");
   return db.query.posts.findMany({
     orderBy: desc(posts.updated_at),
     limit: pageSize,
@@ -243,7 +246,7 @@ export async function searchEmbeddings(search: string) {
   const searchEmbedding = await getEmbedding(search);
   const pinecone = await searchPinecone("posts", searchEmbedding);
   console.log(pinecone);
-  return pinecone
+  return pinecone;
   // return db.query.posts.findMany({
   //   // @ts-expect-error fuck typescript
   //   where: (post) => inArray(post.id, pinecone.values),
@@ -268,15 +271,15 @@ export async function updateUserEmbed(userId: string) {
   const user = await db.query.users.findFirst({
     where: eq(users.clerk_id, userId),
   });
-  console.log("UUE ", user?.id)
+  console.log("UUE ", user?.id);
   if (user) {
     const embeddings = await getPostEmbeddings(user.recent_likes);
-    if (embeddings.length>0) {
+    if (embeddings.length > 0) {
       const userEmbedding = await getAverageEmbedding(embeddings);
-      void await insertPinecone("users", userEmbedding, user.id);
+      void (await insertPinecone("users", userEmbedding, user.id));
       console.log(`Updated user embedding for user ${user.id}`);
     } else {
-      console.warn("Cannot update user embedding - not enough data")
+      console.warn("Cannot update user embedding - not enough data");
     }
   } else {
     console.log("Cannot find user to update user embedding");
@@ -448,19 +451,22 @@ const tweets = [
 export async function seedAllData() {
   console.log("Seeding data");
   for (const item of tweets) {
-    const newPost = await db.insert(posts).values({
-      author_id: 8,
-      content: `${item}`,
-      post_tags: "",
-      image_urls: [],
-      created_at: Date.now() - Math.random(),
-      updated_at: Date.now()
-    }).returning();
+    const newPost = await db
+      .insert(posts)
+      .values({
+        author_id: 8,
+        content: `${item}`,
+        post_tags: "",
+        image_urls: [],
+        created_at: Date.now() - Math.random(),
+        updated_at: Date.now(),
+      })
+      .returning();
     const embedding = await getEmbedding(`${item}`);
     // @ts-expect-error fts
-    void insertPinecone("posts", embedding, newPost[0].id)
+    void insertPinecone("posts", embedding, newPost[0].id);
     // @ts-expect-error fts
-    console.log(`Inserted pinecone for post ${newPost[0].id}`)
+    console.log(`Inserted pinecone for post ${newPost[0].id}`);
   }
   console.log("FINISHED SEEDING");
   return 1;
