@@ -10,15 +10,19 @@ import {
   users,
 } from "~/server/db/schema";
 import { desc } from "drizzle-orm/sql/expressions/select";
-import { and, eq, or } from "drizzle-orm/sql/expressions/conditions";
-import type { profile, post } from "~/app/_components/interfaces";
+import { and, eq, inArray, or } from "drizzle-orm/sql/expressions/conditions";
+import type { profile, post } from "~/app/_functions/interfaces";
 import {
   getAverageEmbedding,
   getEmbedding,
   getPostEmbeddings,
-} from "~/app/_components/embedding";
-import { l2Distance } from "pgvector/drizzle-orm";
+} from "~/app/_functions/embedding";
 import { auth } from "@clerk/nextjs/server";
+import {
+  embeddingFromID,
+  insertPinecone,
+  searchPinecone,
+} from "~/server/api/server-only";
 
 export async function dbEditPost(post: post, content: string, user_id: number) {
   console.log("EDIT POST ", post.id);
@@ -79,38 +83,77 @@ export async function dbDeletePost(post: post) {
 //   });
 // }
 
-export async function nextHomePage(page: number, user_id?: number) {
-  const pageSize = 50;
-  const offset = (page - 1) * pageSize;
+
+export async function getHomePageOrder(user_id?: number) {
   if (user_id) {
     const user = await db.query.users.findFirst({
       where: eq(users.id, user_id),
     });
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (user?.embedding[0] !== 0 && user?.embedding) {
-      return db.query.posts.findMany({
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        orderBy: l2Distance(posts.embedding, user.embedding),
-        limit: pageSize,
-        offset: offset,
-        columns: {
-          embedding: false,
-        },
-        with: {
-          author: true,
-          comments: true,
-          likes: true,
-        },
-      });
+    if (user?.id) {
+      const userEmbedding = await embeddingFromID("users", user.id);
+      if (userEmbedding) {
+        const relevant = await searchPinecone(
+          "posts",
+          userEmbedding as number[],
+        );
+        return relevant.map((id) => Number(id))
+      } else {
+        console.log("NO USER ID FOUND. NOTHING TO RETURN (2)")
+        return []
+      }
+    } else {
+      console.log("NO USER ID FOUND. NOTHING TO RETURN (1)")
+      return []
     }
+  } else {
+    console.log("NO USER ID FOUND. NOTHING TO RETURN (0)")
+    return []
   }
+}
+
+export async function nextHomePage(page: number, user_id?: number, postIds?: number[]) {
+  const pageSize = 50;
+  const offset = (page - 1) * 50
+  if (user_id) {
+    const user = await db.query.users.findFirst({
+      where: eq(users.id, user_id),
+    });
+    if (user?.id && postIds && postIds?.length>0) {
+      console.log("Current page slice: ", offset, offset+pageSize)
+      postIds = postIds.slice(offset, offset+pageSize)
+      console.log(postIds)
+      if (postIds?.length>0) {
+        const uoPosts = await db.query.posts.findMany({
+          where: inArray(posts.id, postIds),
+          with: {
+            author: true,
+            comments: true,
+            likes: true,
+          },
+        });
+        return uoPosts.sort((a, b) => {
+          // @ts-expect-error i fucking hate ts
+          const indexA = postIds.indexOf(a.id);
+          // @ts-expect-error i fucking hate ts
+          const indexB = postIds.indexOf(b.id);
+          return indexA - indexB;
+        });
+      } else {
+        console.log("postIds length after slice (getHomePage)")
+        return null;
+      }
+    } else {
+      console.log("user?.id && postIds (getHomePage)")
+    }
+  } else {
+    console.log("no userID (getHomePage)")
+  }
+  // No userID or postIds list or whatever - return chronological home page
+  console.log("Returning chrono home feed")
   return db.query.posts.findMany({
     orderBy: desc(posts.updated_at),
     limit: pageSize,
     offset: offset,
-    columns: {
-      embedding: false,
-    },
     with: {
       author: true,
       comments: true,
@@ -196,24 +239,24 @@ export async function deleteProfile(profile: profile) {
 //     .where(eq(posts.id, post.id))
 // }
 
-export async function searchEmbeddings(page: number, search: string) {
-  const pageSize = 30;
-  const offset = (page - 1) * pageSize;
+export async function searchEmbeddings(search: string) {
   const searchEmbedding = await getEmbedding(search);
-  return (
-    db
-      .select()
-      .from(posts)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      .orderBy(l2Distance(posts.embedding, searchEmbedding))
-      .limit(pageSize)
-      .offset(offset)
-  );
+  const pinecone = await searchPinecone("posts", searchEmbedding);
+  console.log(pinecone);
+  return pinecone
+  // return db.query.posts.findMany({
+  //   // @ts-expect-error fuck typescript
+  //   where: (post) => inArray(post.id, pinecone.values),
+  //   with: {
+  //     author: true,
+  //     comments: true,
+  //     likes: true,
+  //   },
+  // });
 }
 
 export async function updateEmbed() {
   const user = auth();
-  console.log(user.userId);
   if (user?.userId) {
     void (await updateUserEmbed(user?.userId));
   } else {
@@ -225,32 +268,21 @@ export async function updateUserEmbed(userId: string) {
   const user = await db.query.users.findFirst({
     where: eq(users.clerk_id, userId),
   });
+  console.log("UUE ", user?.id)
   if (user) {
     const embeddings = await getPostEmbeddings(user.recent_likes);
-    const userEmbedding = await getAverageEmbedding(embeddings);
-    const newUser = await db
-      .update(users)
-      .set({
-        embedding: userEmbedding,
-      })
-      .where(and(eq(users.clerk_id, userId), eq(users.id, user.id)))
-      .returning();
-    console.log("updated user");
+    if (embeddings.length>0) {
+      const userEmbedding = await getAverageEmbedding(embeddings);
+      void await insertPinecone("users", userEmbedding, user.id);
+      console.log(`Updated user embedding for user ${user.id}`);
+    } else {
+      console.warn("Cannot update user embedding - not enough data")
+    }
   } else {
-    console.log("No user id in db");
+    console.log("Cannot find user to update user embedding");
   }
   return 0;
 }
-
-// const embeddings = await getPostEmbeddings(newLikes)
-// const userEmbedding = await getAverageEmbedding(embeddings)
-//
-// await ctx.db.update(users)
-//   .set({
-//     recent_likes: newLikes,
-//     embedding: userEmbedding
-//   })
-//   .where(eq(users.id, user.id));
 
 const tweets = [
   "Just spent the entire day debugging a single line of code. Turns out, I missed a semicolon. #ProgrammerLife",
@@ -415,18 +447,21 @@ const tweets = [
 
 export async function seedAllData() {
   console.log("Seeding data");
-  // for (let i = 0; i < tweets.length; i++) {
-  //   const embedding = await getEmbedding(`${tweets[i]}`);
-  //   void (await db.insert(posts).values({
-  //     author_id: 9,
-  //     content: `${tweets[i]}`,
-  //     post_tags: "",
-  //     image_urls: [],
-  //     created_at: Date.now(),
-  //     updated_at: Date.now(),
-  //     embedding: embedding,
-  //   }));
-  // }
-  // console.log("finished");
-  // return 1;
+  for (const item of tweets) {
+    const newPost = await db.insert(posts).values({
+      author_id: 8,
+      content: `${item}`,
+      post_tags: "",
+      image_urls: [],
+      created_at: Date.now() - Math.random(),
+      updated_at: Date.now()
+    }).returning();
+    const embedding = await getEmbedding(`${item}`);
+    // @ts-expect-error fts
+    void insertPinecone("posts", embedding, newPost[0].id)
+    // @ts-expect-error fts
+    console.log(`Inserted pinecone for post ${newPost[0].id}`)
+  }
+  console.log("FINISHED SEEDING");
+  return 1;
 }
