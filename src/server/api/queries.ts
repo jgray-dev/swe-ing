@@ -459,7 +459,7 @@ export async function seedAllData() {
         content: `${item}`,
         post_tags: "",
         image_urls: [],
-        created_at: Date.now() - Math.random(),
+        created_at: Date.now(),
         updated_at: Date.now(),
       })
       .returning();
