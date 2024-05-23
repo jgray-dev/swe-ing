@@ -455,7 +455,7 @@ export async function seedAllData() {
     const newPost = await db
       .insert(posts)
       .values({
-        author_id: 8,
+        author_id: 10,
         content: `${item}`,
         post_tags: "",
         image_urls: [],
