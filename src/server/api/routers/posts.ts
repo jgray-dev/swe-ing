@@ -8,7 +8,7 @@ import {
 import { posts } from "~/server/db/schema";
 import { desc } from "drizzle-orm/sql/expressions/select";
 import { getEmbedding } from "~/app/_functions/embedding";
-import {insertPinecone} from "~/server/api/server-only";
+import { insertPinecone } from "~/server/api/server-only";
 
 export const postsRouter = createTRPCRouter({
   create: authedProcedure
@@ -37,8 +37,8 @@ export const postsRouter = createTRPCRouter({
           .returning();
         const embedding = await getEmbedding(input.content, input.tags);
         // @ts-expect-error fts
-        void await insertPinecone("posts", embedding, newPost[0]?.id)
-        return newPost
+        void (await insertPinecone("posts", embedding, newPost[0]?.id));
+        return newPost;
       } else {
         return null;
       }
