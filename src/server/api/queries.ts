@@ -24,6 +24,7 @@ import {
   searchPinecone,
 } from "~/server/api/server-only";
 
+
 export async function dbEditPost(post: post, content: string, user_id: number) {
   console.log("EDIT POST ", post.id);
   console.log("NEW COTNENT ", content);
