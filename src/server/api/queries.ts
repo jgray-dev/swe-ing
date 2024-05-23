@@ -123,10 +123,9 @@ export async function nextHomePage(
       where: eq(users.id, user_id),
     });
     if (user?.id && postIds && postIds?.length > 0) {
-      console.log("Current page slice: ", offset, offset + pageSize);
       postIds = postIds.slice(offset, offset + pageSize);
-      console.log(postIds);
       if (postIds?.length > 0) {
+        console.log("Relevant array not empty. Returning specific feed")
         const uoPosts = await db.query.posts.findMany({
           where: inArray(posts.id, postIds),
           with: {
