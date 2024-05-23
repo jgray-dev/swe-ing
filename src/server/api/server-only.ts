@@ -1,10 +1,11 @@
 "use server";
+import { env } from "~/env";
 import "server-only";
 
 import { Pinecone } from "@pinecone-database/pinecone";
 
 const pc = new Pinecone({
-  apiKey: "5b4aa784-3c60-4fa1-b327-f1297a490327",
+  apiKey: env.PINECONE_API_KEY,
 });
 
 const index = pc.index("sweing");
