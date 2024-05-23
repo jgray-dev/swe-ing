@@ -17,15 +17,15 @@ export default function NavBar() {
   const [searchQuery, setSearchQuery] = useState("");
 
   async function refreshEmbed() {
-    void seedAllData()
-    // const resp = await updateEmbed();
-    // if (resp === 0) {
-    //   alert("Failed to refresh user embed (user?.userId)");
-    // } else {
-    //   router.refresh();
-    //   router.push("/");
-    //   console.info("Refreshed user's embed.");
-    // }
+    // void seedAllData()
+    const resp = await updateEmbed();
+    if (resp === 0) {
+      alert("Failed to refresh user embed (user?.userId)");
+    } else {
+      router.refresh();
+      router.push("/");
+      console.info("Refreshed user's embed.");
+    }
   }
 
   function submitSearch() {
