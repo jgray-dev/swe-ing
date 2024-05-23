@@ -7,7 +7,8 @@ import {
 } from "~/server/api/trpc";
 import { posts } from "~/server/db/schema";
 import { desc } from "drizzle-orm/sql/expressions/select";
-import { getAverageEmbedding, getEmbedding } from "~/app/_components/embedding";
+import { getEmbedding } from "~/app/_functions/embedding";
+import {insertPinecone} from "~/server/api/server-only";
 
 export const postsRouter = createTRPCRouter({
   create: authedProcedure
@@ -23,10 +24,7 @@ export const postsRouter = createTRPCRouter({
         where: (user, { eq }) => eq(user.clerk_id, ctx.fullUser.id),
       });
       if (user) {
-        const embedding = await getEmbedding(input.content, input.tags);
-        // console.log(embedding);
-        void getAverageEmbedding([[...embedding], [...embedding]]);
-        return ctx.db
+        const newPost = await ctx.db
           .insert(posts)
           .values({
             author_id: user.id,
@@ -35,9 +33,12 @@ export const postsRouter = createTRPCRouter({
             image_urls: input.imageUrls,
             created_at: Date.now(),
             updated_at: Date.now(),
-            embedding: embedding,
           })
           .returning();
+        const embedding = await getEmbedding(input.content, input.tags);
+        // @ts-expect-error fts
+        void await insertPinecone("posts", embedding, newPost[0]?.id)
+        return newPost
       } else {
         return null;
       }
@@ -48,9 +49,6 @@ export const postsRouter = createTRPCRouter({
       const offset = (input.page - 1) * 50;
       return ctx.db.query.posts.findMany({
         orderBy: [desc(posts.updated_at)],
-        with: {
-          embedding: false,
-        },
         limit: 50,
         offset: offset,
       });
