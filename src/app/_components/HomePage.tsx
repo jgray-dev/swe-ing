@@ -177,7 +177,7 @@ export default function HomePage() {
                 {/*@ts-expect-error fuck typescript*/}
                 {post.author.name}
                 <br />
-                <span className={"text-sm text-zinc-400"}>
+                <span className={"text-xs text-zinc-600"}>
                   {getTime(post.updated_at)} ago
                 </span>
               </div>
