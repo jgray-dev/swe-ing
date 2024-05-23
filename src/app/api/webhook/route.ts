@@ -7,7 +7,7 @@ import {
   updateProfile,
   updateUserEmbed,
 } from "~/server/api/queries";
-import type { profile } from "~/app/_components/interfaces";
+import type { profile } from "~/app/_functions/interfaces";
 
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST" || req.method == "OPTIONS") {
