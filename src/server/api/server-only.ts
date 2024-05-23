@@ -8,7 +8,7 @@ const pc = new Pinecone({
   apiKey: env.PINECONE_API_KEY,
 });
 
-const index = pc.index("sweing");
+const index = pc.index(env.PINECONE_ENVIRONMENT);
 
 export async function insertPinecone(
   table: string,
