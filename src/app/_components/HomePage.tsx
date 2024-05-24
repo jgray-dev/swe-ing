@@ -6,7 +6,6 @@ import {
   getDbUser,
   getHomePageOrder,
   nextHomePage,
-  updateUserEmbed,
 } from "~/server/api/queries";
 import Link from "next/link";
 import type { like, post } from "~/app/_functions/interfaces";
