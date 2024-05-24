@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import { useUser } from "@clerk/shared/react";
-import {getDbUser, nextPostPage, singlePost} from "~/server/api/queries";
-import {PostCard} from "~/app/post/[id]/_PostCard";
-import type {post, user} from "~/app/_functions/interfaces";
+import { getDbUser, nextPostPage, singlePost } from "~/server/api/queries";
+import { PostCard } from "~/app/post/[id]/_PostCard";
+import type { post, user } from "~/app/_functions/interfaces";
 
 export default function PostPage({ params }: { params: { id: string } }) {
   const [postId, setPostId] = useState<number>(Number(params.id));
@@ -17,42 +17,37 @@ export default function PostPage({ params }: { params: { id: string } }) {
   const [commentCards, setCommentCards] = useState<React.ReactElement[]>([]);
   const [postCard, setPostCard] = useState<React.ReactElement>(<></>);
 
-  
   function commentOnPost() {
-    console.log("user wants to comment :P")
+    console.log("user wants to comment :P");
   }
-  
-  
 
-  async function getPost() {
-    const pagePost = await singlePost(postId)
+  async function getPost(userid: number) {
+    const pagePost = await singlePost(postId);
     if (user?.id)
-    setPostCard(<PostCard post={pagePost as post} user_id={user.id}/>)
+      setPostCard(<PostCard post={pagePost as post} user_id={userid} />);
   }
-  
+
   async function getUser() {
     if (user?.id) {
-      const dbUser = await getDbUser(user.id)
-      setUserId(dbUser?.id)
+      const dbUser = await getDbUser(user.id);
+      setUserId(dbUser?.id);
+      void getPost(Number(dbUser?.id));
     }
   }
-  
+
   useEffect(() => {
-    void getUser()
+    void getUser();
     setPostId(Number(params.id));
-    void getPost()
   }, [user]);
 
   // useEffect(() => {
   //   console.log("useEffect getComment")
   //   void getComments()
   // }, [page]);
-  
-  
-  
+
   async function getComments() {
-    const newData = await nextPostPage(page, postId)
-    console.log("Newdata fetched", newData)
+    const newData = await nextPostPage(page, postId);
+    console.log("Newdata fetched", newData);
   }
   //Comments infinite scrolling
   useEffect(() => {
@@ -61,9 +56,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
       const scrollTop = div ? div.scrollTop : 0;
       const scrollHeight = div ? div.scrollHeight : 0;
       const clientHeight = div ? div.clientHeight : 0;
-      if (
-        scrollTop + clientHeight >= scrollHeight - 1250 &&
-        !loading) {
+      if (scrollTop + clientHeight >= scrollHeight - 1250 && !loading) {
         setPage((prevPage) => prevPage + 1);
       }
     };
@@ -77,9 +70,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
     };
     //eslint-disable-next-line
   }, [loading]);
-  
-  
-  
+
   return (
     <div className={"h-screen w-screen pt-20 text-white"}>
       <div
@@ -87,15 +78,20 @@ export default function PostPage({ params }: { params: { id: string } }) {
         id={"scrolls"}
       >
         <div className={"overflow-x-hidden overflow-y-scroll"} id="scrolls">
-          <div className={"pb-12 pt-24"}>
+          <div className={"mt-24 rounded-lg border border-white/70 p-2 pb-12"}>
             {postCard}
             {commentCards}
-            <div className={"text-center"}>
-              
-            <span className={"mt-24"}>The end<br/></span>
-            <div className={"underline cursor-pointer select-none"} onClick={()=>commentOnPost()}>
+          </div>
+          <div className={"text-center"}>
+            <span className={""}>
+              The end
+              <br />
+            </span>
+            <div
+              className={"cursor-pointer select-none underline"}
+              onClick={() => commentOnPost()}
+            >
               How about replying to this post!
-            </div>
             </div>
           </div>
         </div>
@@ -103,10 +99,6 @@ export default function PostPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
-
-
-
-
 
 // "use client";
 //
