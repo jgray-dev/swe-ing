@@ -17,6 +17,7 @@ export default function LikeButton({
 }: LikeButtonProps): React.ReactElement {
   const [liked, setLiked] = useState(dbliked);
   const [likes, setLikes] = useState(dblikes);
+  console.log(liked)
   const createPostLike = api.likes.create.useMutation({
     onSuccess: (data) => {
       if (!data) {
@@ -41,7 +42,7 @@ export default function LikeButton({
   }
   return (
     <div
-      className={"group flex w-12 min-w-12 max-w-12 flex-row text-zinc-400"}
+      className={"group flex w-12 min-w-12 max-w-12 flex-row text-zinc-400 cursor-pointer"}
       onClick={() => likePost()}
     >
       {liked ? (
