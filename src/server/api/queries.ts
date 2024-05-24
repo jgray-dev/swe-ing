@@ -73,16 +73,46 @@ export async function dbDeletePost(post: post) {
   return "Deleted";
 }
 
-// export async function nextPostPage(page: number, post_id: number) {
-//   const pageSize = 15;
-//   const offset = (page - 1) * pageSize;
-//   return db.query.comments.findMany({
-//     orderBy: desc(comments.created_at),
-//     where: eq(comments.post_id, post_id),
-//     offset: offset,
-//     limit: pageSize,
-//   });
-// }
+export async function singlePost(post_id: number) {
+  return db.query.posts.findFirst({
+    where: eq(posts.id, post_id),
+    with: {
+      author: {
+        columns: {
+          recent_likes: false,
+        }
+      },
+      likes: {
+        columns: {
+          user_id: true
+        }
+      },
+      comments: {
+        author_id: true,
+      }
+    }
+  })
+}
+
+export async function nextPostPage(page: number, post_id: number) {
+  const pageSize = 15;
+  const offset = (page - 1) * pageSize;
+  return db.query.comments.findMany({
+    orderBy: desc(comments.created_at),
+    where: eq(comments.post_id, post_id),
+    offset: offset,
+    limit: pageSize,
+    with: {
+      author: {
+        columns: {
+          image_url: true,
+          id: true,
+          name: true,
+        }
+      }
+    }
+  });
+}
 
 export async function getHomePageOrder(user_id?: number) {
   if (user_id) {
@@ -129,9 +159,23 @@ export async function nextHomePage(
         const uoPosts = await db.query.posts.findMany({
           where: inArray(posts.id, postIds),
           with: {
-            author: true,
-            comments: true,
-            likes: true,
+            author: {
+              columns: {
+                id: true,
+                image_url: true,
+                name: true
+              }
+            },
+            comments: {
+              columns: {
+                id: true
+              }
+            },
+            likes: {
+              columns: {
+                user_id: true
+              }
+            },
           },
         });
         return uoPosts.sort((a, b) => {
