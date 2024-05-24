@@ -60,26 +60,6 @@ export const reports = createTable("reports", {
   reported_at: bigint("reported_at", { mode: "number" }).notNull(),
 });
 
-//1536
-// export const embeddings = createTable("embeddings", {
-//   id: serial("id").primaryKey().notNull(),
-//   post_id: bigint("post_id", { mode: "number" }).notNull(),
-//   embedding: vector("embedding", {dimensions: 1536})
-// });
-//
-//
-// export const postEmbeddings = relations(embeddings, ({ one }) => ({
-//   post: one(posts, {
-//     fields: [embeddings.post_id],
-//     references: [posts.id],
-//   }),
-// }));
-// export const embeddingsPost = relations(posts, ({ one }) => ({
-//   embedding: one(embeddings, {
-//     fields: [posts.embedding_id],
-//     references: [embeddings.id],
-//   }),
-// }));
 
 // Relationships:
 
@@ -125,6 +105,14 @@ export const followRelations = relations(follows, ({ one }) => ({
 export const postAuthorRelations = relations(posts, ({ one }) => ({
   author: one(users, {
     fields: [posts.author_id],
+    references: [users.id],
+  }),
+}));
+
+// Give every "comment" a single author
+export const commentAuthorRelations = relations(comments, ({ one }) => ({
+  author: one(users, {
+    fields: [comments.author_id],
     references: [users.id],
   }),
 }));
