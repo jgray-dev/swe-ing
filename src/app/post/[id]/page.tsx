@@ -1,9 +1,10 @@
 "use client";
 
-import { api } from "~/trpc/react";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useUser } from "@clerk/shared/react";
+import {getDbUser, nextPostPage, singlePost} from "~/server/api/queries";
+import {PostCard} from "~/app/post/[id]/_PostCard";
+import type {post, user} from "~/app/_functions/interfaces";
 
 export default function PostPage({ params }: { params: { id: string } }) {
   const [postId, setPostId] = useState<number>(Number(params.id));
@@ -11,51 +12,101 @@ export default function PostPage({ params }: { params: { id: string } }) {
   const [end, setEnd] = useState(false);
   const [page, setPage] = useState(1);
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
-  const [userId, setUserId] = useState<number | undefined>(undefined);
+  const [userId, setUserId] = useState<number>();
   const { user, isSignedIn } = useUser();
   const [commentCards, setCommentCards] = useState<React.ReactElement[]>([]);
   const [postCard, setPostCard] = useState<React.ReactElement>(<></>);
 
-  async function sharePost(id: number, title: string) {
-    const share = {
-      url: `https://swe.ing/post/${id}`,
-      title: `${title}`,
-    };
-    if (!navigator.canShare) {
-      alert("Your environment does not support sharing");
-    } else {
-      await navigator.share(share);
+  
+  function commentOnPost() {
+    console.log("user wants to comment :P")
+  }
+  
+  
+
+  async function getPost() {
+    const pagePost = await singlePost(postId)
+    if (user?.id)
+    setPostCard(<PostCard post={pagePost as post} user_id={user.id}/>)
+  }
+  
+  async function getUser() {
+    if (user?.id) {
+      const dbUser = await getDbUser(user.id)
+      setUserId(dbUser?.id)
     }
   }
-
+  
   useEffect(() => {
+    void getUser()
     setPostId(Number(params.id));
-  }, []);
+    void getPost()
+  }, [user]);
 
+  // useEffect(() => {
+  //   console.log("useEffect getComment")
+  //   void getComments()
+  // }, [page]);
+  
+  
+  
+  async function getComments() {
+    const newData = await nextPostPage(page, postId)
+    console.log("Newdata fetched", newData)
+  }
+  //Comments infinite scrolling
+  useEffect(() => {
+    const handleScroll = () => {
+      const div = document.getElementById("scrolls");
+      const scrollTop = div ? div.scrollTop : 0;
+      const scrollHeight = div ? div.scrollHeight : 0;
+      const clientHeight = div ? div.clientHeight : 0;
+      if (
+        scrollTop + clientHeight >= scrollHeight - 1250 &&
+        !loading) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    };
+    const div = document.getElementById("scrolls");
+    div?.addEventListener("scroll", handleScroll);
+    if (end) {
+      div?.removeEventListener("scroll", handleScroll);
+    }
+    return () => {
+      div?.removeEventListener("scroll", handleScroll);
+    };
+    //eslint-disable-next-line
+  }, [loading]);
+  
+  
+  
   return (
     <div className={"h-screen w-screen pt-20 text-white"}>
       <div
         className="no-scrollbar fixed left-1/2 top-0 h-screen w-screen -translate-x-1/2 overflow-y-scroll pt-20 sm:w-96"
         id={"scrolls"}
       >
-        <div className={"overflow-x-hidden overflow-y-scroll"}>
+        <div className={"overflow-x-hidden overflow-y-scroll"} id="scrolls">
           <div className={"pb-12 pt-24"}>
-            POST PAGE <br />
-            POST PAGE <br />
-            POST PAGE <br />
-            POST PAGE <br />
-            POST PAGE <br />
-            The end. <br />
-            <Link href={"/newpost"} className={"underline"}>
-              {" "}
-              How about creating a new post
-            </Link>
+            {postCard}
+            {commentCards}
+            <div className={"text-center"}>
+              
+            <span className={"mt-24"}>The end<br/></span>
+            <div className={"underline cursor-pointer select-none"} onClick={()=>commentOnPost()}>
+              How about replying to this post!
+            </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+
+
+
 
 // "use client";
 //
