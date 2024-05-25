@@ -29,7 +29,7 @@ export default function SearchPage({ params }: { params: { query: string } }) {
       <div>{query}</div>
       <button
         className="rounded-md border border-zinc-300 bg-black/50 px-4 py-2 text-zinc-300 backdrop-blur-sm hover:border-white hover:text-white"
-        onClick={() => getData()}
+        onMouseDown={() => getData()}
       >
         Load more results
       </button>
