@@ -31,13 +31,13 @@ export default function ClientSide() {
       <SignedIn>
         <div
           className="fixed top-0 h-screen w-full pt-32"
-          onClick={() => router.back()}
+          onMouseDown={() => router.back()}
         >
           <div
             className={
               "relative mx-auto w-full rounded-md bg-white/20 p-4 sm:w-96"
             }
-            onClick={(e) => {
+            onMouseDown={(e) => {
               e.stopPropagation();
             }}
           >
@@ -45,7 +45,7 @@ export default function ClientSide() {
               className={
                 "group flex w-fit cursor-pointer flex-row border-b border-transparent text-left text-zinc-400 duration-150 hover:border-white/50"
               }
-              onClick={() => {
+              onMouseDown={() => {
                 router.back();
               }}
             >
@@ -70,7 +70,7 @@ export default function ClientSide() {
             <div className={"h-1/2 select-none px-24 text-white"}></div>
             <button
               className={`mb-4 mt-12 h-8 w-full cursor-pointer select-none rounded-full bg-white/70 font-bold text-black/90 duration-100 hover:bg-white/80 hover:text-black`}
-              onClick={() => handleSubmit()}
+              onMouseDown={() => handleSubmit()}
             >
               <div>Search</div>
             </button>
