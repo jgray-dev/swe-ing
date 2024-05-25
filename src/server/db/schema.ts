@@ -7,7 +7,6 @@ import {
   bigint,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { vector } from "pgvector/drizzle-orm";
 
 export const createTable = pgTableCreator((name) => `sweing_${name}`);
 
@@ -33,12 +32,11 @@ export const posts = createTable("posts", {
   updated_at: bigint("updated_at", { mode: "number" }).notNull(),
 });
 
+
 export const comments = createTable("comments", {
   id: serial("id").primaryKey().notNull(),
-  post_id: integer("post_id").notNull(),
-  author_id: integer("author_id").notNull().default(0),
-  content: varchar("content", { length: 255 }).notNull(),
-  created_at: bigint("created_at", { mode: "number" }).notNull(),
+  parent_id: integer("parent_id").notNull().references(() => posts.id),
+  child_id: integer("child_id").notNull().references(() => posts.id),
 });
 
 export const likes = createTable("likes", {
@@ -60,34 +58,27 @@ export const reports = createTable("reports", {
   reported_at: bigint("reported_at", { mode: "number" }).notNull(),
 });
 
-//1536
-// export const embeddings = createTable("embeddings", {
-//   id: serial("id").primaryKey().notNull(),
-//   post_id: bigint("post_id", { mode: "number" }).notNull(),
-//   embedding: vector("embedding", {dimensions: 1536})
-// });
-//
-//
-// export const postEmbeddings = relations(embeddings, ({ one }) => ({
-//   post: one(posts, {
-//     fields: [embeddings.post_id],
-//     references: [posts.id],
-//   }),
-// }));
-// export const embeddingsPost = relations(posts, ({ one }) => ({
-//   embedding: one(embeddings, {
-//     fields: [posts.embedding_id],
-//     references: [embeddings.id],
-//   }),
-// }));
 
 // Relationships:
 
-// Give every post multiple comments
+// Give every post multiple comments/likes
 export const postCommentRelations = relations(posts, ({ many }) => ({
-  comments: many(comments),
+  children: many(comments),
+  parents: many(comments),
   likes: many(likes),
 }));
+
+export const postsToComments = relations(comments, ({ one }) => ({
+  follower: one(users, {
+    fields: [comments.followerId],
+    references: [users.id],
+  }),
+  following: one(users, {
+    fields: [usersToUsers.followingId],
+    references: [users.id],
+  }),
+}));
+
 
 //Give every comment a single post
 export const commentPostRelations = relations(comments, ({ one }) => ({
@@ -125,6 +116,14 @@ export const followRelations = relations(follows, ({ one }) => ({
 export const postAuthorRelations = relations(posts, ({ one }) => ({
   author: one(users, {
     fields: [posts.author_id],
+    references: [users.id],
+  }),
+}));
+
+// Give every "comment" a single author
+export const commentAuthorRelations = relations(comments, ({ one }) => ({
+  author: one(users, {
+    fields: [comments.author_id],
     references: [users.id],
   }),
 }));

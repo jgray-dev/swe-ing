@@ -2,7 +2,6 @@
 
 import { db } from "~/server/db";
 import {
-  comments,
   follows,
   likes,
   posts,
@@ -67,10 +66,29 @@ export async function getDbUser(clerkId: string) {
 }
 
 export async function dbDeletePost(post: post) {
-  await db.delete(comments).where(eq(comments.post_id, post.id));
+  // await db.delete(comments).where(eq(comments.post_id, post.id));
   await db.delete(likes).where(eq(likes.post_id, post.id));
   await db.delete(posts).where(eq(posts.id, post.id));
   return "Deleted";
+}
+
+export async function singlePost(post_id: number) {
+  return db.query.posts.findFirst({
+    where: eq(posts.id, post_id),
+    with: {
+      author: {
+        columns: {
+          recent_likes: false,
+        },
+      },
+      likes: {
+        columns: {
+          user_id: true,
+        },
+      },
+      comments: true
+    },
+  });
 }
 
 // export async function nextPostPage(page: number, post_id: number) {
@@ -81,6 +99,15 @@ export async function dbDeletePost(post: post) {
 //     where: eq(comments.post_id, post_id),
 //     offset: offset,
 //     limit: pageSize,
+//     with: {
+//       author: {
+//         columns: {
+//           image_url: true,
+//           id: true,
+//           name: true,
+//         }
+//       }
+//     }
 //   });
 // }
 
@@ -123,16 +150,29 @@ export async function nextHomePage(
       where: eq(users.id, user_id),
     });
     if (user?.id && postIds && postIds?.length > 0) {
-      console.log("Current page slice: ", offset, offset + pageSize);
       postIds = postIds.slice(offset, offset + pageSize);
-      console.log(postIds);
       if (postIds?.length > 0) {
+        console.log("Relevant array not empty. Returning specific feed")
         const uoPosts = await db.query.posts.findMany({
           where: inArray(posts.id, postIds),
           with: {
-            author: true,
-            comments: true,
-            likes: true,
+            author: {
+              columns: {
+                id: true,
+                image_url: true,
+                name: true
+              }
+            },
+            comments: {
+              columns: {
+                id: true
+              }
+            },
+            likes: {
+              columns: {
+                user_id: true
+              }
+            },
           },
         });
         return uoPosts.sort((a, b) => {
@@ -215,7 +255,7 @@ export async function deleteProfile(profile: profile) {
   });
   if (user) {
     await db.delete(posts).where(eq(posts.author_id, user.id));
-    await db.delete(comments).where(eq(comments.author_id, user.id));
+    // await db.delete(comments).where(eq(comments.author_id, user.id));
     await db.delete(likes).where(eq(likes.user_id, user.id));
     await db
       .delete(follows)

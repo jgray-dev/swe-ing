@@ -2,8 +2,8 @@
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { seedAllData, updateEmbed } from "~/server/api/queries";
+import {useEffect, useState} from "react";
+import { updateEmbed } from "~/server/api/queries";
 
 import { IoHomeOutline } from "react-icons/io5";
 import { TfiReload } from "react-icons/tfi";
@@ -12,9 +12,19 @@ import { IoIosSearch } from "react-icons/io";
 import { CiSquarePlus } from "react-icons/ci";
 
 export default function NavBar() {
+  
   const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
 
   async function refreshEmbed() {
     // void seedAllData()

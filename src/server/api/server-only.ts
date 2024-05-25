@@ -40,7 +40,7 @@ export async function embeddingFromID(table: string, queryID: number) {
       return response.matches[0]?.values;
     }
   } else {
-    console.error(`User with ID ${queryID} not in ${table} in PCDB`);
+    console.error(`${table} with ID ${queryID} not in PCDB`);
   }
 }
 

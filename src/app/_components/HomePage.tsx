@@ -6,7 +6,6 @@ import {
   getDbUser,
   getHomePageOrder,
   nextHomePage,
-  updateUserEmbed,
 } from "~/server/api/queries";
 import Link from "next/link";
 import type { like, post } from "~/app/_functions/interfaces";
@@ -177,7 +176,7 @@ export default function HomePage() {
                 {/*@ts-expect-error fuck typescript*/}
                 {post.author.name}
                 <br />
-                <span className={"text-sm text-zinc-400"}>
+                <span className={"text-xs text-zinc-600"}>
                   {getTime(post.updated_at)} ago
                 </span>
               </div>
@@ -234,7 +233,7 @@ export default function HomePage() {
                 dbliked={liked}
                 dblikes={post.likes ? post.likes.length : 0}
               />
-              <div className={"group flex flex-row text-zinc-400"}>
+              <div className={"group flex flex-row text-zinc-400 cursor-pointer"}>
                 <Link href={`/post/${post.id}`}>
                   <GoCommentDiscussion
                     className={
@@ -247,7 +246,7 @@ export default function HomePage() {
                 </span>
               </div>
 
-              <div>
+              <div className={"cursor-pointer"}>
                 <CiShare1
                   className={
                     "h-6 w-6 text-zinc-400 duration-150 hover:text-white motion-safe:hover:-translate-y-0.5 motion-safe:hover:translate-x-0.5"
@@ -256,7 +255,7 @@ export default function HomePage() {
                 />
               </div>
 
-              <div>
+              <div className={"cursor-pointer"}>
                 <ContextMenu post={post} user_id={user_id} id={`${key}`} />
               </div>
             </div>
