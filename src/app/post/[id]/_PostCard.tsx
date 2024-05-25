@@ -36,7 +36,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, user_id }) => {
       id={`${key}`}
       key={key}
       className={
-        "backdrop-blur-xs z-10 my-2 min-h-fit w-[99%] translate-x-[0.5%] border-b border-green-500/50 bg-black/90 p-1.5 text-zinc-200 duration-300"
+        "backdrop-blur-xs z-10 my-2 min-h-fit w-[99%] translate-x-[0.5%] border-b-2 border-white/70 bg-black/90 p-1.5 text-zinc-200 duration-300"
       }
     >
       <div className={"flex flex-col"}>
