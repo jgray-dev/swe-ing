@@ -42,7 +42,7 @@ export default function LikeButton({
   return (
     <div
       className={"group flex w-12 min-w-12 max-w-12 flex-row text-zinc-400 cursor-pointer"}
-      onClick={() => likePost()}
+      onMouseDown={() => likePost()}
     >
       {liked ? (
         <FaHeart className={`mr-1.5 h-6 w-6 text-red-600 duration-150`} />

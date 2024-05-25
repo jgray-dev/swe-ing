@@ -56,13 +56,13 @@ export default function NavBar() {
           <Link href={"/"}>
             <IoHomeOutline className="h-7 w-7 cursor-pointer stroke-zinc-400 duration-200 hover:stroke-white" />
           </Link>
-          <div onClick={() => refreshEmbed()}>
+          <div onMouseDown={() => refreshEmbed()}>
             <TfiReload className="uration-500 h-7 w-7 cursor-pointer fill-zinc-400 duration-200 ease-in-out hover:-rotate-180 hover:fill-white" />
           </div>
           <div>
             <IoIosSearch
               className="h-9 w-9 cursor-pointer fill-zinc-400 duration-200 hover:fill-white"
-              onClick={() => setSearchOpen(true)}
+              onMouseDown={() => setSearchOpen(true)}
             />
           </div>
           <div>
@@ -95,12 +95,12 @@ export default function NavBar() {
           ></input>
           <IoIosSearch
             className="mt-0.5 h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-green-700 sm:ml-3 sm:mr-3"
-            onClick={() => submitSearch()}
+            onMouseDown={() => submitSearch()}
             title={`Search for ${searchQuery}`}
           />
           <HiOutlineXMark
             className="mb-0.5 h-8 w-8 cursor-pointer stroke-zinc-400 hover:stroke-red-400"
-            onClick={() => setSearchOpen(false)}
+            onMouseDown={() => setSearchOpen(false)}
             title={`Cancel search`}
           />
         </div>

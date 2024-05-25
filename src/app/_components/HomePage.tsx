@@ -251,7 +251,7 @@ export default function HomePage() {
                   className={
                     "h-6 w-6 text-zinc-400 duration-150 hover:text-white motion-safe:hover:-translate-y-0.5 motion-safe:hover:translate-x-0.5"
                   }
-                  onClick={() => sharePost(post.id, post.content)}
+                  onMouseDown={() => sharePost(post.id, post.content)}
                 />
               </div>
 

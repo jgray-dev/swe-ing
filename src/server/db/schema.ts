@@ -35,14 +35,17 @@ export const posts = createTable("posts", {
 
 export const comments = createTable("comments", {
   id: serial("id").primaryKey().notNull(),
-  parent_id: integer("parent_id").notNull().references(() => posts.id),
-  child_id: integer("child_id").notNull().references(() => posts.id),
+  post_id: integer("post_id").notNull(),
+  author_id: integer("author_id").notNull().default(0),
+  content: varchar("content", { length: 750 }).notNull(),
+  created_at: bigint("created_at", { mode: "number" }).notNull(),
 });
 
 export const likes = createTable("likes", {
   id: serial("id").primaryKey().notNull(),
   user_id: integer("user_id").notNull().default(0),
-  post_id: integer("post_id").notNull().default(0),
+  post_id: integer("post_id"),
+  comment_id: integer("comment_id"),
 });
 
 export const follows = createTable("follows", {
@@ -63,20 +66,15 @@ export const reports = createTable("reports", {
 
 // Give every post multiple comments/likes
 export const postCommentRelations = relations(posts, ({ many }) => ({
-  children: many(comments),
-  parents: many(comments),
+  comments: many(comments),
   likes: many(likes),
 }));
 
-export const postsToComments = relations(comments, ({ one }) => ({
-  follower: one(users, {
-    fields: [comments.followerId],
-    references: [users.id],
-  }),
-  following: one(users, {
-    fields: [usersToUsers.followingId],
-    references: [users.id],
-  }),
+export const commentsToPost = relations(comments, ({ one }) => ({
+  post: one(posts, {
+    fields: [comments.post_id],
+    references: [posts.id],
+  })
 }));
 
 
@@ -87,6 +85,18 @@ export const commentPostRelations = relations(comments, ({ one }) => ({
     references: [posts.id],
   }),
 }));
+
+export const likeCommentRelations = relations(likes, ({ one }) => ({
+  comment: one(comments, {
+    fields: [likes.comment_id],
+    references: [comments.id],
+  }),
+  user: one(users, {
+    fields: [likes.user_id],
+    references: [users.id],
+  }),
+}));
+
 
 // Give every "like" a single post
 export const likePostRelations = relations(likes, ({ one }) => ({

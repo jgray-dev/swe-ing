@@ -115,7 +115,7 @@ export default function ContextMenu({ post, user_id, id }: ContextMenuProps) {
               className={
                 "mb-1 h-8 w-full rounded-lg bg-green-700 text-zinc-200 hover:bg-green-600 hover:text-white"
               }
-              onClick={() => submitEdit()}
+              onMouseDown={() => submitEdit()}
             >
               Save changes
             </button>
@@ -131,7 +131,7 @@ export default function ContextMenu({ post, user_id, id }: ContextMenuProps) {
         <div>
           <HiOutlineXMark
             className={`h-6 w-6  duration-150 hover:text-white motion-safe:hover:scale-[115%] ${isAuthor ? "text-green-400" : "text-zinc-400"}`}
-            onClick={() => {
+            onMouseDown={() => {
               setEditing(false);
               setOpen(false);
             }}
@@ -144,7 +144,7 @@ export default function ContextMenu({ post, user_id, id }: ContextMenuProps) {
     ) : (
       <PiDotsNine
         className={`h-6 w-6 text-zinc-400 duration-150 hover:text-white motion-safe:hover:scale-[115%] ${isAuthor ? "rounded-sm bg-white/15" : ""}`}
-        onClick={() => setOpen(!open)}
+        onMouseDown={() => setOpen(!open)}
       />
     )
   ) : (
@@ -153,7 +153,7 @@ export default function ContextMenu({ post, user_id, id }: ContextMenuProps) {
         className={
           "h-6 w-6 text-zinc-400 duration-150 hover:text-white motion-safe:hover:scale-[115%]"
         }
-        onClick={() => setOpen(!open)}
+        onMouseDown={() => setOpen(!open)}
       />
       <div
         className={
@@ -163,7 +163,7 @@ export default function ContextMenu({ post, user_id, id }: ContextMenuProps) {
         {isAuthor ? (
           <div
             className={"group mb-2 flex cursor-pointer flex-row duration-200"}
-            onClick={() => deletePost()}
+            onMouseDown={() => deletePost()}
           >
             <div
               className={
@@ -178,7 +178,7 @@ export default function ContextMenu({ post, user_id, id }: ContextMenuProps) {
         {isAuthor ? (
           <div
             className={"group mb-2 flex cursor-pointer flex-row duration-200"}
-            onClick={() => editPost()}
+            onMouseDown={() => editPost()}
           >
             <div
               className={
@@ -192,7 +192,7 @@ export default function ContextMenu({ post, user_id, id }: ContextMenuProps) {
         ) : null}
         <div
           className={"group flex cursor-pointer flex-row duration-200"}
-          onClick={() => reportPost()}
+          onMouseDown={() => reportPost()}
         >
           <div
             className={
@@ -205,7 +205,7 @@ export default function ContextMenu({ post, user_id, id }: ContextMenuProps) {
         </div>
         <div
           className={"group mt-2 flex cursor-pointer flex-row duration-200"}
-          onClick={() => copyPostLink()}
+          onMouseDown={() => copyPostLink()}
         >
           <div
             className={
