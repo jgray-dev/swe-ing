@@ -2,7 +2,6 @@
 
 import { db } from "~/server/db";
 import {
-  comments,
   follows,
   likes,
   posts,
@@ -67,7 +66,7 @@ export async function getDbUser(clerkId: string) {
 }
 
 export async function dbDeletePost(post: post) {
-  await db.delete(comments).where(eq(comments.post_id, post.id));
+  // await db.delete(comments).where(eq(comments.post_id, post.id));
   await db.delete(likes).where(eq(likes.post_id, post.id));
   await db.delete(posts).where(eq(posts.id, post.id));
   return "Deleted";
@@ -80,39 +79,37 @@ export async function singlePost(post_id: number) {
       author: {
         columns: {
           recent_likes: false,
-        }
+        },
       },
       likes: {
         columns: {
-          user_id: true
-        }
+          user_id: true,
+        },
       },
-      comments: {
-        author_id: true,
-      }
-    }
-  })
-}
-
-export async function nextPostPage(page: number, post_id: number) {
-  const pageSize = 15;
-  const offset = (page - 1) * pageSize;
-  return db.query.comments.findMany({
-    orderBy: desc(comments.created_at),
-    where: eq(comments.post_id, post_id),
-    offset: offset,
-    limit: pageSize,
-    with: {
-      author: {
-        columns: {
-          image_url: true,
-          id: true,
-          name: true,
-        }
-      }
-    }
+      comments: true
+    },
   });
 }
+
+// export async function nextPostPage(page: number, post_id: number) {
+//   const pageSize = 15;
+//   const offset = (page - 1) * pageSize;
+//   return db.query.comments.findMany({
+//     orderBy: desc(comments.created_at),
+//     where: eq(comments.post_id, post_id),
+//     offset: offset,
+//     limit: pageSize,
+//     with: {
+//       author: {
+//         columns: {
+//           image_url: true,
+//           id: true,
+//           name: true,
+//         }
+//       }
+//     }
+//   });
+// }
 
 export async function getHomePageOrder(user_id?: number) {
   if (user_id) {
@@ -258,7 +255,7 @@ export async function deleteProfile(profile: profile) {
   });
   if (user) {
     await db.delete(posts).where(eq(posts.author_id, user.id));
-    await db.delete(comments).where(eq(comments.author_id, user.id));
+    // await db.delete(comments).where(eq(comments.author_id, user.id));
     await db.delete(likes).where(eq(likes.user_id, user.id));
     await db
       .delete(follows)
