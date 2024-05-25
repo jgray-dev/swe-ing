@@ -45,7 +45,11 @@ export interface comment {
   author_id: number;
   content: string;
   created_at: number;
-  author?: user;
+  author: {
+    id: number,
+    image_url: string,
+    name: string,
+  };
 }
 
 export interface user {
