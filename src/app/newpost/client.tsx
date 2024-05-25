@@ -59,13 +59,13 @@ export default function ClientSide() {
       <SignedIn>
         <div
           className="fixed top-0 h-screen w-full pt-32"
-          onClick={() => router.back()}
+          onMouseDown={() => router.back()}
         >
           <div
             className={
               "relative mx-auto w-full rounded-md bg-white/20 p-4 sm:w-96"
             }
-            onClick={(e) => {
+            onMouseDown={(e) => {
               e.stopPropagation();
             }}
           >
