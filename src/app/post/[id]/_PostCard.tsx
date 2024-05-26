@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import type { post, user } from "~/app/_functions/interfaces";
+import React from "react";
+import type { post } from "~/app/_functions/interfaces";
 import Image from "next/image";
 import Link from "next/link";
 import { getTime } from "~/app/_functions/functions";
@@ -8,13 +8,14 @@ import LikeButton from "~/app/_components/LikeButton";
 import { GoCommentDiscussion } from "react-icons/go";
 import { CiShare1 } from "react-icons/ci";
 import ContextMenu from "~/app/_components/ContextMenu";
+import {useUserState} from "~/app/_functions/store";
 
 interface PostCardProps {
   post: post;
-  user_id: number;
 }
 
-export const PostCard: React.FC<PostCardProps> = ({ post, user_id }) => {
+export const PostCard: React.FC<PostCardProps> = ({ post }) => {
+  const {user_id} = useUserState(state => state)
 
 
   async function sharePost(id: number, title: string) {
@@ -143,7 +144,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post, user_id }) => {
             </div>
 
             <div className={"cursor-pointer"}>
-              <ContextMenu post={post} user_id={user_id} id={`${key}`}/>
+              <ContextMenu post={post} id={`${key}`}/>
             </div>
           </div>
         </div>
