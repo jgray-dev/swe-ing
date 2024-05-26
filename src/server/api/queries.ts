@@ -2,6 +2,7 @@
 
 import { db } from "~/server/db";
 import {
+  comments,
   follows,
   likes,
   posts,
@@ -86,30 +87,34 @@ export async function singlePost(post_id: number) {
           user_id: true,
         },
       },
-      comments: true
+      comments: {
+        columns: {
+          id: true,
+        }
+      }
     },
   });
 }
 
-// export async function nextPostPage(page: number, post_id: number) {
-//   const pageSize = 15;
-//   const offset = (page - 1) * pageSize;
-//   return db.query.comments.findMany({
-//     orderBy: desc(comments.created_at),
-//     where: eq(comments.post_id, post_id),
-//     offset: offset,
-//     limit: pageSize,
-//     with: {
-//       author: {
-//         columns: {
-//           image_url: true,
-//           id: true,
-//           name: true,
-//         }
-//       }
-//     }
-//   });
-// }
+export async function nextPostPage(page: number, post_id: number) {
+  const pageSize = 15;
+  const offset = (page - 1) * pageSize;
+  return db.query.comments.findMany({
+    orderBy: desc(comments.created_at),
+    where: eq(comments.post_id, post_id),
+    offset: offset,
+    limit: pageSize,
+    with: {
+      author: {
+        columns: {
+          image_url: true,
+          id: true,
+          name: true,
+        }
+      }
+    }
+  });
+}
 
 export async function getHomePageOrder(user_id?: number) {
   if (user_id) {
@@ -143,8 +148,8 @@ export async function nextHomePage(
   user_id?: number,
   postIds?: number[],
 ) {
-  const pageSize = 50;
-  const offset = (page - 1) * 50;
+  const pageSize = 4;
+  const offset = (page - 1) * 4;
   if (user_id) {
     const user = await db.query.users.findFirst({
       where: eq(users.id, user_id),
