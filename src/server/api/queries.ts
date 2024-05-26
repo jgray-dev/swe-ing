@@ -97,7 +97,7 @@ export async function singlePost(post_id: number) {
 }
 
 export async function nextPostPage(page: number, post_id: number) {
-  const pageSize = 15;
+  const pageSize = 20;
   const offset = (page - 1) * pageSize;
   return db.query.comments.findMany({
     orderBy: desc(comments.created_at),
@@ -148,8 +148,8 @@ export async function nextHomePage(
   user_id?: number,
   postIds?: number[],
 ) {
-  const pageSize = 4;
-  const offset = (page - 1) * 4;
+  const pageSize = 20;
+  const offset = (page - 1) * pageSize;
   if (user_id) {
     const user = await db.query.users.findFirst({
       where: eq(users.id, user_id),
