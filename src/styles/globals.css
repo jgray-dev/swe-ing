@@ -35,6 +35,21 @@ body {
   .rounded-context {
     border-radius: 0.4rem 0.4rem 0 0.4rem;
   }
+  .animate-roll {
+    animation: spin 0.5s infinite;
+  }
+}
+
+@keyframes spin {
+  0% {
+    rotate: 0;
+  }
+  50% {
+   rotate: 180deg; 
+  }
+  100% {
+    rotate: 0;
+  }
 }
 
 @keyframes shake {
