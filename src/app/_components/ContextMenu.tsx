@@ -6,14 +6,15 @@ import { IoWarningOutline } from "react-icons/io5";
 import { IoIosLink } from "react-icons/io";
 import { dbDeletePost, dbEditPost, dbReportPost } from "~/server/api/queries";
 import { HiOutlineXMark } from "react-icons/hi2";
+import {useUserState} from "~/app/_functions/store";
 
 interface ContextMenuProps {
   post: post;
-  user_id: number | undefined;
   id: string;
 }
 
-export default function ContextMenu({ post, user_id, id }: ContextMenuProps) {
+export default function ContextMenu({ post, id }: ContextMenuProps) {
+  const {user_id} = useUserState(state => state)
   const [editing, setEditing] = useState(false);
   const [open, setOpen] = useState(false);
   const [isAuthor, setIsAuthor] = useState(user_id === post.author_id);
@@ -89,10 +90,12 @@ export default function ContextMenu({ post, user_id, id }: ContextMenuProps) {
             setOpen(false);
           } else {
             //TODO: Alert DOM content not found
+            console.warn("DOM content not found")
           }
         }
       } else {
         //TODO: alert no user_id or ref or wtv
+        console.warn("No user_id or edit box ref found")
       }
     }
 
