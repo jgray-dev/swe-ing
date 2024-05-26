@@ -2,34 +2,38 @@
 
 import React, { useEffect, useState } from "react";
 import { useUser } from "@clerk/shared/react";
-import { getDbUser, singlePost } from "~/server/api/queries";
+import { getDbUser, nextPostPage, singlePost } from "~/server/api/queries";
 import { PostCard } from "~/app/post/[id]/_PostCard";
-import type {comment, post, user } from "~/app/_functions/interfaces";
+import type { comment, post } from "~/app/_functions/interfaces";
+import { CommentCard } from "~/app/post/[id]/_CommentCard";
+import { VscLoading } from "react-icons/vsc";
 
 export default function PostPage({ params }: { params: { id: string } }) {
   const [postId, setPostId] = useState<number>(Number(params.id));
   const [loading, setLoading] = useState(false);
   const [end, setEnd] = useState(false);
   const [page, setPage] = useState(1);
+  const [userId, setUserId] = useState<number | undefined>(undefined);
   const { user } = useUser();
   const [commentCards, setCommentCards] = useState<React.ReactElement[]>([]);
-  const [postCard, setPostCard] = useState<React.ReactElement>(<></>);
+  const [postCard, setPostCard] = useState<React.ReactElement>(<VscLoading className={"animate-roll w-10 h-10 mx-auto"} />);
 
   function commentOnPost() {
     console.log("user wants to comment :P");
   }
 
-  async function getPost(userid: number) {
+  async function getPost() {
     const pagePost = await singlePost(postId);
-    console.log(pagePost)
-    if (user?.id)
-      setPostCard(<PostCard post={pagePost as post} user_id={userid} />);
+    setPostCard(<PostCard post={pagePost as post} />);
   }
 
   async function getUser() {
     if (user?.id) {
       const dbUser = await getDbUser(user.id);
-      void getPost(Number(dbUser?.id));
+      if (dbUser?.id) {
+        setUserId(dbUser.id);
+        void getPost();
+      }
     }
   }
 
@@ -39,24 +43,29 @@ export default function PostPage({ params }: { params: { id: string } }) {
   }, [user]);
 
   useEffect(() => {
-    console.log("useEffect getComment")
-    // void getComments()
+    console.log("useEffect getComment");
+    void getComments();
   }, [page]);
 
-  // async function getComments() {
-  //   const newData = await nextPostPage(page, postId);
-  //   if (newData.length == 0) {
-  //     setEnd(true)
-  //     setLoading(true)
-  //     console.warn("End of comments");
-  //   } else {
-  //     setLoading(false)
-  //     // @ts-expect-error fts
-  //     const newCards = getCommentCards(newData)
-  //     setCommentCards(newCards)
-  //     console.log("Newdata fetched", newData);
-  //   }
-  // }
+  async function getComments(user_id?: number) {
+    if (userId) {
+      user_id = userId;
+    }
+    const newData = await nextPostPage(page, postId);
+    if (newData.length == 0) {
+      setEnd(true);
+      setLoading(true);
+      console.warn("End of comments");
+    } else {
+      setLoading(false);
+      console.log(newData);
+      // @ts-expect-error fts
+      const newCards = getCommentCards(newData, user_id);
+      setCommentCards(newCards);
+      console.log("Newdata fetched", newData);
+    }
+  }
+
   //Comments infinite scrolling
   useEffect(() => {
     const handleScroll = () => {
@@ -65,7 +74,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
       const scrollHeight = div ? div.scrollHeight : 0;
       const clientHeight = div ? div.clientHeight : 0;
       if (scrollTop + clientHeight >= scrollHeight - 1250 && !loading) {
-        setLoading(true)
+        setLoading(true);
         setPage((prevPage) => prevPage + 1);
       }
     };
@@ -80,49 +89,50 @@ export default function PostPage({ params }: { params: { id: string } }) {
     //eslint-disable-next-line
   }, [loading]);
 
-  
   function getCommentCards(comments: comment[]) {
-    return comments.map((comment)=>{
-      const key = (comment.created_at) / Math.random();
-      console.log(comment)
+    return comments.map((comment) => {
+      console.log(comment);
       return (
-        <div key={key}>
-          <div className={" flex flex-col"}>
-            <div className={'bg-orange-400/20'}>
-              dsa
-            </div>
-            <div className={"bg-purple-400/20"}>
-              asd
-            </div>
-          </div>
+        <div key={comment.created_at / Math.random()}>
+          <CommentCard comment={comment} />
         </div>
-      )
-    })
+      );
+    });
   }
-  
-  
+
   return (
     <div className={"h-screen w-screen text-white"}>
       <div
         className="no-scrollbar fixed left-1/2 top-0 h-screen w-screen -translate-x-1/2 overflow-y-scroll pt-20 sm:w-96"
         id={"scrolls"}
       >
-        <div className={"overflow-x-hidden overflow-y-scroll bg-purple-700/50 min-h-screen"} id="scrolls">
+        <div
+          className={
+            "min-h-screen overflow-x-hidden overflow-y-scroll bg-purple-700/50"
+          }
+          id="scrolls"
+        >
           <div className={"mt-24 rounded-lg border border-white/70 p-2 pb-12"}>
             {postCard}
             {commentCards}
           </div>
           <div className={"text-center"}>
-            <span className={""}>
-              The end
-              <br />
-            </span>
-            <div
-              className={"cursor-pointer select-none underline"}
-              onClick={() => commentOnPost()}
-            >
-              How about replying to this post!
-            </div>
+            {end ? (
+              <>
+                <span className={""}>
+                  The end
+                  <br />
+                </span>
+                <div
+                  className={"cursor-pointer select-none underline"}
+                  onClick={() => commentOnPost()}
+                >
+                  How about replying to this post!
+                </div>
+              </>
+            ) : (
+              <VscLoading className={"animate-roll w-10 h-10 mx-auto"} />
+            )}
           </div>
         </div>
       </div>
