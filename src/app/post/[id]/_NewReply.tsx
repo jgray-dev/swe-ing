@@ -1,4 +1,7 @@
-export default function NewReply(user_id: number, post_id: number) {
+import {useUserState} from "~/app/_functions/store";
+
+export default function NewReply(post_id: number) {
+  const {user_id} = useUserState(state => state)
   console.log(user_id, post_id)
   console.log("commenting")
   return (
