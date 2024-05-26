@@ -8,15 +8,14 @@ import LikeButton from "~/app/_components/LikeButton";
 import { GoCommentDiscussion } from "react-icons/go";
 import { CiShare1 } from "react-icons/ci";
 import ContextMenu from "~/app/_components/ContextMenu";
-import {useUserState} from "~/app/_functions/store";
+import { useUserState } from "~/app/_functions/store";
 
 interface PostCardProps {
   post: post;
 }
 
 export const PostCard: React.FC<PostCardProps> = ({ post }) => {
-  const {user_id} = useUserState(state => state)
-
+  const { user_id } = useUserState((state) => state);
 
   async function sharePost(id: number, title: string) {
     const share = {
@@ -63,10 +62,10 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
               </div>
               {/*@ts-expect-error fuck typescript*/}
               {post.author.name}
-              <br/>
+              <br />
               <span className={"text-xs text-zinc-600"}>
-                  {getTime(post.updated_at)} ago
-                </span>
+                {getTime(post.updated_at)} ago
+              </span>
             </div>
             <div
               className={
@@ -76,22 +75,22 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
               <div className={"flex max-h-24 flex-wrap overflow-y-hidden"}>
                 {post.post_tags
                   ? post.post_tags.split(",").map((tag) => {
-                    if (tag !== "") {
-                      return (
-                        <Link key={Math.random()} href={`/search/${tag}`}>
-                          <div
-                            key={Math.random()}
-                            className="mx-0.5 ml-0 mt-1 w-fit max-w-20 overflow-x-hidden truncate rounded-sm bg-white/5 p-0.5 text-left text-xs text-zinc-500"
-                            title={tag}
-                          >
-                            {tag}
-                          </div>
-                        </Link>
-                      );
-                    } else {
-                      return null;
-                    }
-                  })
+                      if (tag !== "") {
+                        return (
+                          <Link key={Math.random()} href={`/search/${tag}`}>
+                            <div
+                              key={Math.random()}
+                              className="mx-0.5 ml-0 mt-1 w-fit max-w-20 overflow-x-hidden truncate rounded-sm bg-white/5 p-0.5 text-left text-xs text-zinc-500"
+                              title={tag}
+                            >
+                              {tag}
+                            </div>
+                          </Link>
+                        );
+                      } else {
+                        return null;
+                      }
+                    })
                   : null}
               </div>
             </div>
@@ -112,16 +111,14 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
         </div>
         <div className={"mt-2 border-t border-white/50"}>
           <div
-            className={
-              "flex select-none flex-row justify-between px-4 pt-1.5"
-            }
+            className={"flex select-none flex-row justify-between px-4 pt-1.5"}
           >
             <LikeButton
               postId={Number(post.id)}
               dbliked={liked}
               dblikes={post.likes ? post.likes.length : 0}
             />
-            <div className={"group flex flex-row text-zinc-400 cursor-pointer"}>
+            <div className={"group flex cursor-pointer flex-row text-zinc-400"}>
               <Link href={`/post/${post.id}`}>
                 <GoCommentDiscussion
                   className={
@@ -130,8 +127,8 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
                 />
               </Link>
               <span className={"duration-150 group-hover:text-white"}>
-                  {post.comments ? post.comments.length : 0}
-                </span>
+                {post.comments ? post.comments.length : 0}
+              </span>
             </div>
 
             <div className={"cursor-pointer"}>
@@ -144,7 +141,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
             </div>
 
             <div className={"cursor-pointer"}>
-              <ContextMenu post={post} id={`${key}`}/>
+              <ContextMenu post={post} id={`${key}`} />
             </div>
           </div>
         </div>
