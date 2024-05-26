@@ -11,6 +11,7 @@ import React from "react";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "~/app/api/uploadthing/core";
+import {UserDataUpdater} from "~/app/_functions/store";
 
 export const metadata = {
   title: "Sweing",
@@ -25,6 +26,7 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
+      <UserDataUpdater />
       <html lang="en" className={`${GeistSans.variable}`}>
         <body className={"bg-black"}>
           <TRPCReactProvider>
