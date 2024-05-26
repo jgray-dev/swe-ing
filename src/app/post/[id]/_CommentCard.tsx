@@ -7,9 +7,9 @@ interface CommentCardProps {
 }
 export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
   const {user_id, name, clerk_id} = useUserState(state => state)
-  console.log("USER STATE ZUSTAND")
-  console.log(user_id, name, clerk_id)
-  return (<div key={comment.created_at / Math.random()}>
+  console.log("Comment card: ", comment)
+  return (
+    <div key={comment.created_at / Math.random()}>
     comment card here
   </div>)
 }
