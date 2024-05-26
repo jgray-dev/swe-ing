@@ -9,51 +9,36 @@ import {
 } from "~/server/api/queries";
 import Link from "next/link";
 import type { like, post } from "~/app/_functions/interfaces";
-import { useUser } from "@clerk/shared/react";
 import { CiShare1 } from "react-icons/ci";
 import { GoCommentDiscussion } from "react-icons/go";
 import LikeButton from "~/app/_components/LikeButton";
 import ContextMenu from "~/app/_components/ContextMenu";
-import { useRouter } from "next/navigation";
 import { getTime } from "~/app/_functions/functions";
+import {useUserState} from "~/app/_functions/store";
+import {VscLoading} from "react-icons/vsc";
 
 export default function HomePage() {
-  const router = useRouter();
+  const {user_id} = useUserState(state => state)
   const [loading, setLoading] = useState(false);
   const [end, setEnd] = useState(false);
   const [page, setPage] = useState(1);
   const [allPosts, setAllPosts] = useState<Array<post>>([]);
   const [cards, setCards] = useState<React.ReactElement[]>([]);
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
-  const [userId, setUserId] = useState<number | undefined>(undefined);
   const [postOrder, setPostOrder] = useState<number[]>([]);
-  const { user, isSignedIn } = useUser();
 
-  async function dbUser(clerkId: string) {
-    return getDbUser(clerkId);
-  }
   useEffect(() => {
     void firstLoad();
     //eslint-disable-next-line
-  }, [isSignedIn]);
+  }, [user_id]);
 
   async function firstLoad() {
-    if (!userId) {
-      if (isSignedIn) {
-        await dbUser(user.id).then(async (data) => {
-          if (data) {
-            setUserId(data.id);
-            setLoading(true);
-            const hpo = await getHomePageOrder(data.id);
-            setPostOrder(hpo);
-            void (await fetchData(data.id, hpo));
-          } else {
-            //TODO: Alert user of error and refresh page
-            router.refresh();
-            console.error("Error fetching user from local database", user.id);
-          }
-        });
-      }
+    if (user_id) {
+      const hpo = await getHomePageOrder(user_id);
+      setPostOrder(hpo);
+      void (await fetchData(hpo));
+    } else {
+      console.info("Waiting for user state")
     }
   }
 
@@ -69,8 +54,9 @@ export default function HomePage() {
         !loading &&
         !localLoading
       ) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         localLoading = true;
-        void fetchData(userId, postOrder);
+        void fetchData(postOrder);
         setPage((prevPage) => prevPage + 1);
       }
     };
@@ -85,7 +71,7 @@ export default function HomePage() {
     //eslint-disable-next-line
   }, [loading]);
 
-  async function fetchData(user_id?: number, postOrder?: number[]) {
+  async function fetchData(postOrder: number[]) {
     setLoading(true);
     const data = await nextHomePage(page, user_id, postOrder);
     if (!data) {
@@ -110,7 +96,7 @@ export default function HomePage() {
         });
         setLikedPosts(newLikedPosts);
         setAllPosts([...allPosts, ...newPosts]);
-        setCards([...cards, ...getCards(newPosts, user_id)]);
+        setCards([...cards, ...getCards(newPosts)]);
         setLoading(false);
       }
     } else {
@@ -134,14 +120,11 @@ export default function HomePage() {
     }
   }
 
-  function getCards(data: post[], user_id?: number): React.ReactElement[] {
-    return data.map((post) => getCard(post, user_id));
+  function getCards(data: post[]): React.ReactElement[] {
+    return data.map((post) => getCard(post));
   }
 
-  function getCard(post: post, user_id?: number): React.ReactElement {
-    if (userId) {
-      user_id = userId;
-    }
+  function getCard(post: post): React.ReactElement {
     const liked = post.likes?.some((like) => like.user_id === user_id) ?? false;
     const key = (post.created_at + post.id) / Math.random();
     return (
@@ -256,7 +239,7 @@ export default function HomePage() {
               </div>
 
               <div className={"cursor-pointer"}>
-                <ContextMenu post={post} user_id={user_id} id={`${key}`} />
+                <ContextMenu post={post} id={`${key}`} />
               </div>
             </div>
           </div>
@@ -273,8 +256,8 @@ export default function HomePage() {
       >
         <div className={"overflow-x-hidden overflow-y-scroll"}>
           {cards}
-          <div className={"pb-20 pt-24"}>
-            {!end && (loading || cards.length == 0) ? "Loading more post" : ""}
+          <div className={"pb-20 pt-24 text-center"}>
+            {!end && (loading || cards.length == 0) ? <VscLoading className={"animate-roll w-10 h-10 mx-auto"} /> : ""}
             <br />
             <br />
             <br />
