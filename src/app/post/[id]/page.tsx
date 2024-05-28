@@ -1,55 +1,48 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useUser } from "@clerk/shared/react";
-import { getDbUser, nextPostPage, singlePost } from "~/server/api/queries";
-import { PostCard } from "~/app/post/[id]/_PostCard";
+import { nextPostPage, singlePost } from "~/server/api/queries";
 import type { comment, post } from "~/app/_functions/interfaces";
 import { CommentCard } from "~/app/post/[id]/_CommentCard";
 import { VscLoading } from "react-icons/vsc";
 import NewReply from "~/app/post/[id]/_NewReply";
-import {useReplyState} from "~/app/_functions/store";
+import { useReplyState, useUserState } from "~/app/_functions/store";
+import Link from "next/link";
+import Image from "next/image";
+import { getTime } from "~/app/_functions/functions";
+import LikeButton from "~/app/_components/LikeButton";
+import { GoCommentDiscussion } from "react-icons/go";
+import { CiShare1 } from "react-icons/ci";
+import ContextMenu from "~/app/_components/ContextMenu";
 
 export default function PostPage({ params }: { params: { id: string } }) {
   const [postId, setPostId] = useState<number>(Number(params.id));
+  const { user_id } = useUserState((state) => state);
   const [loading, setLoading] = useState(false);
   const [end, setEnd] = useState(true);
   const [page, setPage] = useState(1);
   const [reply, setReply] = useState(false);
-  const [userId, setUserId] = useState<number | undefined>(undefined);
-  const { user } = useUser();
   const [commentCards, setCommentCards] = useState<React.ReactElement[]>([]);
-  const [postCard, setPostCard] = useState<React.ReactElement>(<VscLoading className={"animate-roll w-10 h-10 mx-auto"} />);
-  //setReplyData
-  const {setReplyData} = useReplyState(state => state)
-  
-  
+  const [postCard, setPostCard] = useState<React.ReactElement>(
+    <VscLoading className={"animate-roll mx-auto h-10 w-10"} />,
+  );
+  const { setReplyData } = useReplyState((state) => state);
+
   function commentOnPost() {
-    setReplyData({post_id: Number(postId)})
-    setReply(true)
-    console.log("user wants to comment :P");
+    setReplyData({ post_id: Number(postId) });
+    setReply(true);
   }
 
-  async function getPost() {
-    const pagePost = await singlePost(postId);
-    setPostCard(<PostCard post={pagePost as post} />);
-  }
-
-  async function getUser() {
-    if (user?.id) {
-      const dbUser = await getDbUser(user.id);
-      if (dbUser?.id) {
-        setUserId(dbUser.id);
-        void getPost();
-      }
-    }
+  async function getData() {
+    const postCard = await getPostCard();
+    setPostCard(postCard);
   }
 
   useEffect(() => {
-    void getUser();
+    void getData();
     setPostId(Number(params.id));
     //eslint-disable-next-line
-  }, [user]);
+  }, [user_id]);
 
   useEffect(() => {
     console.log("useEffect getComment");
@@ -58,9 +51,6 @@ export default function PostPage({ params }: { params: { id: string } }) {
   }, [page]);
 
   async function getComments(user_id?: number) {
-    if (userId) {
-      user_id = userId;
-    }
     const newData = await nextPostPage(page, postId);
     if (newData.length == 0) {
       setEnd(true);
@@ -68,7 +58,6 @@ export default function PostPage({ params }: { params: { id: string } }) {
       console.warn("End of comments");
     } else {
       setLoading(false);
-      console.log(newData);
       // @ts-expect-error fts
       const newCards = getCommentCards(newData, user_id);
       setCommentCards(newCards);
@@ -101,7 +90,6 @@ export default function PostPage({ params }: { params: { id: string } }) {
 
   function getCommentCards(comments: comment[]) {
     return comments.map((comment) => {
-      console.log(comment);
       return (
         <div key={comment.created_at / Math.random()}>
           <CommentCard comment={comment} />
@@ -110,40 +98,176 @@ export default function PostPage({ params }: { params: { id: string } }) {
     });
   }
 
+  async function sharePost(id: number, title: string) {
+    const share = {
+      url: `https://swe.ing/post/${id}`,
+      title: `${title}`,
+    };
+    if (!navigator.canShare) {
+      alert("Your environment does not support sharing");
+    } else {
+      await navigator.share(share);
+    }
+  }
+
+  async function getPostCard() {
+    const post = (await singlePost(postId)) as post;
+    const liked = post.likes?.some((like) => like.user_id === user_id) ?? false;
+    const key = (post.created_at + post.id) / Math.random();
+    return (
+      <div
+        id={`${key}`}
+        key={key}
+        className={
+          "backdrop-blur-xs z-10 my-2 min-h-fit w-[99%] translate-x-[0.5%] border-b-2 border-white/70 bg-black/90 p-1.5 text-zinc-200 duration-300"
+        }
+      >
+        <div className={"flex flex-col"}>
+          <div className={"flex h-full min-h-36 w-full flex-row"}>
+            <div className={"flex flex-col"}>
+              <div
+                className={
+                  "flex w-20 min-w-20 max-w-20 flex-col items-center border-r border-white/50 pr-2 text-xs"
+                }
+              >
+                <div className="relative h-12 w-12 select-none overflow-hidden rounded-full">
+                  <Link href={`/user/${post.author_id}`}>
+                    <Image
+                      // @ts-expect-error fuck typescript
+                      src={post.author.image_url}
+                      fill
+                      loading={"lazy"}
+                      className="object-cover"
+                      alt=""
+                      sizes="40px"
+                    />
+                  </Link>
+                </div>
+                {/*@ts-expect-error fuck typescript*/}
+                {post.author.name}
+                <br />
+                <span className={"text-xs text-zinc-600"}>
+                  {getTime(post.created_at)} ago
+                </span>
+              </div>
+              <div
+                className={
+                  "mr-1 h-fit min-h-0 w-20 min-w-20 max-w-20 border-r border-t border-white/50"
+                }
+              >
+                <div className={"flex max-h-24 flex-wrap overflow-y-hidden"}>
+                  {post.post_tags
+                    ? post.post_tags.split(",").map((tag) => {
+                        if (tag !== "") {
+                          return (
+                            <Link key={Math.random()} href={`/search/${tag}`}>
+                              <div
+                                key={Math.random()}
+                                className="mx-0.5 ml-0 mt-1 w-fit max-w-20 overflow-x-hidden truncate rounded-sm bg-white/5 p-0.5 text-left text-xs text-zinc-500"
+                                title={tag}
+                              >
+                                {tag}
+                              </div>
+                            </Link>
+                          );
+                        } else {
+                          return null;
+                        }
+                      })
+                    : null}
+                </div>
+              </div>
+            </div>
+            <Link
+              key={post.created_at + post.id + Math.random()}
+              href={`/post/${post.id}`}
+            >
+              <div
+                id={`${key + "CONTENT"}`}
+                className={
+                  "h-fit max-h-fit min-h-36 min-w-full max-w-full text-wrap break-normal pl-2 text-left"
+                }
+              >
+                {post.content}
+              </div>
+            </Link>
+          </div>
+          <div className={"mt-2 border-t border-white/50"}>
+            <div
+              className={
+                "flex select-none flex-row justify-between px-4 pt-1.5"
+              }
+            >
+              <LikeButton
+                postId={Number(post.id)}
+                dbliked={liked}
+                dblikes={post.likes ? post.likes.length : 0}
+              />
+              <div
+                className={"group flex cursor-pointer flex-row text-zinc-400"}
+                onMouseDown={() => commentOnPost()}
+              >
+                <GoCommentDiscussion
+                  className={
+                    "mr-1.5 h-6 w-6 duration-150 group-hover:text-white motion-safe:group-hover:-translate-y-[5%] motion-safe:group-hover:rotate-3"
+                  }
+                />
+                <span className={"duration-150 group-hover:text-white"}>
+                  {post.comments ? post.comments.length : 0}
+                </span>
+              </div>
+
+              <div className={"cursor-pointer"}>
+                <CiShare1
+                  className={
+                    "h-6 w-6 text-zinc-400 duration-150 hover:text-white motion-safe:hover:-translate-y-0.5 motion-safe:hover:translate-x-0.5"
+                  }
+                  onClick={() => sharePost(post.id, post.content)}
+                />
+              </div>
+
+              <div className={"cursor-pointer"}>
+                <ContextMenu post={post} id={`${key}`} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={"h-screen w-screen text-white"}>
+      {reply ? <div className={"overflow-y-hidden w-screen h-screen"}><NewReply closeReply={setReply}/> </div>: <></>}
       <div
-        className="no-scrollbar fixed left-1/2 top-0 h-screen w-screen -translate-x-1/2 overflow-y-scroll sm:w-96"
+        className={`no-scrollbar fixed left-1/2 top-0 h-screen w-screen -translate-x-1/2 overflow-y-scroll ${reply ? "overflow-y-hidden" : "overflow-y-scrolls"} sm:w-96`}
         id={"scrolls"}
       >
         <div
-          className={
-            "min-h-screen overflow-x-hidden overflow-y-scroll bg-purple-700/50"
-          }
+          className={"min-h-screen overflow-x-hidden overflow-y-scroll"}
           id="scrolls"
         >
-          <div className={"mt-20 rounded-lg border border-white/70 p-2 pb-12"}>
+          <div className={"mb-12 mt-20 rounded-lg border border-white/70 p-2"}>
             {postCard}
             {commentCards}
-          </div>
-          {reply?<NewReply />:<></>}
-          <div className={"text-center"}>
-            {end ? (
-              <>
-                <span className={""}>
-                  The end
-                  <br />
-                </span>
-                <div
-                  className={"cursor-pointer select-none underline"}
-                  onClick={() => commentOnPost()}
-                >
-                  How about replying to this post!
-                </div>
-              </>
-            ) : (
-              <VscLoading className={"animate-roll w-10 h-10 mx-auto"} />
-            )}
+            <div className={"text-center"}>
+              {end ? (
+                <>
+                  <span className={""}>
+                    The end
+                    <br />
+                  </span>
+                  <div
+                    className={"cursor-pointer select-none underline"}
+                    onClick={() => commentOnPost()}
+                  >
+                    How about replying to this post!
+                  </div>
+                </>
+              ) : (
+                <VscLoading className={"animate-roll mx-auto h-10 w-10"} />
+              )}
+            </div>
           </div>
         </div>
       </div>
