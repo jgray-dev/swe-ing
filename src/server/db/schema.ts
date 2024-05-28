@@ -36,8 +36,8 @@ export const posts = createTable("posts", {
 export const comments = createTable("comments", {
   id: serial("id").primaryKey().notNull(),
   post_id: integer("post_id").notNull(),
-  author_id: integer("author_id").notNull().default(0),
-  content: varchar("content", { length: 750 }).notNull(),
+  author_id: integer("author_id").notNull(),
+  content: varchar("content", { length: 250 }).notNull(),
   created_at: bigint("created_at", { mode: "number" }).notNull(),
 });
 
