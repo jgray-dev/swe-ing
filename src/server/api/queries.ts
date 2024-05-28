@@ -24,10 +24,7 @@ import {
   searchPinecone,
 } from "~/server/api/server-only";
 
-
 export async function dbEditPost(post: post, content: string, user_id: number) {
-  console.log("EDIT POST ", post.id);
-  console.log("NEW COTNENT ", content);
   try {
     await db
       .update(posts)
@@ -65,6 +62,25 @@ export async function getDbUser(clerkId: string) {
     where: eq(users.clerk_id, clerkId),
   });
 }
+export async function getDbUserFromId(user_id: number) {
+  return db.query.users.findFirst({
+    where: eq(users.id, user_id),
+    columns: {
+      clerk_id: false,
+      recent_likes: false,
+    },
+  });
+}
+
+export async function isUserFollowing(user_id: number, following_id: number) {
+  return db.query.follows.findFirst({
+    where: 
+      and(
+        eq(follows.user_id, user_id),
+        eq(follows.following_user_id, following_id),
+    ),
+  });
+}
 
 export async function dbDeletePost(post: post) {
   // await db.delete(comments).where(eq(comments.post_id, post.id));
@@ -90,8 +106,8 @@ export async function singlePost(post_id: number) {
       comments: {
         columns: {
           id: true,
-        }
-      }
+        },
+      },
     },
   });
 }
@@ -110,9 +126,9 @@ export async function nextPostPage(page: number, post_id: number) {
           image_url: true,
           id: true,
           name: true,
-        }
-      }
-    }
+        },
+      },
+    },
   });
 }
 
@@ -157,7 +173,6 @@ export async function nextHomePage(
     if (user?.id && postIds && postIds?.length > 0) {
       postIds = postIds.slice(offset, offset + pageSize);
       if (postIds?.length > 0) {
-        console.log("Relevant array not empty. Returning specific feed")
         const uoPosts = await db.query.posts.findMany({
           where: inArray(posts.id, postIds),
           with: {
@@ -165,18 +180,18 @@ export async function nextHomePage(
               columns: {
                 id: true,
                 image_url: true,
-                name: true
-              }
+                name: true,
+              },
             },
             comments: {
               columns: {
-                id: true
-              }
+                id: true,
+              },
             },
             likes: {
               columns: {
-                user_id: true
-              }
+                user_id: true,
+              },
             },
           },
         });
@@ -204,9 +219,23 @@ export async function nextHomePage(
     limit: pageSize,
     offset: offset,
     with: {
-      author: true,
-      comments: true,
-      likes: true,
+      author: {
+        columns: {
+          id: true,
+          image_url: true,
+          name: true,
+        },
+      },
+      comments: {
+        columns: {
+          id: true,
+        },
+      },
+      likes: {
+        columns: {
+          user_id: true,
+        },
+      },
     },
   });
 }
@@ -317,7 +346,6 @@ export async function updateUserEmbed(userId: string) {
   const user = await db.query.users.findFirst({
     where: eq(users.clerk_id, userId),
   });
-  console.log("UUE ", user?.id);
   if (user) {
     const embeddings = await getPostEmbeddings(user.recent_likes);
     if (embeddings.length > 0) {
