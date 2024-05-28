@@ -28,7 +28,11 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
       await navigator.share(share);
     }
   }
-
+  
+  function newReply() {
+    console.log("user wants to reply")
+  }
+  
   const liked = post.likes?.some((like) => like.user_id === user_id) ?? false;
   const key = (post.created_at + post.id) / Math.random();
   return (
@@ -118,14 +122,12 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
               dbliked={liked}
               dblikes={post.likes ? post.likes.length : 0}
             />
-            <div className={"group flex cursor-pointer flex-row text-zinc-400"}>
-              <Link href={`/post/${post.id}`}>
+            <div className={"group flex cursor-pointer flex-row text-zinc-400"} onMouseDown={()=>newReply()}>
                 <GoCommentDiscussion
                   className={
                     "mr-1.5 h-6 w-6 duration-150 group-hover:text-white motion-safe:group-hover:-translate-y-[5%] motion-safe:group-hover:rotate-3"
                   }
                 />
-              </Link>
               <span className={"duration-150 group-hover:text-white"}>
                 {post.comments ? post.comments.length : 0}
               </span>
