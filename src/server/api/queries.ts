@@ -33,6 +33,8 @@ export async function dbEditPost(post: post, content: string, user_id: number) {
         updated_at: Date.now(),
       })
       .where(and(eq(posts.author_id, user_id), eq(posts.id, post.id)));
+    const newEmbedding = await getEmbedding(content)
+    void await insertPinecone("posts", newEmbedding, post.id)
     return true;
   } catch {
     return false;
