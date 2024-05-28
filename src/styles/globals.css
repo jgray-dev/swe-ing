@@ -48,7 +48,7 @@ body {
    rotate: 180deg; 
   }
   100% {
-    rotate: 0;
+    rotate: 360deg;
   }
 }
 
