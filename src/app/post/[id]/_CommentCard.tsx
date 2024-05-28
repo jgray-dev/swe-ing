@@ -9,7 +9,7 @@ interface CommentCardProps {
   comment: comment;
 }
 export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
-  const { user_id, name, clerk_id } = useUserState((state) => state);
+  const { user_id } = useUserState((state) => state);
   const key = (comment.created_at + comment.post_id) / Math.random();
   return (
     <div
@@ -17,7 +17,7 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
       id={`${key}`}
       className={"w-full border-b border-white/50 bg-black/80"}
     >
-      <div className={"flex w-full flex-row"}>
+      <div className={"flex w-full flex-row py-4"}>
         <div className={" w-20 min-w-20 max-w-20 text-center"}>
           <div
             className={
@@ -47,7 +47,6 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
         </div>
         <div className={"p-1 pl-2"}>{comment.content}</div>
       </div>
-      <div className={"w-full bg-red-400/20"}>bnuttonsss</div>
     </div>
   );
 };
