@@ -76,9 +76,9 @@ export default function HomePage() {
     const data = await nextHomePage(page, user_id, postOrder);
     if (!data) {
       console.warn("No data returned from server");
+      setEnd(true)
       return;
     }
-    console.log(data);
     if (data.length > 0) {
       const newPosts = data.filter(
         (newPost) => !allPosts.some((post) => post.id === newPost.id),
