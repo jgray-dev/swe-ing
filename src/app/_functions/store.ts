@@ -3,7 +3,7 @@
 import { create } from "zustand";
 import { useUser } from "@clerk/shared/react";
 import React from "react";
-import { getDbUser } from "~/server/api/queries";
+import {getDbUser, updateUserEmbed} from "~/server/api/queries";
 
 type User = {
   user_id: number;
@@ -32,6 +32,7 @@ export function UserDataUpdater() {
           clerk_id: user.id,
           name: `${user.fullName}`,
         });
+        void await updateUserEmbed(user.id)
       })();
     }
   }, [user, setData]);
