@@ -34,7 +34,6 @@ export async function getAverageEmbedding(embeddings: number[][]) {
 
 //Take an array of Post ID's, and return an array of the embeddings (number[][])
 export async function getPostEmbeddings(postIds: number[]) {
-  console.log("getPostEmbeddings(", postIds, ")");
   if (postIds.length === 0) {
     return [];
   }
