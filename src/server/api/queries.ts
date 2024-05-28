@@ -1,4 +1,6 @@
-"use server";
+import 'server-only';
+export const maxDuration = 30;
+
 
 import { db } from "~/server/db";
 import {
