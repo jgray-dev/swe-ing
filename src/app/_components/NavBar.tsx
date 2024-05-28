@@ -32,9 +32,7 @@ export default function NavBar() {
     if (resp === 0) {
       alert("Failed to refresh user embed (user?.userId)");
     } else {
-      router.refresh();
-      router.push("/");
-      console.info("Refreshed user's embed.");
+      location.reload()
     }
   }
 
