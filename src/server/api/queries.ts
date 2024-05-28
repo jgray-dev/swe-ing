@@ -1,4 +1,4 @@
-"use server"
+"use server";
 
 import { db } from "~/server/db";
 import {
@@ -33,8 +33,8 @@ export async function dbEditPost(post: post, content: string, user_id: number) {
         updated_at: Date.now(),
       })
       .where(and(eq(posts.author_id, user_id), eq(posts.id, post.id)));
-    const newEmbedding = await getEmbedding(content)
-    void await insertPinecone("posts", newEmbedding, post.id)
+    const newEmbedding = await getEmbedding(content);
+    void (await insertPinecone("posts", newEmbedding, post.id));
     return true;
   } catch {
     return false;
@@ -71,15 +71,17 @@ export async function getDbUserFromId(user_id: number) {
       clerk_id: false,
       recent_likes: false,
     },
+    with: {
+      posts: true,
+    },
   });
 }
 
 export async function isUserFollowing(user_id: number, following_id: number) {
   return db.query.follows.findFirst({
-    where: 
-      and(
-        eq(follows.user_id, user_id),
-        eq(follows.following_user_id, following_id),
+    where: and(
+      eq(follows.user_id, user_id),
+      eq(follows.following_user_id, following_id),
     ),
   });
 }
@@ -349,6 +351,29 @@ export async function updateUserEmbed(userId: string) {
     where: eq(users.clerk_id, userId),
   });
   if (user) {
+    const following = await db.query.follows.findMany({
+      where: eq(follows.user_id, user.id),
+      with: {
+        following_user: {
+          columns: {},
+          with: {
+            posts: {
+              columns: {
+                id: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    const followingPosts = [];
+    for (const data of following) {
+      followingPosts.push(data.following_user.posts.map((post) => post.id));
+    }
+    // const followingEmbeds = await getPostEmbeddings(followingPosts.flat())
+    // const followingEmbed = await getAverageEmbedding(followingEmbeds)
+    console.log("Average following embed:")
+    // console.log(followingEmbed)
     const embeddings = await getPostEmbeddings(user.recent_likes);
     if (embeddings.length > 0) {
       const userEmbedding = await getAverageEmbedding(embeddings);
@@ -524,6 +549,7 @@ const tweets = [
   "I'm excited to see what the future holds. With all the challenges we face, I still believe in the power of human ingenuity and compassion.",
 ];
 
+// eslint-disable-next-line
 export async function seedAllData() {
   console.log("Seeding data");
   for (const item of tweets) {
