@@ -48,10 +48,8 @@ export default function ContextMenu({ post, id }: ContextMenuProps) {
       const resp = await dbReportPost(post, user_id);
       if (resp === "duplicate") {
         //TODO: Alert duplicate report
-        console.log("duplicate report");
       } else {
         //TODO: Alert report created
-        console.log("Report created", resp);
       }
     } else {
       console.error("Unable to report - no user_id");
