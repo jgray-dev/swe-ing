@@ -2,8 +2,6 @@
 
 import { embed } from "ai";
 import { openai } from "@ai-sdk/openai";
-import { db } from "~/server/db";
-import { inArray } from "drizzle-orm/sql/expressions/conditions";
 import { embeddingFromID } from "~/server/api/server-only";
 
 export async function getEmbedding(text: string, tags?: string) {
