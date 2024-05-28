@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { getDbUserFromId, isUserFollowing } from "~/server/api/queries";
 import { useUserState } from "~/app/_functions/store";
-import type { user } from "~/app/_functions/interfaces";
 import { VscLoading } from "react-icons/vsc";
 import Link from "next/link";
 import Image from "next/image";
@@ -28,14 +27,14 @@ export default function UserPage({ params }: { params: { id: string } }) {
   async function userCard() {
     const following = await isUserFollowing(userId, user_id);
     console.log(!!following);
-    const fullUser = (await getDbUserFromId(userId)) as user;
+    const fullUser = await getDbUserFromId(userId);
     console.log("Full user:");
     console.log(fullUser);
     
     fullUser?setFullUserCard(
       <div
         className={
-          "mx-auto flex w-screen flex-col text-center sm:w-[30rem] sm:bg-red-400/20"
+          "mx-auto flex w-screen flex-col text-center sm:w-[30rem]"
         }
       >
         <div className={"flex flex-row"}>
@@ -46,7 +45,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
                 fill
                 className="object-cover"
                 alt=""
-                sizes="120px"
+                sizes="640px"
                 placeholder="empty"
                 priority={true}
               />
