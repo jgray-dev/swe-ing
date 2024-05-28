@@ -3,7 +3,10 @@
     "app/api/**/*": {
       "maxDuration": 30
     },
-    "server/api/**/*": {
+    "server/api/*": {
+      "maxDuration": 30
+    },
+    "server/api/routers/*": {
       "maxDuration": 30
     }
   }
