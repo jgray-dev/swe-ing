@@ -26,17 +26,13 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
       if (bodyText !== "") {
         const jsonBody = await safeParseJSON(bodyText);
         const body = jsonBody as profile;
-        console.log(body.type);
         if (body.type === "user.updated") {
-          console.log("Updated account webhook called");
           void (await updateProfile(body));
         }
         if (body.type === "user.created") {
-          console.log("Created account webhook called");
           void (await createProfile(body));
         }
         if (body.type === "user.deleted") {
-          console.log("Delete account webhook called");
           void (await deleteProfile(body));
         }
         if (body.type === "session.created") {
