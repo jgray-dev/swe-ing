@@ -38,3 +38,14 @@ export function UserDataUpdater() {
 
   return null;
 }
+
+
+type Reply = {
+  post_id: number;
+  setReplyData: (data: Partial<Reply>) => void;
+};
+
+export const useReplyState = create<Reply>((set) => ({
+  post_id: 0,
+  setReplyData: (data) => set(data),
+}));
