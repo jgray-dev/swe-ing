@@ -24,13 +24,6 @@ export async function insertPinecone(
 }
 
 export async function embeddingFromID(table: string, queryID: number) {
-  let validIds = [0];
-  const tableIds = index.namespace(table);
-  const results = await tableIds.listPaginated();
-  if (results?.vectors) {
-    validIds = results.vectors.map((vec) => Number(vec.id));
-  }
-  if (validIds.includes(queryID)) {
     const response = await index.namespace(table).query({
       topK: 1,
       id: `${queryID}`,
@@ -39,9 +32,6 @@ export async function embeddingFromID(table: string, queryID: number) {
     if (response.matches.length > 0) {
       return response.matches[0]?.values;
     }
-  } else {
-    console.error(`${table} with ID ${queryID} not in PCDB`);
-  }
 }
 
 export async function searchPinecone(table: string, embedding: number[]) {
