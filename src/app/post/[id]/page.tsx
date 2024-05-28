@@ -7,18 +7,26 @@ import { PostCard } from "~/app/post/[id]/_PostCard";
 import type { comment, post } from "~/app/_functions/interfaces";
 import { CommentCard } from "~/app/post/[id]/_CommentCard";
 import { VscLoading } from "react-icons/vsc";
+import NewReply from "~/app/post/[id]/_NewReply";
+import {useReplyState} from "~/app/_functions/store";
 
 export default function PostPage({ params }: { params: { id: string } }) {
   const [postId, setPostId] = useState<number>(Number(params.id));
   const [loading, setLoading] = useState(false);
-  const [end, setEnd] = useState(false);
+  const [end, setEnd] = useState(true);
   const [page, setPage] = useState(1);
+  const [reply, setReply] = useState(false);
   const [userId, setUserId] = useState<number | undefined>(undefined);
   const { user } = useUser();
   const [commentCards, setCommentCards] = useState<React.ReactElement[]>([]);
   const [postCard, setPostCard] = useState<React.ReactElement>(<VscLoading className={"animate-roll w-10 h-10 mx-auto"} />);
-
+  //setReplyData
+  const {setReplyData} = useReplyState(state => state)
+  
+  
   function commentOnPost() {
+    setReplyData({post_id: Number(postId)})
+    setReply(true)
     console.log("user wants to comment :P");
   }
 
@@ -40,11 +48,13 @@ export default function PostPage({ params }: { params: { id: string } }) {
   useEffect(() => {
     void getUser();
     setPostId(Number(params.id));
+    //eslint-disable-next-line
   }, [user]);
 
   useEffect(() => {
     console.log("useEffect getComment");
     void getComments();
+    //eslint-disable-next-line
   }, [page]);
 
   async function getComments(user_id?: number) {
@@ -103,7 +113,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
   return (
     <div className={"h-screen w-screen text-white"}>
       <div
-        className="no-scrollbar fixed left-1/2 top-0 h-screen w-screen -translate-x-1/2 overflow-y-scroll pt-20 sm:w-96"
+        className="no-scrollbar fixed left-1/2 top-0 h-screen w-screen -translate-x-1/2 overflow-y-scroll sm:w-96"
         id={"scrolls"}
       >
         <div
@@ -112,10 +122,11 @@ export default function PostPage({ params }: { params: { id: string } }) {
           }
           id="scrolls"
         >
-          <div className={"mt-24 rounded-lg border border-white/70 p-2 pb-12"}>
+          <div className={"mt-20 rounded-lg border border-white/70 p-2 pb-12"}>
             {postCard}
             {commentCards}
           </div>
+          {reply?<NewReply />:<></>}
           <div className={"text-center"}>
             {end ? (
               <>
