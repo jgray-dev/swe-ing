@@ -12,8 +12,8 @@ export default function ClientSide() {
 
   async function handleSubmit() {
     if (content !== "") {
-      if (content.length < 749) {
-        alert("Post too long. 749 characters max");
+      if (content.length < 1250) {
+        alert("Post too long. 1249 characters max");
       } else {
         const results = await searchEmbeddings(content);
         console.log(results);
