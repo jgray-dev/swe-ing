@@ -23,9 +23,10 @@ export default function ClientSide() {
         alert("Erorr creating post");
         return;
       }
-      setContent("");
-      setImageUrls([]);
       router.push(`/post/${data[0]?.id}`);
+      setContent("");
+      setTags("");
+      setImageUrls([]);
     },
     onError: (err) => {
       console.error(err.message);
@@ -35,10 +36,10 @@ export default function ClientSide() {
   async function handleSubmit() {
     if (!blockSubmit) {
       if (content !== "") {
-        if (content.length > 750) {
-          alert("Please keep posts under 750 characters");
+        if (content.length > 1250) {
+          alert(`Please keep posts under 1250 characters (${content.length})`);
         } else {
-          if (content.length < 25) {
+          if (content.length < 5) {
             alert("Please add more content before posting");
           } else {
             createPost.mutate({ content, imageUrls, tags });
