@@ -28,7 +28,7 @@ export default function NavBar() {
   async function refreshEmbed() {
     // void seedAllData()
     const resp = await updateEmbed();
-    if (resp === 0) {
+    if (resp === 1) {
       alert("Failed to refresh user embed (user?.userId)");
     } else {
       location.reload();
