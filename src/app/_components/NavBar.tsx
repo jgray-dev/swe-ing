@@ -10,16 +10,16 @@ import { TfiReload } from "react-icons/tfi";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { IoIosSearch } from "react-icons/io";
 import { CiSquarePlus } from "react-icons/ci";
-import {FaRegUserCircle} from "react-icons/fa";
-import {useUserState} from "~/app/_functions/store";
-import {VscAccount} from "react-icons/vsc";
+import { FaRegUserCircle } from "react-icons/fa";
+import { useUserState } from "~/app/_functions/store";
+import { VscAccount } from "react-icons/vsc";
 
 export default function NavBar() {
   const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isMounted, setIsMounted] = useState(false);
-  const {user_id} = useUserState(state=>state)
+  const { user_id } = useUserState((state) => state);
 
   useEffect(() => {
     setIsMounted(true);
@@ -54,11 +54,13 @@ export default function NavBar() {
     >
       {!searchOpen ? (
         <>
-          <Link href={"/"}  title={"Home"}>
+          <Link href={"/"} title={"Home"}>
             <IoHomeOutline className="h-7 w-7 cursor-pointer stroke-zinc-400 duration-200 hover:stroke-white" />
           </Link>
-          <div onMouseDown={() => refreshEmbed()} title={"Refresh recommendations"}>
-            
+          <div
+            onMouseDown={() => refreshEmbed()}
+            title={"Refresh recommendations"}
+          >
             <TfiReload className="uration-500 h-7 w-7 cursor-pointer fill-zinc-400 duration-200 ease-in-out hover:-rotate-180 hover:fill-white" />
           </div>
           <div title={"Search posts"}>
@@ -76,7 +78,11 @@ export default function NavBar() {
             <SignedIn>
               <div className="h-fit min-w-8">
                 <Link href={`/user/${user_id}`}>
-                  <VscAccount  className={"w-6 h-6 text-zinc-400 hover:text-white duration-200"}/>
+                  <VscAccount
+                    className={
+                      "h-6 w-6 text-zinc-400 duration-200 hover:text-white"
+                    }
+                  />
                 </Link>
               </div>
             </SignedIn>
