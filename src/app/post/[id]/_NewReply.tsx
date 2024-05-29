@@ -29,11 +29,11 @@ export default function NewReply({ closeReply }) {
 
   function handleSubmit() {
     if (content.length > 5) {
-      if (content.length < 250) {
+      if (content.length < 750) {
         setBlockSubmit(true);
         createComment.mutate({ content, post_id });
       } else {
-        alert(`Max reply length 250 characters (${content.length})`);
+        alert(`Max reply length 750 characters (${content.length})`);
       }
     } else {
       alert("Please add more content before replying");
