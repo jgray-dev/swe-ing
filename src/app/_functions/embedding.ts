@@ -12,21 +12,29 @@ export async function getEmbedding(text: string, tags?: string) {
   return embedding;
 }
 
-export async function getAverageEmbedding(embeddings: number[][]) {
+export async function getAverageEmbedding(
+  embeddings1: number[],
+  weight1: number,
+  embeddings2: number[][],
+  weight2: number,
+) {
   const average: number[] = [];
+  const totalWeight = weight1 + weight2;
   for (let i = 0; i < 1536; i++) {
-    let sum = 0;
-    let count = 0;
-
-    for (const item of embeddings) {
+    let weightedSum = 0;
+    if (embeddings1[i] !== undefined) {
+      // @ts-expect-error fts
+      weightedSum += embeddings1[i] * weight1;
+    }
+    for (const item of embeddings2) {
       if (item[i] !== undefined) {
-        // @ts-expect-error fuck typescript
-        sum += item[i];
-        count++;
+        // @ts-expect-error fts
+        weightedSum += item[i] * weight2;
       }
     }
-    average[i] = count > 0 ? sum / count : 0;
+    average[i] = weightedSum / totalWeight;
   }
+
   return average;
 }
 
@@ -35,7 +43,6 @@ export async function getPostEmbeddings(postIds: number[]) {
   if (postIds.length === 0) {
     return [];
   }
-
   const allEmbeds = [];
   for (const id of postIds) {
     const idValue = await embeddingFromID("posts", id);
