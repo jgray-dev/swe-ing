@@ -32,7 +32,9 @@ export function UserDataUpdater() {
           clerk_id: user.id,
           name: `${user.fullName}`,
         });
-        void await updateUserEmbed(user.id)
+        console.log("update user embed here")
+        //TODO: Update user embed here
+        // void await updateUserEmbed(user.id)
       })();
     }
   }, [user, setData]);
