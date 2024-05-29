@@ -1,36 +1,69 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { getDbUserFromId, isUserFollowing } from "~/server/api/queries";
+import {
+  getDbUserFromId,
+  isUserFollowing,
+  resetUserEmbed,
+  updateUserEmbed,
+  updateUserProfile,
+} from "~/server/api/queries";
 import { useUserState } from "~/app/_functions/store";
 import { VscLoading } from "react-icons/vsc";
 import Link from "next/link";
 import Image from "next/image";
+import { UserButton } from "@clerk/nextjs";
 
 export default function UserPage({ params }: { params: { id: string } }) {
+  const { user_id, clerk_id } = useUserState((state) => state);
+  const [isUser, setIsUser] = useState<boolean>(Number(params.id) === user_id);
   const [userId] = useState<number>(Number(params.id));
   const [fullUserCard, setFullUserCard] = useState<React.ReactElement>(
     <VscLoading className={"animate-roll mx-auto h-10 w-10"} />,
   );
-  const { user_id } = useUserState((state) => state);
+  const [newBio, setNewBio] = useState("");
+  const [newWebsite, setNewWebsite] = useState("");
+  const [newSkills, setNewSkills] = useState("");
+  const [newLocation, setNewLocation] = useState("");
 
   useEffect(() => {
     if (user_id !== 0) {
       void userCard();
+      setIsUser(Number(params.id) === user_id);
     }
     //eslint-disable-next-line
   }, [user_id]);
+
+  useEffect(() => {
+    void userCard();
+  }, [isUser]);
 
   function followUser() {
     console.log("Follow user");
   }
 
+  async function saveProfile() {
+    console.log(newBio);
+    console.log(newSkills);
+    console.log(newLocation);
+    console.log(newWebsite);
+    const response = await updateUserProfile(
+      newBio,
+      newLocation,
+      newSkills,
+      newWebsite,
+    );
+    console.log(response);
+  }
+
   async function userCard() {
     const following = await isUserFollowing(userId, user_id);
-    console.log(!!following);
     const fullUser = await getDbUserFromId(userId);
-    console.log("Full user:");
-    console.log(fullUser);
-
+    if (fullUser) {
+      setNewBio(fullUser.bio || "");
+      setNewWebsite(fullUser.website || "");
+      setNewSkills(fullUser.skills || "");
+      setNewLocation(fullUser.location || "");
+    }
     fullUser
       ? setFullUserCard(
           <div
@@ -52,7 +85,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
                   />
                 </div>
                 <button
-                  className={`mt-4 rounded-full border-2 border-white/50 px-4 py-2 ${!!following ? "bg-red-400" : "bg-white/30"} text-white/80 hover:text-white`}
+                  className={`mt-4 rounded-full border-2 border-white/50 px-4 py-2 ${isUser ? "cursor-not-allowed" : "cursor-pointer"} ${!!following ? "bg-red-400" : "bg-white/30"} text-white/80 hover:text-white`}
                   onClick={() => followUser()}
                 >
                   {!!following ? "Unfollow" : "Follow"}
@@ -119,12 +152,119 @@ export default function UserPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div
-      className={
-        "fixed left-0 top-0 h-screen w-screen overflow-hidden bg-black/10 pt-20 text-white"
-      }
-    >
+    <div className="fixed left-0 top-0 h-screen w-screen overflow-y-scroll bg-black/10 pt-20 text-white">
+
       {fullUserCard}
+      {isUser ? (
+        <div
+          className={
+            "mx-auto mb-20 mt-12 w-screen bg-white/10 p-4 text-left sm:w-[30rem]"
+          }
+        >
+          <div className={"pb-8 text-2xl text-white"}>Account settings</div>
+          <div className={"flex w-full flex-col"}>
+            <div className={"flex flex-row justify-between"}>
+              <div className={"pt-[11px]"}>Account security</div>
+              <div className={""}>
+                <UserButton
+                  appearance={{
+                    elements: {
+                      userButtonAvatarBox: "w-10 h-10",
+                    },
+                  }}
+                />
+              </div>
+            </div>
+            <div className={"flex flex-row justify-between py-2"}>
+              <div className={"pt-2.5"}>Refresh recommendations</div>
+              <div className={""}>
+                <button
+                  className={
+                    "rounded-lg border-2 border-red-400 bg-red-500 px-4 py-2 text-zinc-200 duration-100 hover:bg-red-400 hover:text-white"
+                  }
+                  onClick={() => updateUserEmbed(clerk_id)}
+                >
+                  Refresh
+                </button>
+              </div>
+            </div>
+            <div className={"flex flex-row justify-between py-2"}>
+              <div className={"pt-2.5"}>Reset recommendations</div>
+              <div className={""}>
+                <button
+                  className={
+                    "rounded-lg border-2 border-red-400 bg-red-500 px-4 py-2 text-zinc-200 duration-100 hover:bg-red-400 hover:text-white"
+                  }
+                  onClick={() => resetUserEmbed(clerk_id)}
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className={"w-full pt-12"}>
+            <div className={"text-md"}>
+              <span className={"text-xl"}>Change account details</span>
+            </div>
+            <div className={"mt-2"}>
+              <div>Bio</div>
+              <textarea
+                className={
+                  "h-36 w-3/4 resize-none rounded-lg bg-white/25 p-2 text-white placeholder-zinc-400"
+                }
+                placeholder={"Enter bio here"}
+                value={newBio}
+                onChange={(e) => setNewBio(e.target.value)}
+              ></textarea>
+            </div>
+            <div className={"my-2"}>
+              <div>Website</div>
+              <input
+                className={
+                  "w-3/4 rounded-lg bg-white/25 p-2 text-white placeholder-zinc-400"
+                }
+                placeholder={"Enter website here"}
+                value={newWebsite}
+                onChange={(e) => setNewWebsite(e.target.value)}
+              ></input>
+            </div>
+            <div className={"my-2"}>
+              <div>Skills</div>
+              <input
+                className={
+                  "w-3/4 rounded-lg bg-white/25 p-2 text-white placeholder-zinc-400"
+                }
+                placeholder={"Separate skills using ,"}
+                value={newSkills}
+                onChange={(e) => setNewSkills(e.target.value)}
+              ></input>
+            </div>
+            <div className={"my-2"}>
+              <div>Location</div>
+              <input
+                className={
+                  "w-3/4 rounded-lg bg-white/25 p-2 text-white placeholder-zinc-400"
+                }
+                placeholder={"Separate skills using ,"}
+                value={newLocation}
+                onChange={(e) => setNewLocation(e.target.value)}
+              ></input>
+            </div>
+            <div className={"mt-4"}>
+              <button
+                className={
+                  "rounded-full bg-green-600 px-4 py-2 hover:bg-green-500"
+                }
+                onMouseDown={() => saveProfile()}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
