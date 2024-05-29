@@ -20,7 +20,7 @@ export default function LikeButton({
   const createPostLike = api.likes.create.useMutation({
     onSuccess: (data) => {
       if (!data) {
-        alert("Erorr creating post");
+        alert("Erorr creating like");
         return;
       }
     },
