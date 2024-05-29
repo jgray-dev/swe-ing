@@ -36,8 +36,9 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
           void (await deleteProfile(body));
         }
         if (body.type === "session.created") {
-          console.log("Session created for user ", body.data.user_id);
           if (body.data.user_id) {
+            //TODO: Refresh user embed here
+            console.log("refresh user embed here");
             void (await updateUserEmbed(body.data.user_id));
           }
         }

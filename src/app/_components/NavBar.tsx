@@ -2,7 +2,7 @@
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { updateEmbed } from "~/server/api/queries";
 
 import { IoHomeOutline } from "react-icons/io5";
@@ -12,7 +12,6 @@ import { IoIosSearch } from "react-icons/io";
 import { CiSquarePlus } from "react-icons/ci";
 
 export default function NavBar() {
-  
   const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,9 +31,7 @@ export default function NavBar() {
     if (resp === 0) {
       alert("Failed to refresh user embed (user?.userId)");
     } else {
-      router.refresh();
-      router.push("/");
-      console.info("Refreshed user's embed.");
+      location.reload();
     }
   }
 

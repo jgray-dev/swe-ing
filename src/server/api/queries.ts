@@ -21,6 +21,7 @@ import { auth } from "@clerk/nextjs/server";
 import {
   embeddingFromID,
   insertPinecone,
+  pineconeDelete,
   searchPinecone,
 } from "~/server/api/server-only";
 
@@ -33,8 +34,8 @@ export async function dbEditPost(post: post, content: string, user_id: number) {
         updated_at: Date.now(),
       })
       .where(and(eq(posts.author_id, user_id), eq(posts.id, post.id)));
-    const newEmbedding = await getEmbedding(content)
-    void await insertPinecone("posts", newEmbedding, post.id)
+    const newEmbedding = await getEmbedding(content);
+    void (await insertPinecone("posts", newEmbedding, post.id));
     return true;
   } catch {
     return false;
@@ -71,24 +72,19 @@ export async function getDbUserFromId(user_id: number) {
       clerk_id: false,
       recent_likes: false,
     },
+    with: {
+      posts: true,
+    },
   });
 }
 
 export async function isUserFollowing(user_id: number, following_id: number) {
   return db.query.follows.findFirst({
-    where: 
-      and(
-        eq(follows.user_id, user_id),
-        eq(follows.following_user_id, following_id),
+    where: and(
+      eq(follows.user_id, user_id),
+      eq(follows.following_user_id, following_id),
     ),
   });
-}
-
-export async function dbDeletePost(post: post) {
-  // await db.delete(comments).where(eq(comments.post_id, post.id));
-  await db.delete(likes).where(eq(likes.post_id, post.id));
-  await db.delete(posts).where(eq(posts.id, post.id));
-  return "Deleted";
 }
 
 export async function singlePost(post_id: number) {
@@ -148,15 +144,15 @@ export async function getHomePageOrder(user_id?: number) {
         );
         return relevant.map((id) => Number(id));
       } else {
-        console.log("NO USER ID FOUND. NOTHING TO RETURN (2)");
+        console.log("No user embedding found");
         return [];
       }
     } else {
-      console.log("NO USER ID FOUND. NOTHING TO RETURN (1)");
+      console.log("No user.id found");
       return [];
     }
   } else {
-    console.log("NO USER ID FOUND. NOTHING TO RETURN (0)");
+    console.log("No user_id given");
     return [];
   }
 }
@@ -205,17 +201,11 @@ export async function nextHomePage(
           return indexA - indexB;
         });
       } else {
-        console.log("postIds length after slice (getHomePage)");
         return null;
       }
-    } else {
-      console.log("user?.id && postIds (getHomePage)");
     }
-  } else {
-    console.log("no userID (getHomePage)");
   }
   // No userID or postIds list or whatever - return chronological home page
-  console.log("Returning chrono home feed");
   return db.query.posts.findMany({
     orderBy: desc(posts.updated_at),
     limit: pageSize,
@@ -252,7 +242,6 @@ export async function nextHomePage(
 // }
 
 export async function updateProfile(profile: profile) {
-  console.log("updateProfile()");
   return db
     .update(users)
     .set({
@@ -267,21 +256,26 @@ export async function createProfile(profile: profile) {
   const user = await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.clerk_id, profile.data.id),
   });
-  console.log(
-    "createProfile called. Ideally this value is undefined because its a query for that clerk id: ",
-    user,
-  );
   if (!user) {
-    console.log("Creating user");
-    const newUser = await db.insert(users).values({
-      clerk_id: profile.data.id,
-      name: `${profile.data.first_name ? profile.data.first_name : "Unknown"} ${profile.data.last_name ? profile.data.last_name : ""} `,
-      image_url: profile.data.image_url,
-      recent_likes: [],
-    });
-    console.log("Created user: ", newUser);
-    return newUser;
+    return db
+      .insert(users)
+      .values({
+        clerk_id: profile.data.id,
+        name: `${profile.data.first_name ? profile.data.first_name : "Unknown"} ${profile.data.last_name ? profile.data.last_name : ""} `,
+        image_url: profile.data.image_url,
+        recent_likes: [],
+        new_likes: [],
+      })
+      .returning();
   }
+}
+
+export async function dbDeletePost(post: post) {
+  void (await pineconeDelete([post.id], "posts"));
+  await db.delete(comments).where(eq(comments.post_id, post.id));
+  await db.delete(likes).where(eq(likes.post_id, post.id));
+  await db.delete(posts).where(eq(posts.id, post.id));
+  return "Deleted";
 }
 
 export async function deleteProfile(profile: profile) {
@@ -289,10 +283,27 @@ export async function deleteProfile(profile: profile) {
   const user = await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.clerk_id, profile.data.id),
   });
+  console.log("Got user");
   if (user) {
-    await db.delete(posts).where(eq(posts.author_id, user.id));
-    // await db.delete(comments).where(eq(comments.author_id, user.id));
-    await db.delete(likes).where(eq(likes.user_id, user.id));
+    const deletedPosts: { post_id: number }[] = await db
+      .delete(posts)
+      .where(eq(posts.author_id, user.id))
+      .returning({ post_id: posts.id });
+    console.log("Deleted posts (w/ return)");
+    const postIds = deletedPosts.map((post) => post.post_id);
+    console.log("Converted post {}[] to []");
+    await pineconeDelete(postIds, "posts");
+    console.log("Deleted user's posts from pinecone");
+    await db
+      .delete(comments)
+      .where(
+        or(eq(comments.author_id, user.id), inArray(comments.post_id, postIds)),
+      );
+    console.log("Deleted comments associated with post []");
+    await db
+      .delete(likes)
+      .where(or(eq(likes.user_id, user.id), inArray(likes.post_id, postIds)));
+    console.log("Deleted likes associated with user");
     await db
       .delete(follows)
       .where(
@@ -301,6 +312,8 @@ export async function deleteProfile(profile: profile) {
           eq(follows.following_user_id, user.id),
         ),
       );
+    console.log("Deleted follows associated with user");
+    console.log(`Deleting user ${profile.data.id}`);
     return db.delete(users).where(eq(users.clerk_id, profile.data.id));
   } else {
     console.log("User not found");
@@ -349,6 +362,29 @@ export async function updateUserEmbed(userId: string) {
     where: eq(users.clerk_id, userId),
   });
   if (user) {
+    const following = await db.query.follows.findMany({
+      where: eq(follows.user_id, user.id),
+      with: {
+        following_user: {
+          columns: {},
+          with: {
+            posts: {
+              columns: {
+                id: true,
+              },
+            },
+          },
+        },
+      },
+    });
+    const followingPosts = [];
+    for (const data of following) {
+      followingPosts.push(data.following_user.posts.map((post) => post.id));
+    }
+    // const followingEmbeds = await getPostEmbeddings(followingPosts.flat())
+    // const followingEmbed = await getAverageEmbedding(followingEmbeds)
+    console.log("Average following embed:");
+    // console.log(followingEmbed)
     const embeddings = await getPostEmbeddings(user.recent_likes);
     if (embeddings.length > 0) {
       const userEmbedding = await getAverageEmbedding(embeddings);
@@ -524,13 +560,14 @@ const tweets = [
   "I'm excited to see what the future holds. With all the challenges we face, I still believe in the power of human ingenuity and compassion.",
 ];
 
+// eslint-disable-next-line
 export async function seedAllData() {
   console.log("Seeding data");
   for (const item of tweets) {
     const newPost = await db
       .insert(posts)
       .values({
-        author_id: 10,
+        author_id: 13,
         content: `${item}`,
         post_tags: "",
         image_urls: [],

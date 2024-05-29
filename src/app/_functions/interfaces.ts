@@ -46,9 +46,9 @@ export interface comment {
   content: string;
   created_at: number;
   author: {
-    id: number,
-    image_url: string,
-    name: string,
+    id: number;
+    image_url: string;
+    name: string;
   };
 }
 

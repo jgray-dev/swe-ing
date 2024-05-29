@@ -14,11 +14,11 @@ import { GoCommentDiscussion } from "react-icons/go";
 import LikeButton from "~/app/_components/LikeButton";
 import ContextMenu from "~/app/_components/ContextMenu";
 import { getTime } from "~/app/_functions/functions";
-import {useUserState} from "~/app/_functions/store";
-import {VscLoading} from "react-icons/vsc";
+import { useUserState } from "~/app/_functions/store";
+import { VscLoading } from "react-icons/vsc";
 
 export default function HomePage() {
-  const {user_id} = useUserState(state => state)
+  const { user_id } = useUserState((state) => state);
   const [loading, setLoading] = useState(false);
   const [end, setEnd] = useState(false);
   const [page, setPage] = useState(1);
@@ -38,7 +38,7 @@ export default function HomePage() {
       setPostOrder(hpo);
       void (await fetchData(hpo));
     } else {
-      console.info("Waiting for user state")
+      console.info("Waiting for user state");
     }
   }
 
@@ -76,7 +76,8 @@ export default function HomePage() {
     const data = await nextHomePage(page, user_id, postOrder);
     if (!data) {
       console.warn("No data returned from server");
-      setEnd(true)
+      setEnd(true);
+      setLoading(false);
       return;
     }
     if (data.length > 0) {
@@ -216,7 +217,9 @@ export default function HomePage() {
                 dbliked={liked}
                 dblikes={post.likes ? post.likes.length : 0}
               />
-              <div className={"group flex flex-row text-zinc-400 cursor-pointer"}>
+              <div
+                className={"group flex cursor-pointer flex-row text-zinc-400"}
+              >
                 <Link href={`/post/${post.id}`}>
                   <GoCommentDiscussion
                     className={
@@ -257,7 +260,11 @@ export default function HomePage() {
         <div className={"overflow-x-hidden overflow-y-scroll"}>
           {cards}
           <div className={"pb-20 pt-24 text-center"}>
-            {!end && (loading || cards.length == 0) ? <VscLoading className={"animate-roll w-10 h-10 mx-auto"} /> : ""}
+            {!end && (loading || cards.length == 0) ? (
+              <VscLoading className={"animate-roll mx-auto h-10 w-10"} />
+            ) : (
+              ""
+            )}
             <br />
             <br />
             <br />

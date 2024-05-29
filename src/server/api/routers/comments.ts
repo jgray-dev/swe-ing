@@ -1,18 +1,15 @@
 import { z } from "zod";
 
-import {
-  authedProcedure,
-  createTRPCRouter,
-} from "~/server/api/trpc";
-import {comments, posts, users} from "~/server/db/schema";
-import {eq} from "drizzle-orm/sql/expressions/conditions";
+import { authedProcedure, createTRPCRouter } from "~/server/api/trpc";
+import { comments, posts, users } from "~/server/db/schema";
+import { eq } from "drizzle-orm/sql/expressions/conditions";
 
 export const commentsRouter = createTRPCRouter({
   create: authedProcedure
     .input(
       z.object({
         content: z.string().min(1),
-        post_id: z.number().min(1)
+        post_id: z.number().min(1),
       }),
     )
     .mutation(async ({ ctx, input }) => {

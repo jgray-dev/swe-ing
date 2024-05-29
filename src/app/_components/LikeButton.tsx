@@ -20,7 +20,7 @@ export default function LikeButton({
   const createPostLike = api.likes.create.useMutation({
     onSuccess: (data) => {
       if (!data) {
-        alert("Erorr creating post");
+        alert("Erorr creating like");
         return;
       }
     },
@@ -41,7 +41,9 @@ export default function LikeButton({
   }
   return (
     <div
-      className={"group flex w-12 min-w-12 max-w-12 flex-row text-zinc-400 cursor-pointer"}
+      className={
+        "group flex w-12 min-w-12 max-w-12 cursor-pointer flex-row text-zinc-400"
+      }
       onMouseDown={() => likePost()}
     >
       {liked ? (
