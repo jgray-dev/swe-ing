@@ -43,8 +43,7 @@ export const likesRouter = createTRPCRouter({
           return "Unliked";
         }
         // Like the post
-        const newLikes = [input.post_id, ...(user.recent_likes ?? [])];
-        const recentLikes = newLikes.slice(0, 10);
+        const newLikes = [input.post_id, ...(user.new_likes ?? [])];
         await ctx.db.insert(likes).values({
           user_id: user.id,
           post_id: input.post_id,
@@ -52,9 +51,12 @@ export const likesRouter = createTRPCRouter({
         await ctx.db
           .update(users)
           .set({
-            recent_likes: recentLikes,
+            new_likes: newLikes,
           })
           .where(eq(users.id, user.id));
+        if (newLikes.length > 4) {
+          void updateUserEmbed(user.clerk_id);
+        }
         return "Liked";
       } else {
         return "NO USER";

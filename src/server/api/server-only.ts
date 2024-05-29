@@ -40,7 +40,7 @@ export async function embeddingFromID(table: string, queryID: number) {
     includeValues: true,
   });
   if (response.matches.length > 0) {
-    return response.matches[0]?.values;
+    return response.matches[0]?.values as number[];
   }
 }
 

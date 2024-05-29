@@ -121,7 +121,6 @@ export default function ClientSide() {
                   }}
                   onClientUploadComplete={(res) => {
                     setImageUrls(res.map((img) => img.url));
-                    console.log(res);
                     setBlockSubmit(false);
                   }}
                 />
