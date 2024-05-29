@@ -17,7 +17,7 @@ import {
   getEmbedding,
   getPostEmbeddings,
 } from "~/app/_functions/embedding";
-import {auth} from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import {
   embeddingFromID,
   insertPinecone,
@@ -25,9 +25,13 @@ import {
   searchPinecone,
 } from "~/server/api/server-only";
 
-
-export async function updateUserProfile(newBio: string, newLocation: string, newSkills: string, newWebsite: string) {
-  const clerkUser = auth()
+export async function updateUserProfile(
+  newBio: string,
+  newLocation: string,
+  newSkills: string,
+  newWebsite: string,
+) {
+  const clerkUser = auth();
   if (clerkUser?.userId) {
     return db
       .update(users)
@@ -35,7 +39,7 @@ export async function updateUserProfile(newBio: string, newLocation: string, new
         bio: newBio,
         location: newLocation,
         skills: newSkills,
-        website: newWebsite
+        website: newWebsite,
       })
       .where(eq(users.clerk_id, clerkUser.userId))
       .returning();
@@ -373,9 +377,9 @@ export async function resetUserEmbed(userId: string) {
         new_likes: [],
       })
       .where(eq(users.clerk_id, userId));
-    return 0
+    return 0;
   }
-  return 1
+  return 1;
 }
 
 export async function updateUserEmbed(userId: string) {
