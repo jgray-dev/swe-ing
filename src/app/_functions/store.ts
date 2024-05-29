@@ -25,16 +25,16 @@ export function UserDataUpdater() {
 
   React.useEffect(() => {
     if (user) {
-      (async () => {
+      void (async () => {
         const dbUser = await getDbUser(user.id);
+        if (!dbUser) {
+          location.reload()
+        }
         setData({
           user_id: dbUser?.id,
           clerk_id: user.id,
           name: `${user.fullName}`,
         });
-        console.log("update user embed here");
-        //TODO: Update user embed here
-        // void await updateUserEmbed(user.id)
       })();
     }
   }, [user, setData]);

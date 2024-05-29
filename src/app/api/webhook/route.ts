@@ -9,6 +9,9 @@ import {
 } from "~/server/api/queries";
 import type { profile } from "~/app/_functions/interfaces";
 
+
+export const maxDuration = 300;
+
 export async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST" || req.method == "OPTIONS") {
     try {
