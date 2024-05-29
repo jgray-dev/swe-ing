@@ -138,10 +138,7 @@ export async function getHomePageOrder(user_id?: number) {
     if (user?.id) {
       const userEmbedding = await embeddingFromID("users", user.id);
       if (userEmbedding) {
-        const relevant = await searchPinecone(
-          "posts",
-          userEmbedding as number[],
-        );
+        const relevant = await searchPinecone("posts", userEmbedding);
         return relevant.map((id) => Number(id));
       } else {
         console.log("No user embedding found");
@@ -352,8 +349,9 @@ export async function updateEmbed() {
   const user = auth();
   if (user?.userId) {
     void (await updateUserEmbed(user?.userId));
-  } else {
     return 0;
+  } else {
+    return 1;
   }
 }
 
@@ -377,26 +375,37 @@ export async function updateUserEmbed(userId: string) {
         },
       },
     });
-    const followingPosts = [];
-    for (const data of following) {
-      followingPosts.push(data.following_user.posts.map((post) => post.id));
+    let oldEmbedding = await embeddingFromID("users", user.id);
+    if (!oldEmbedding) {
+      oldEmbedding = [];
+      for (let i = 0; i < 1535; i++) {
+        oldEmbedding.push(0);
+      }
+      oldEmbedding.push(0.000001);
     }
-    // const followingEmbeds = await getPostEmbeddings(followingPosts.flat())
-    // const followingEmbed = await getAverageEmbedding(followingEmbeds)
-    console.log("Average following embed:");
-    // console.log(followingEmbed)
-    const embeddings = await getPostEmbeddings(user.recent_likes);
-    if (embeddings.length > 0) {
-      const userEmbedding = await getAverageEmbedding(embeddings);
+    const rlAmount = user.recent_likes.length;
+    const nlAmount = user.new_likes.length;
+    const newEmbeddings = await getPostEmbeddings(user.new_likes);
+    if (newEmbeddings.length > 0 && oldEmbedding) {
+      const userEmbedding = await getAverageEmbedding(
+        oldEmbedding,
+        rlAmount,
+        newEmbeddings,
+        nlAmount,
+      );
       void (await insertPinecone("users", userEmbedding, user.id));
+      await db
+        .update(users)
+        .set({
+          recent_likes: [...user.recent_likes, ...user.new_likes],
+          new_likes: [],
+        })
+        .where(eq(users.id, user.id));
       console.log(`Updated user embedding for user ${user.id}`);
-    } else {
-      console.warn("Cannot update user embedding - not enough data");
+      return 0;
     }
-  } else {
-    console.log("Cannot find user to update user embedding");
   }
-  return 0;
+  return 1;
 }
 
 const tweets = [
