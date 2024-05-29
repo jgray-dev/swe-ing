@@ -40,6 +40,7 @@ export const postsRouter = createTRPCRouter({
         void (await insertPinecone("posts", embedding, newPost[0]?.id));
         return newPost;
       } else {
+        console.log("No user found")
         return null;
       }
     }),
