@@ -2,7 +2,7 @@ import { authedProcedure, createTRPCRouter } from "~/server/api/trpc";
 import { z } from "zod";
 import { likes, users } from "~/server/db/schema";
 import { and, eq } from "drizzle-orm/sql/expressions/conditions";
-import {updateUserEmbed} from "~/server/api/queries";
+import { updateUserEmbed } from "~/server/api/queries";
 
 export const likesRouter = createTRPCRouter({
   create: authedProcedure
