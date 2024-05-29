@@ -23,10 +23,10 @@ export default function ClientSide() {
         alert("Erorr creating post");
         return;
       }
-      router.push(`/post/${data[0]?.id}`);
       setContent("");
       setTags("");
       setImageUrls([]);
+      router.push(`/post/${data[0]?.id}`);
     },
     onError: (err) => {
       console.error(err.message);
