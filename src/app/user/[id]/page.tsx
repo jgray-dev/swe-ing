@@ -52,6 +52,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
       newSkills,
       newWebsite,
     );
+    location.reload()
     console.log(response);
   }
 
