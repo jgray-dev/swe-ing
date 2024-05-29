@@ -8,7 +8,7 @@ import { FaImages } from "react-icons/fa";
 import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/nextjs";
 import { api } from "~/trpc/react";
 import { HiOutlineXMark } from "react-icons/hi2";
-import {VscLoading} from "react-icons/vsc";
+import { VscLoading } from "react-icons/vsc";
 
 export default function ClientSide() {
   const router = useRouter();
@@ -133,7 +133,13 @@ export default function ClientSide() {
               className={`mb-4 mt-12 h-8 w-full select-none rounded-full bg-white/70 font-bold text-black/90 duration-100 hover:bg-white/80 hover:text-black ${blockSubmit ? "cursor-progress" : "cursor-pointer"}`}
               onClick={() => handleSubmit()}
             >
-              <div>{blockSubmit ? <VscLoading className={"animate-roll w-8 h-8 mx-auto"}/> : "Create post"}</div>
+              <div>
+                {blockSubmit ? (
+                  <VscLoading className={"animate-roll mx-auto h-8 w-8"} />
+                ) : (
+                  "Create post"
+                )}
+              </div>
             </button>
           </div>
         </div>
