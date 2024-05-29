@@ -114,7 +114,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
   async function getPostCard() {
     const post = (await singlePost(postId)) as post;
     if (post) {
-      setRealPost(true)
+      setRealPost(true);
       const liked =
         post.likes?.some((like) => like.user_id === user_id) ?? false;
       const key = (post.created_at + post.id) / Math.random();
@@ -239,8 +239,12 @@ export default function PostPage({ params }: { params: { id: string } }) {
         </div>
       );
     } else {
-      setRealPost(false)
-      return (<div className={"text-red-600 text-xl w-full text-center"}>Post not found</div>);
+      setRealPost(false);
+      return (
+        <div className={"w-full text-center text-xl text-red-600"}>
+          Post not found
+        </div>
+      );
     }
   }
 
@@ -266,20 +270,24 @@ export default function PostPage({ params }: { params: { id: string } }) {
             {commentCards}
             <div className={"text-center"}>
               {end ? (
-                realPost?
-                <>
-                  <span className={""}>
-                    The end
-                    <br />
-                  </span>
-                  <div
-                    className={"cursor-pointer select-none underline"}
-                    onClick={() => commentOnPost()}
-                  >
-                    How about replying to this post!
+                realPost ? (
+                  <>
+                    <span className={""}>
+                      The end
+                      <br />
+                    </span>
+                    <div
+                      className={"cursor-pointer select-none underline"}
+                      onClick={() => commentOnPost()}
+                    >
+                      How about replying to this post!
+                    </div>
+                  </>
+                ) : (
+                  <div className={"text-md w-full text-white underline"}>
+                    <Link href={"/"}>Go home</Link>
                   </div>
-                </>
-                  :<div className={"w-full text-md text-white underline"}><Link href={"/"}>Go home</Link></div>
+                )
               ) : (
                 <VscLoading className={"animate-roll mx-auto h-10 w-10"} />
               )}
