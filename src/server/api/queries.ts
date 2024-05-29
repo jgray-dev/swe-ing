@@ -311,6 +311,8 @@ export async function deleteProfile(profile: profile) {
     console.log("Converted post {}[] to []");
     await pineconeDelete(postIds, "posts");
     console.log("Deleted user's posts from pinecone");
+    await pineconeDelete([user.id], "users");
+    console.log("Deleted user's embedding from pinecone");
     await db
       .delete(comments)
       .where(
