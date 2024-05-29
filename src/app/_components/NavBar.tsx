@@ -2,8 +2,8 @@
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {useEffect, useState} from "react";
-import {seedAllData, updateEmbed} from "~/server/api/queries";
+import { useEffect, useState } from "react";
+import { updateEmbed } from "~/server/api/queries";
 
 import { IoHomeOutline } from "react-icons/io5";
 import { TfiReload } from "react-icons/tfi";
@@ -12,7 +12,6 @@ import { IoIosSearch } from "react-icons/io";
 import { CiSquarePlus } from "react-icons/ci";
 
 export default function NavBar() {
-  
   const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -27,13 +26,13 @@ export default function NavBar() {
   }
 
   async function refreshEmbed() {
-    void seedAllData()
-    // const resp = await updateEmbed();
-    // if (resp === 0) {
-    //   alert("Failed to refresh user embed (user?.userId)");
-    // } else {
-    //   location.reload()
-    // }
+    // void seedAllData()
+    const resp = await updateEmbed();
+    if (resp === 0) {
+      alert("Failed to refresh user embed (user?.userId)");
+    } else {
+      location.reload();
+    }
   }
 
   function submitSearch() {
