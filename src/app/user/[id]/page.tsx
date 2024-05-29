@@ -153,7 +153,6 @@ export default function UserPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="fixed left-0 top-0 h-screen w-screen overflow-y-scroll bg-black/10 pt-20 text-white">
-
       {fullUserCard}
       {isUser ? (
         <div
