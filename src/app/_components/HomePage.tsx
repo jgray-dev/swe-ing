@@ -77,6 +77,7 @@ export default function HomePage() {
     if (!data) {
       console.warn("No data returned from server");
       setEnd(true)
+      setLoading(false)
       return;
     }
     if (data.length > 0) {
