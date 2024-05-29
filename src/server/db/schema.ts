@@ -20,12 +20,13 @@ export const users = createTable("users", {
   website: varchar("website", { length: 255 }),
   skills: varchar("skills"),
   recent_likes: integer("recent_likes").array().notNull(),
+  new_likes: integer("new_likes").array().notNull(),
 });
 
 export const posts = createTable("posts", {
   id: serial("id").primaryKey().notNull(),
   author_id: integer("author_id").notNull().default(0),
-  content: varchar("content", { length: 750 }).notNull(),
+  content: varchar("content", { length: 1250 }).notNull(),
   image_urls: text("image_urls").$type<string[]>(),
   post_tags: varchar("post_tags").notNull().default(""),
   created_at: bigint("created_at", { mode: "number" }).notNull(),
@@ -37,7 +38,7 @@ export const comments = createTable("comments", {
   id: serial("id").primaryKey().notNull(),
   post_id: integer("post_id").notNull(),
   author_id: integer("author_id").notNull(),
-  content: varchar("content", { length: 250 }).notNull(),
+  content: varchar("content", { length: 750 }).notNull(),
   created_at: bigint("created_at", { mode: "number" }).notNull(),
 });
 
