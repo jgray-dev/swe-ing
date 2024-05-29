@@ -20,7 +20,8 @@ import {
 import { auth } from "@clerk/nextjs/server";
 import {
   embeddingFromID,
-  insertPinecone, pineconeDelete,
+  insertPinecone,
+  pineconeDelete,
   searchPinecone,
 } from "~/server/api/server-only";
 
@@ -85,7 +86,6 @@ export async function isUserFollowing(user_id: number, following_id: number) {
     ),
   });
 }
-
 
 export async function singlePost(post_id: number) {
   return db.query.posts.findFirst({
@@ -270,9 +270,8 @@ export async function createProfile(profile: profile) {
   }
 }
 
-
 export async function dbDeletePost(post: post) {
-  void await pineconeDelete([post.id], "posts")
+  void (await pineconeDelete([post.id], "posts"));
   await db.delete(comments).where(eq(comments.post_id, post.id));
   await db.delete(likes).where(eq(likes.post_id, post.id));
   await db.delete(posts).where(eq(posts.id, post.id));
@@ -284,28 +283,27 @@ export async function deleteProfile(profile: profile) {
   const user = await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.clerk_id, profile.data.id),
   });
-  console.log("Got user")
+  console.log("Got user");
   if (user) {
     const deletedPosts: { post_id: number }[] = await db
       .delete(posts)
       .where(eq(posts.author_id, user.id))
       .returning({ post_id: posts.id });
-    console.log("Deleted posts (w/ return)")
-    const postIds = deletedPosts.map((post)=>post.post_id)
-    console.log("Converted post {}[] to []")
-    await pineconeDelete(postIds, "posts")
-    console.log("Deleted user's posts from pinecone")
+    console.log("Deleted posts (w/ return)");
+    const postIds = deletedPosts.map((post) => post.post_id);
+    console.log("Converted post {}[] to []");
+    await pineconeDelete(postIds, "posts");
+    console.log("Deleted user's posts from pinecone");
     await db
       .delete(comments)
       .where(
-        or(
-          eq(comments.author_id, user.id),
-          inArray(comments.post_id, postIds),
-        ),
+        or(eq(comments.author_id, user.id), inArray(comments.post_id, postIds)),
       );
-    console.log("Deleted comments associated with post []")
-    await db.delete(likes).where(or(eq(likes.user_id, user.id), inArray(likes.post_id, postIds)));
-    console.log("Deleted likes associated with user")
+    console.log("Deleted comments associated with post []");
+    await db
+      .delete(likes)
+      .where(or(eq(likes.user_id, user.id), inArray(likes.post_id, postIds)));
+    console.log("Deleted likes associated with user");
     await db
       .delete(follows)
       .where(
@@ -314,8 +312,8 @@ export async function deleteProfile(profile: profile) {
           eq(follows.following_user_id, user.id),
         ),
       );
-    console.log("Deleted follows associated with user")
-    console.log(`Deleting user ${profile.data.id}`)
+    console.log("Deleted follows associated with user");
+    console.log(`Deleting user ${profile.data.id}`);
     return db.delete(users).where(eq(users.clerk_id, profile.data.id));
   } else {
     console.log("User not found");
