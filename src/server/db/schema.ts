@@ -33,7 +33,6 @@ export const posts = createTable("posts", {
   updated_at: bigint("updated_at", { mode: "number" }).notNull(),
 });
 
-
 export const comments = createTable("comments", {
   id: serial("id").primaryKey().notNull(),
   post_id: integer("post_id").notNull(),
@@ -62,7 +61,6 @@ export const reports = createTable("reports", {
   reported_at: bigint("reported_at", { mode: "number" }).notNull(),
 });
 
-
 // Relationships:
 
 // Give every post multiple comments/likes
@@ -75,9 +73,8 @@ export const commentsToPost = relations(comments, ({ one }) => ({
   post: one(posts, {
     fields: [comments.post_id],
     references: [posts.id],
-  })
+  }),
 }));
-
 
 //Give every comment a single post
 export const commentPostRelations = relations(comments, ({ one }) => ({
@@ -97,7 +94,6 @@ export const likeCommentRelations = relations(likes, ({ one }) => ({
     references: [users.id],
   }),
 }));
-
 
 // Give every "like" a single post
 export const likePostRelations = relations(likes, ({ one }) => ({
