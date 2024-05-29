@@ -38,9 +38,7 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
             </div>
             {comment.author.name}
             <br />
-            <span
-              className={"text-xs text-zinc-600"}
-            >
+            <span className={"text-xs text-zinc-600"}>
               {getTime(comment.created_at)} ago
             </span>
           </div>
