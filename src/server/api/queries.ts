@@ -17,13 +17,30 @@ import {
   getEmbedding,
   getPostEmbeddings,
 } from "~/app/_functions/embedding";
-import { auth } from "@clerk/nextjs/server";
+import {auth} from "@clerk/nextjs/server";
 import {
   embeddingFromID,
   insertPinecone,
   pineconeDelete,
   searchPinecone,
 } from "~/server/api/server-only";
+
+
+export async function updateUserProfile(newBio: string, newLocation: string, newSkills: string, newWebsite: string) {
+  const clerkUser = auth()
+  if (clerkUser?.userId) {
+    return db
+      .update(users)
+      .set({
+        bio: newBio,
+        location: newLocation,
+        skills: newSkills,
+        website: newWebsite
+      })
+      .where(eq(users.clerk_id, clerkUser.userId))
+      .returning();
+  }
+}
 
 export async function dbEditPost(post: post, content: string, user_id: number) {
   try {
@@ -141,7 +158,6 @@ export async function getHomePageOrder(user_id?: number) {
         const relevant = await searchPinecone("posts", userEmbedding);
         return relevant.map((id) => Number(id));
       } else {
-        console.log("No user embedding found");
         return [];
       }
     } else {
@@ -331,18 +347,7 @@ export async function deleteProfile(profile: profile) {
 
 export async function searchEmbeddings(search: string) {
   const searchEmbedding = await getEmbedding(search);
-  const pinecone = await searchPinecone("posts", searchEmbedding);
-  console.log(pinecone);
-  return pinecone;
-  // return db.query.posts.findMany({
-  //   // @ts-expect-error fuck typescript
-  //   where: (post) => inArray(post.id, pinecone.values),
-  //   with: {
-  //     author: true,
-  //     comments: true,
-  //     likes: true,
-  //   },
-  // });
+  return await searchPinecone("posts", searchEmbedding);
 }
 
 export async function updateEmbed() {
@@ -355,26 +360,44 @@ export async function updateEmbed() {
   }
 }
 
+export async function resetUserEmbed(userId: string) {
+  const user = await db.query.users.findFirst({
+    where: eq(users.clerk_id, userId),
+  });
+  if (user) {
+    await pineconeDelete([user.id], "users");
+    await db
+      .update(users)
+      .set({
+        recent_likes: [],
+        new_likes: [],
+      })
+      .where(eq(users.clerk_id, userId));
+    return 0
+  }
+  return 1
+}
+
 export async function updateUserEmbed(userId: string) {
   const user = await db.query.users.findFirst({
     where: eq(users.clerk_id, userId),
   });
   if (user) {
-    const following = await db.query.follows.findMany({
-      where: eq(follows.user_id, user.id),
-      with: {
-        following_user: {
-          columns: {},
-          with: {
-            posts: {
-              columns: {
-                id: true,
-              },
-            },
-          },
-        },
-      },
-    });
+    // const following = await db.query.follows.findMany({
+    //   where: eq(follows.user_id, user.id),
+    //   with: {
+    //     following_user: {
+    //       columns: {},
+    //       with: {
+    //         posts: {
+    //           columns: {
+    //             id: true,
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    // });
     let oldEmbedding = await embeddingFromID("users", user.id);
     if (!oldEmbedding) {
       oldEmbedding = [];
@@ -386,6 +409,9 @@ export async function updateUserEmbed(userId: string) {
     const rlAmount = user.recent_likes.length;
     const nlAmount = user.new_likes.length;
     const newEmbeddings = await getPostEmbeddings(user.new_likes);
+    if (newEmbeddings.length == 0) {
+      console.log("Nothing to refresh");
+    }
     if (newEmbeddings.length > 0 && oldEmbedding) {
       const userEmbedding = await getAverageEmbedding(
         oldEmbedding,
@@ -401,7 +427,6 @@ export async function updateUserEmbed(userId: string) {
           new_likes: [],
         })
         .where(eq(users.id, user.id));
-      console.log(`Updated user embedding for user ${user.id}`);
       return 0;
     }
   }
