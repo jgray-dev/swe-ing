@@ -34,7 +34,7 @@ export function UserDataUpdater() {
         });
       } else {
         alert("Error getting user data");
-        console.error(dbUser);
+        location.reload()
       }
     }
   }
