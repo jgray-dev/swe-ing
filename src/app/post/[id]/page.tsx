@@ -192,7 +192,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
                 }
               >
                 {post.content}
-                <div className={"mt-20 flex w-[80%] flex-wrap"}>
+                <div className={"pt-20 flex w-[80%] flex-wrap"}>
                   {post.image_urls ? (
                     post.image_urls.split(",").map((url) => {
                       return (
