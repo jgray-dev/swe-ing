@@ -82,6 +82,8 @@ export async function updateUserProfile(
       })
       .where(eq(users.clerk_id, clerkUser.userId))
       .returning();
+  } else {
+    return 1;
   }
 }
 
@@ -265,6 +267,8 @@ export async function nextHomePage(
       } else {
         return null;
       }
+    } else {
+      return null;
     }
   }
   // No userID or postIds list or whatever - return chronological home page
@@ -294,15 +298,6 @@ export async function nextHomePage(
   });
 }
 
-// export async function getSinglePost(post_id: number) {
-//   return db.query.posts.findFirst({
-//     where: eq(posts.id, post_id),
-//     columns: {
-//       embedding: false,
-//     },
-//   });
-// }
-
 export async function updateProfile(profile: profile) {
   return db
     .update(users)
@@ -329,6 +324,8 @@ export async function createProfile(profile: profile) {
         new_likes: [],
       })
       .returning();
+  } else {
+    return null;
   }
 }
 
@@ -641,7 +638,7 @@ export async function seedAllData() {
         author_id: 13,
         content: `${item}`,
         post_tags: "",
-        image_urls: [],
+        image_urls: "",
         created_at: Date.now(),
         updated_at: Date.now(),
       })
