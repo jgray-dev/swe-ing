@@ -226,7 +226,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
                     className={
                       "h-6 w-6 text-zinc-400 duration-150 hover:text-white motion-safe:hover:-translate-y-0.5 motion-safe:hover:translate-x-0.5"
                     }
-                    onClick={() => sharePost(post.id, post.content)}
+                    onMouseDown={() => sharePost(post.id, post.content)}
                   />
                 </div>
 
@@ -282,7 +282,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
                     </span>
                     <div
                       className={"cursor-pointer select-none underline"}
-                      onClick={() => commentOnPost()}
+                      onMouseDown={() => commentOnPost()}
                     >
                       How about replying to this post!
                     </div>
