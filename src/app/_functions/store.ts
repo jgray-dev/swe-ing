@@ -1,9 +1,9 @@
 "use client";
 
 import { create } from "zustand";
-import { useUser } from "@clerk/shared/react";
+import { useUser } from "@clerk/clerk-react";
 import React from "react";
-import { getDbUser, updateUserEmbed } from "~/server/api/queries";
+import { getDbUser } from "~/server/api/queries";
 
 type User = {
   user_id: number;
@@ -20,25 +20,30 @@ export const useUserState = create<User>((set) => ({
 }));
 
 export function UserDataUpdater() {
-  const { user } = useUser();
+  const { user, isLoaded, isSignedIn } = useUser();
   const setData = useUserState((state) => state.setData);
 
-  React.useEffect(() => {
+  async function getUserData() {
     if (user) {
-      void (async () => {
-        const dbUser = await getDbUser(user.id);
-        if (!dbUser) {
-          location.reload()
-        }
+      const dbUser = await getDbUser(user.id);
+      if (dbUser) {
         setData({
-          user_id: dbUser?.id,
+          user_id: dbUser.id,
           clerk_id: user.id,
           name: `${user.fullName}`,
         });
-      })();
+      } else {
+        alert("Error getting user data");
+        console.error(dbUser)
+      }
     }
-  }, [user, setData]);
+  }
 
+  React.useEffect(() => {
+    if (user && isSignedIn) {
+      void getUserData();
+    }
+  }, [isLoaded, setData]);
   return null;
 }
 
