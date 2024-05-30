@@ -48,10 +48,10 @@ export default function UserPage({ params }: { params: { id: string } }) {
   }
 
   async function saveProfile() {
-    console.log(newBio);
-    console.log(newSkills);
-    console.log(newLocation);
-    console.log(newWebsite);
+    // console.log(newBio);
+    // console.log(newSkills);
+    // console.log(newLocation);
+    // console.log(newWebsite);
     void (await updateUserProfile(newBio, newLocation, newSkills, newWebsite));
     void userCard();
   }
