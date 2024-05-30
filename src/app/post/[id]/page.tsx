@@ -265,7 +265,11 @@ export default function PostPage({ params }: { params: { id: string } }) {
           className={"min-h-screen overflow-x-hidden overflow-y-scroll"}
           id="scrolls"
         >
-          <div className={"mb-12 mt-20 rounded-lg border border-white/70 p-2 bg-black/50 backdrop-blur-sm"}>
+          <div
+            className={
+              "mb-12 mt-20 rounded-lg border border-white/70 bg-black/50 p-2 backdrop-blur-sm"
+            }
+          >
             {postCard}
             {commentCards}
             <div className={"text-center"}>
