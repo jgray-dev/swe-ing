@@ -41,6 +41,7 @@ export interface like {
 }
 
 export interface comment {
+  id: number;
   post_id: number;
   author_id: number;
   content: string;

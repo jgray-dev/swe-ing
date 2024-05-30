@@ -2,11 +2,7 @@
 
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import {
-  getDbUser,
-  getHomePageOrder,
-  nextHomePage,
-} from "~/server/api/queries";
+import { getHomePageOrder, nextHomePage } from "~/server/api/queries";
 import Link from "next/link";
 import type { like, post } from "~/app/_functions/interfaces";
 import { CiShare1 } from "react-icons/ci";
@@ -34,11 +30,12 @@ export default function HomePage() {
 
   async function firstLoad() {
     if (user_id) {
+      console.info("firstLoad");
       const hpo = await getHomePageOrder(user_id);
       setPostOrder(hpo);
       void (await fetchData(hpo));
     } else {
-      console.info("Waiting for user state");
+      // console.info("Waiting for user state");
     }
   }
 

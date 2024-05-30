@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { authedProcedure, createTRPCRouter } from "~/server/api/trpc";
-import { comments, posts, users } from "~/server/db/schema";
+import { comments, posts } from "~/server/db/schema";
 import { eq } from "drizzle-orm/sql/expressions/conditions";
 
 export const commentsRouter = createTRPCRouter({
