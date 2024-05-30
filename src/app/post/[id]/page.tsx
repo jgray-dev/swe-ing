@@ -133,7 +133,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
               <div className={"flex flex-col"}>
                 <div
                   className={
-                    "flex w-20 min-w-20 max-w-20 flex-col items-center border-r border-white/50 pr-2 text-xs"
+                    "flex w-20 min-w-20 max-w-20 flex-col items-center border-r border-white/50 pr-2 text-center text-xs"
                   }
                 >
                   <div className="relative h-12 w-12 select-none overflow-hidden rounded-full">
@@ -188,7 +188,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
               <div
                 id={`${key + "CONTENT"}`}
                 className={
-                  "h-fit max-h-fit min-h-36 min-w-full max-w-full text-wrap break-normal pl-2 text-left"
+                  "h-fit max-h-fit min-h-36 min-w-[85%] max-w-[85%] text-wrap break-normal pl-2 text-left sm:min-w-[80%] sm:max-w-[80%]"
                 }
               >
                 {post.content}
@@ -299,7 +299,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
         >
           <div
             className={
-              "mb-12 mt-20 rounded-lg border border-white/70 bg-black/50 p-2 backdrop-blur-sm"
+              "mb-12 mt-20 rounded-lg border border-white/70 bg-black/80 p-2 backdrop-blur-sm"
             }
           >
             {postCard}

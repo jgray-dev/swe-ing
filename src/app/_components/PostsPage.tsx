@@ -130,7 +130,7 @@ export default function PostsPage({ order }: PostsPageProps) {
         id={`${key}`}
         key={key}
         className={
-          "backdrop-blur-xs z-10 my-2 min-h-fit w-[99%] translate-x-[0.5%] rounded-lg border border-white/50 bg-black/90 p-1.5 text-zinc-200 duration-300"
+          "backdrop-blur-xs z-10 my-2 min-h-fit w-[99%] translate-x-[0.5%] rounded-lg border border-white/50 bg-black/80 p-1.5 text-zinc-200 duration-300"
         }
       >
         <div className={"flex flex-col"}>
@@ -200,6 +200,29 @@ export default function PostsPage({ order }: PostsPageProps) {
                 }
               >
                 {post.content}
+                <div className={"mt-20 flex w-[80%] flex-row justify-between"}>
+                  {post.image_urls ? (
+                    post.image_urls.split(",").map((url) => {
+                      return (
+                        <div
+                          key={url}
+                          className={"m-1 max-w-[40%] cursor-pointer"}
+                        >
+                          <Image
+                            src={url}
+                            width={128}
+                            height={128}
+                            className="object-cover"
+                            alt=""
+                            sizes="128px"
+                          />
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <></>
+                  )}
+                </div>
               </div>
             </Link>
           </div>

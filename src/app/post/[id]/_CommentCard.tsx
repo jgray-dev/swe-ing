@@ -73,7 +73,7 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
                     setCommentContext(
                       <div
                         className={
-                          "rounded-context-comment backdrop-blur-xs absolute left-14 h-8 w-40 -translate-y-3/4 border border-white bg-black/90"
+                          "rounded-context-comment backdrop-blur-xs absolute left-14 h-8 w-40 -translate-y-3/4 border border-white bg-black/80"
                         }
                       >
                         <div

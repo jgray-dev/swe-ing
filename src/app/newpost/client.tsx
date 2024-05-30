@@ -95,7 +95,7 @@ export default function ClientSide() {
               Post:
               <textarea
                 className={
-                  "min-h-48 w-full rounded-md border border-white/50 bg-black/10 p-2 text-white placeholder-white/60 outline-none focus:border-white/80 focus:outline-none"
+                  "min-h-48 w-full rounded-md border border-white/50 bg-black/30 p-2 text-white placeholder-white/60 outline-none focus:border-white/80 focus:outline-none"
                 }
                 placeholder={"Enter post content here"}
                 onChange={(e) => setContent(e.target.value)}
@@ -104,7 +104,7 @@ export default function ClientSide() {
               Tags:
               <textarea
                 className={
-                  "h-16 w-full rounded-md border border-white/50 bg-black/10 p-2 text-white placeholder-white/60 outline-none focus:border-white/80 focus:outline-none"
+                  "h-16 w-full rounded-md border border-white/50 bg-black/30 p-2 text-white placeholder-white/60 outline-none focus:border-white/80 focus:outline-none"
                 }
                 placeholder={"Separate tags using ,"}
                 onChange={(e) => setTags(e.target.value)}
@@ -119,7 +119,10 @@ export default function ClientSide() {
                     return files;
                   }}
                   onUploadError={() => {
-                    alert(`Error uploading image`);
+                    alert(
+                      `Error uploading image. Did you upload too many? (max 3)`,
+                    );
+                    setBlockSubmit(false);
                   }}
                   config={{
                     mode: "auto",
