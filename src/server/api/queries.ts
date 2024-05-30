@@ -25,6 +25,28 @@ import {
   searchPinecone,
 } from "~/server/api/server-only";
 
+
+export async function followUserDb(user_id: number, following_id: number) {
+  const previous = await db.query.follows.findFirst({
+    where: and(
+      or(eq(follows.user_id, user_id), eq(follows.following_user_id, user_id)),
+      or(eq(follows.user_id, following_id), eq(follows.following_user_id, following_id)),
+    ),
+  });
+  if (previous) {
+    await db.delete(follows).where(
+      and(
+        or(eq(follows.user_id, user_id), eq(follows.following_user_id, user_id)),
+        or(eq(follows.user_id, following_id), eq(follows.following_user_id, following_id)),
+      ),
+    );
+    return "Unfollowed";
+  } else {
+    await db.insert(follows).values({ user_id, following_user_id: following_id });
+    return "Followed";
+  }
+}
+
 export async function updateUserProfile(
   newBio: string,
   newLocation: string,
@@ -82,9 +104,14 @@ export async function dbReportPost(post: post, user_id: number) {
 }
 
 export async function getDbUser(clerkId: string) {
-  return db.query.users.findFirst({
+  const user = await db.query.users.findFirst({
     where: eq(users.clerk_id, clerkId),
   });
+  if (user) {
+    return user;
+  } else {
+    return null;
+  }
 }
 export async function getDbUserFromId(user_id: number) {
   return db.query.users.findFirst({
@@ -100,12 +127,13 @@ export async function getDbUserFromId(user_id: number) {
 }
 
 export async function isUserFollowing(user_id: number, following_id: number) {
-  return db.query.follows.findFirst({
+  const following = await db.query.follows.findFirst({
     where: and(
       eq(follows.user_id, user_id),
       eq(follows.following_user_id, following_id),
     ),
   });
+  return !!following;
 }
 
 export async function singlePost(post_id: number) {
