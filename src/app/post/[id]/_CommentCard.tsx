@@ -24,7 +24,7 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
   }
 
   return (
-    <div key={key} id={`${key}`} className={"w-full border-b border-white/50 mr-2"}>
+    <div key={key} id={`${key}`} className={"w-full border-b border-white/50"}>
       <div className={"flex w-full flex-row py-4"}>
         <div className={" w-20 min-w-20 max-w-20 text-center"}>
           <div
