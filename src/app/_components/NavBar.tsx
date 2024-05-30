@@ -10,7 +10,6 @@ import { TfiReload } from "react-icons/tfi";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { IoIosSearch } from "react-icons/io";
 import { CiSquarePlus } from "react-icons/ci";
-import { FaRegUserCircle } from "react-icons/fa";
 import { useUserState } from "~/app/_functions/store";
 import { VscAccount } from "react-icons/vsc";
 
