@@ -200,7 +200,7 @@ export default function PostsPage({ order }: PostsPageProps) {
                 }
               >
                 {post.content}
-                <div className={"pt-20 flex w-[80%] flex-row justify-between"}>
+                <div className={"flex w-[80%] flex-row justify-between pt-20"}>
                   {post.image_urls ? (
                     post.image_urls.split(",").map((url) => {
                       return (
