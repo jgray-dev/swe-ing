@@ -25,24 +25,36 @@ import {
   searchPinecone,
 } from "~/server/api/server-only";
 
-
 export async function followUserDb(user_id: number, following_id: number) {
   const previous = await db.query.follows.findFirst({
     where: and(
       or(eq(follows.user_id, user_id), eq(follows.following_user_id, user_id)),
-      or(eq(follows.user_id, following_id), eq(follows.following_user_id, following_id)),
+      or(
+        eq(follows.user_id, following_id),
+        eq(follows.following_user_id, following_id),
+      ),
     ),
   });
   if (previous) {
-    await db.delete(follows).where(
-      and(
-        or(eq(follows.user_id, user_id), eq(follows.following_user_id, user_id)),
-        or(eq(follows.user_id, following_id), eq(follows.following_user_id, following_id)),
-      ),
-    );
+    await db
+      .delete(follows)
+      .where(
+        and(
+          or(
+            eq(follows.user_id, user_id),
+            eq(follows.following_user_id, user_id),
+          ),
+          or(
+            eq(follows.user_id, following_id),
+            eq(follows.following_user_id, following_id),
+          ),
+        ),
+      );
     return "Unfollowed";
   } else {
-    await db.insert(follows).values({ user_id, following_user_id: following_id });
+    await db
+      .insert(follows)
+      .values({ user_id, following_user_id: following_id });
     return "Followed";
   }
 }
