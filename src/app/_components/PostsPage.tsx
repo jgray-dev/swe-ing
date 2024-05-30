@@ -166,7 +166,7 @@ export default function PostsPage({ order }: PostsPageProps) {
                   "mr-1 h-fit min-h-0 w-20 min-w-20 max-w-20 border-r border-t border-white/50"
                 }
               >
-                <div className={"flex max-h-24 flex-wrap overflow-y-hidden"}>
+                <div className={"flex max-h-24 flex-wrap overflow-hidden"}>
                   {post.post_tags
                     ? post.post_tags.split(",").map((tag) => {
                         if (tag !== "") {
