@@ -60,7 +60,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
     } else {
       setLoading(false);
       // @ts-expect-error fts
-      const newCards = getCommentCards(newData, user_id);
+      const newCards = getCommentCards(newData.reverse(), user_id);
       setCommentCards(newCards);
       console.log("Newdata fetched", newData);
     }
@@ -288,7 +288,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
                     </div>
                   </>
                 ) : (
-                  <div className={"text-md w-full text-white underline"}>
+                  <div className={"w-full text-base text-white underline"}>
                     <Link href={"/"}>Go home</Link>
                   </div>
                 )
