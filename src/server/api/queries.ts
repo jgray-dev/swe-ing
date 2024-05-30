@@ -398,7 +398,8 @@ export async function deleteProfile(profile: profile) {
 
 export async function searchEmbeddings(search: string) {
   const searchEmbedding = await getEmbedding(search);
-  return await searchPinecone("posts", searchEmbedding);
+  const results = await searchPinecone("posts", searchEmbedding);
+  return results.map((res) => Number(res));
 }
 
 export async function updateEmbed() {

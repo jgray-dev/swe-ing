@@ -37,13 +37,6 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
         if (body.type === "user.deleted") {
           void (await deleteProfile(body));
         }
-        if (body.type === "session.created") {
-          if (body.data.user_id) {
-            //TODO: Refresh user embed here
-            console.log("refresh user embed here");
-            void (await updateUserEmbed(body.data.user_id));
-          }
-        }
         return NextResponse.json(
           { message: `Webhook received` },
           { status: 200 },

@@ -41,7 +41,7 @@ export default function NavBar() {
   function submitSearch() {
     router.push(`/search/${searchQuery}`);
     setSearchQuery("");
-    console.log(searchQuery);
+    // console.log(searchQuery);
     setSearchOpen(false);
   }
 
