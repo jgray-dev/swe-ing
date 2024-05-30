@@ -53,7 +53,7 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
               contextOpen ? (
                 <div
                   className={"mx-auto w-fit"}
-                  onClick={() => {
+                  onMouseDown={() => {
                     setContextOpen(false);
                     setCommentContext(<></>);
                   }}
@@ -68,7 +68,7 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
               ) : (
                 <div
                   className={"mx-auto w-fit"}
-                  onClick={() => {
+                  onMouseDown={() => {
                     setContextOpen(true);
                     setCommentContext(
                       <div
@@ -80,7 +80,7 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
                           className={
                             "group ml-1 flex flex-row pt-0.5 text-base text-zinc-300 duration-200 hover:text-red-500"
                           }
-                          onClick={() => deleteComment()}
+                          onMouseDown={() => deleteComment()}
                         >
                           <CiTrash className={"mr-1 mt-0.5 h-5 w-5"} />
                           <span>Delete comment</span>
