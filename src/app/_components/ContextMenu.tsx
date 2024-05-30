@@ -73,6 +73,7 @@ export default function ContextMenu({ post, id }: ContextMenuProps) {
       if (editing && textareaRef.current) {
         textareaRef.current.focus();
       }
+      //eslint-disable-next-line
     }, [editing]);
 
     async function submitEdit() {
