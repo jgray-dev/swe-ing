@@ -66,7 +66,6 @@ export default function ContextMenu({ post, id }: ContextMenuProps) {
       //TODO: Alert error copying link
     }
   }
-  const [editContent, setEditContent] = useState(post.content);
   function EditBox() {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -171,7 +170,7 @@ export default function ContextMenu({ post, id }: ContextMenuProps) {
                 "group flex flex-row border-b border-transparent text-zinc-300 duration-200 hover:text-red-500 group-hover:border-red-500"
               }
             >
-              <CiTrash className={"hover: mr-1 h-5 w-5"} />
+              <CiTrash className={"mr-1 h-5 w-5"} />
               <span>Delete post</span>
             </div>
           </div>
