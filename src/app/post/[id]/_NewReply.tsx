@@ -20,6 +20,7 @@ export default function NewReply({ closeReply }) {
       setContent("");
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       closeReply();
+      // TODO: reload page with router?
       location.reload();
     },
     onError: (err) => {
