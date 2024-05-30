@@ -5,12 +5,10 @@ import {
   createTRPCRouter,
   publicProcedure,
 } from "~/server/api/trpc";
-import { posts, users } from "~/server/db/schema";
+import { posts } from "~/server/db/schema";
 import { desc } from "drizzle-orm/sql/expressions/select";
 import { getEmbedding } from "~/app/_functions/embedding";
 import { insertPinecone } from "~/server/api/server-only";
-import { db } from "~/server/db";
-import { inArray } from "drizzle-orm/sql/expressions/conditions";
 
 export const postsRouter = createTRPCRouter({
   create: authedProcedure
