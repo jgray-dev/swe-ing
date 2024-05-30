@@ -87,7 +87,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
                 </div>
                 <button
                   className={`mt-4 rounded-full border-2 px-4 py-1 font-semibold duration-200 ${isUser ? "cursor-not-allowed" : "cursor-pointer"} ${following ? "border-black/20 bg-white text-black hover:border-black/60" : "border-white/20 bg-black text-white hover:border-white/60"}`}
-                  onClick={() => followUser(fullUser.id)}
+                  onMouseDown={() => followUser(fullUser.id)}
                 >
                   {following ? "Following" : "Follow"}
                 </button>
@@ -194,7 +194,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
                   className={
                     "rounded-lg border-2 border-red-400 bg-red-500 px-4 py-2 text-zinc-200 duration-100 hover:bg-red-400 hover:text-white"
                   }
-                  onClick={() => resetUserEmbed(clerk_id)}
+                  onMouseDown={() => resetUserEmbed(clerk_id)}
                 >
                   Reset
                 </button>

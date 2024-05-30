@@ -53,7 +53,7 @@ export default function NewReply({ closeReply }) {
             className={
               "group flex w-fit cursor-pointer flex-row border-b border-transparent text-left text-zinc-400 duration-150 hover:border-white/50"
             }
-            onClick={() => {
+            onMouseDown={() => {
               // eslint-disable-next-line @typescript-eslint/no-unsafe-call
               closeReply();
             }}
@@ -76,7 +76,7 @@ export default function NewReply({ closeReply }) {
           ></textarea>
           <button
             className={`mb-4 mt-12 h-8 w-full cursor-pointer select-none rounded-full bg-white/70 font-bold text-black/90 duration-100 hover:bg-white/80 hover:text-black`}
-            onClick={() => handleSubmit()}
+            onMouseDown={() => handleSubmit()}
           >
             <div>
               {blockSubmit ? (
