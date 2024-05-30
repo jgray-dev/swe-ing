@@ -99,7 +99,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
                   <div className={"text-3xl font-semibold"}>
                     {fullUser.name}
                   </div>
-                  <div className={"text-md px-2 pt-4 text-left"}>
+                  <div className={"px-2 pt-4 text-left text-base"}>
                     {fullUser.bio ? fullUser.bio : "No bio"}
                   </div>
                 </div>
@@ -197,7 +197,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
             </div>
           </div>
           <div className={"w-full pt-12"}>
-            <div className={"text-md"}>
+            <div className={"text-base"}>
               <span className={"text-xl"}>Change account details</span>
             </div>
             <div className={"mt-2"}>
