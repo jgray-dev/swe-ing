@@ -46,7 +46,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
   }, [user_id]);
 
   useEffect(() => {
-    console.log("useEffect getComment");
+    // console.log("useEffect getComment");
     void getComments();
     //eslint-disable-next-line
   }, [page]);
@@ -62,7 +62,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
       // @ts-expect-error fts
       const newCards = getCommentCards(newData.reverse(), user_id);
       setCommentCards(newCards);
-      console.log("Newdata fetched", newData);
+      // console.log("Newdata fetched", newData);
     }
   }
 
