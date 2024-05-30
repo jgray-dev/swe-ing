@@ -40,7 +40,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
 
   async function followUser(targetId: number) {
     if (!isUser) {
-      void await followUserDb(user_id, targetId); // Follow user from DB 
+      void (await followUserDb(user_id, targetId)); // Follow user from DB
       void userCard(); // Refresh user card
     } else {
       console.error("lol");
@@ -52,12 +52,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
     console.log(newSkills);
     console.log(newLocation);
     console.log(newWebsite);
-    void await updateUserProfile(
-      newBio,
-      newLocation,
-      newSkills,
-      newWebsite,
-    );
+    void (await updateUserProfile(newBio, newLocation, newSkills, newWebsite));
     void userCard();
   }
 
@@ -78,7 +73,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
             }
           >
             <div className={"flex flex-row"}>
-              <div className={"border-r border-white/50 pr-2 pl-2"}>
+              <div className={"border-r border-white/50 pl-2 pr-2"}>
                 <div className="relative h-28 max-h-28 min-h-28 w-28 min-w-28 max-w-28 select-none overflow-hidden rounded-full ">
                   <Image
                     src={fullUser.image_url}
@@ -91,7 +86,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
                   />
                 </div>
                 <button
-                  className={`mt-4 font-semibold rounded-full border-2 duration-200 px-4 py-1 ${isUser ? "cursor-not-allowed" : "cursor-pointer"} ${following ? "bg-white text-black hover:border-black/60 border-black/20" : "bg-black text-white hover:border-white/60 border-white/20"}`}
+                  className={`mt-4 rounded-full border-2 px-4 py-1 font-semibold duration-200 ${isUser ? "cursor-not-allowed" : "cursor-pointer"} ${following ? "border-black/20 bg-white text-black hover:border-black/60" : "border-white/20 bg-black text-white hover:border-white/60"}`}
                   onClick={() => followUser(fullUser.id)}
                 >
                   {following ? "Following" : "Follow"}
@@ -163,7 +158,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
       {isUser ? (
         <div
           className={
-            "mx-auto mb-20 mt-12 w-screen bg-white/[2%] rounded-lg p-4 text-left sm:w-[30rem]"
+            "mx-auto mb-20 mt-12 w-screen rounded-lg bg-white/[2%] p-4 text-left sm:w-[30rem]"
           }
         >
           <div className={"pb-8 text-2xl text-white"}>Account settings</div>
@@ -181,7 +176,14 @@ export default function UserPage({ params }: { params: { id: string } }) {
               </div>
             </div>
             <div className={"flex flex-row justify-between py-2"}>
-              <div className={"pt-2.5"}>Reset recommendations<br/><span className={"text-xs text-zinc-400"}>This will reset your home page to chronological order until recommendations are re-assigned</span></div>
+              <div className={"pt-2.5"}>
+                Reset recommendations
+                <br />
+                <span className={"text-xs text-zinc-400"}>
+                  This will reset your home page to chronological order until
+                  recommendations are re-assigned
+                </span>
+              </div>
               <div className={""}>
                 <button
                   className={
