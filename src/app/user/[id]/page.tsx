@@ -153,7 +153,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="fixed left-0 top-0 h-screen w-screen bg-black/10 pt-20 text-white">
+    <div className="max-h-fit min-h-screen w-screen overflow-y-scroll bg-black/80 pb-20 pt-20 text-white">
       {fullUserCard}
       {isUser ? (
         <div
@@ -161,7 +161,12 @@ export default function UserPage({ params }: { params: { id: string } }) {
             "mx-auto mb-20 mt-12 w-screen rounded-lg bg-white/[2%] p-4 text-left sm:w-[30rem]"
           }
         >
-          <div className={"pb-8 text-2xl text-white"}>Account settings</div>
+          <div className={"pb-8 text-2xl text-white"}>
+            Account settings{" "}
+            <span className={"text-xs text-zinc-400"}>
+              (only visible to you)
+            </span>
+          </div>
           <div className={"flex w-full flex-col"}>
             <div className={"flex flex-row justify-between"}>
               <div className={"pt-[11px]"}>Account security</div>
