@@ -14,11 +14,11 @@ import { useUserState } from "~/app/_functions/store";
 import { VscLoading } from "react-icons/vsc";
 
 interface PostsPageProps {
-  order: number[]
+  order: number[];
 }
 
 export default function PostsPage({ order }: PostsPageProps) {
-  console.log(order)
+  console.log(order);
   const { user_id } = useUserState((state) => state);
   const [loading, setLoading] = useState(false);
   const [end, setEnd] = useState(false);
@@ -170,22 +170,22 @@ export default function PostsPage({ order }: PostsPageProps) {
                 <div className={"flex max-h-24 flex-wrap overflow-y-hidden"}>
                   {post.post_tags
                     ? post.post_tags.split(",").map((tag) => {
-                      if (tag !== "") {
-                        return (
-                          <Link key={Math.random()} href={`/search/${tag}`}>
-                            <div
-                              key={Math.random()}
-                              className="mx-0.5 ml-0 mt-1 w-fit max-w-20 overflow-x-hidden truncate rounded-sm bg-white/5 p-0.5 text-left text-xs text-zinc-500"
-                              title={tag}
-                            >
-                              {tag}
-                            </div>
-                          </Link>
-                        );
-                      } else {
-                        return null;
-                      }
-                    })
+                        if (tag !== "") {
+                          return (
+                            <Link key={Math.random()} href={`/search/${tag}`}>
+                              <div
+                                key={Math.random()}
+                                className="mx-0.5 ml-0 mt-1 w-fit max-w-20 overflow-x-hidden truncate rounded-sm bg-white/5 p-0.5 text-left text-xs text-zinc-500"
+                                title={tag}
+                              >
+                                {tag}
+                              </div>
+                            </Link>
+                          );
+                        } else {
+                          return null;
+                        }
+                      })
                     : null}
                 </div>
               </div>
