@@ -188,11 +188,11 @@ export default function PostPage({ params }: { params: { id: string } }) {
               <div
                 id={`${key + "CONTENT"}`}
                 className={
-                  "h-fit max-h-fit min-h-36 text-wrap break-normal pl-2 text-left min-w-[80%] max-w-[80%]"
+                  "h-fit max-h-fit min-h-36 min-w-[80%] max-w-[80%] text-wrap break-normal pl-2 text-left"
                 }
               >
                 {post.content}
-                <div className={"pt-20 flex w-[80%] flex-wrap"}>
+                <div className={"flex w-[80%] flex-wrap pt-20"}>
                   {post.image_urls ? (
                     post.image_urls.split(",").map((url) => {
                       return (
@@ -299,7 +299,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
         >
           <div
             className={
-              "mb-12 mt-20 rounded-lg border border-white/70 mr-0.5 bg-black/80 p-2 backdrop-blur-sm"
+              "mb-12 mr-0.5 mt-20 rounded-lg border border-white/70 bg-black/80 p-2 backdrop-blur-sm"
             }
           >
             {postCard}
