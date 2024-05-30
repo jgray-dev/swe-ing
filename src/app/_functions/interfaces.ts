@@ -13,7 +13,7 @@ export interface post {
   id: number;
   author_id: number;
   content: string;
-  image_urls: string[] | null;
+  image_urls: string;
   post_tags: string;
   created_at: number;
   updated_at: number;
