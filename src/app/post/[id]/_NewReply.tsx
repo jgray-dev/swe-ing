@@ -18,9 +18,9 @@ export default function NewReply({ closeReply }) {
       }
       setBlockSubmit(false);
       setContent("");
-      //TODO: Figure out how to refresh/autoload data
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       closeReply();
+      location.reload();
     },
     onError: (err) => {
       console.error(err.message);
