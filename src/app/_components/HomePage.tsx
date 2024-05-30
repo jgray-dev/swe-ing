@@ -3,7 +3,6 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import {
-  getDbUser,
   getHomePageOrder,
   nextHomePage,
 } from "~/server/api/queries";
@@ -34,11 +33,12 @@ export default function HomePage() {
 
   async function firstLoad() {
     if (user_id) {
+      console.info("firstLoad");
       const hpo = await getHomePageOrder(user_id);
       setPostOrder(hpo);
       void (await fetchData(hpo));
     } else {
-      console.info("Waiting for user state");
+      // console.info("Waiting for user state");
     }
   }
 
