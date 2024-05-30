@@ -1,38 +1,40 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { searchEmbeddings } from "~/server/api/queries";
+import React, { useEffect, useState } from "react";
+import {getHomePageOrder, searchEmbeddings} from "~/server/api/queries";
+import { useUserState } from "~/app/_functions/store";
+import { VscLoading } from "react-icons/vsc";
+import PostsPage from "~/app/_components/PostsPage";
 
 export default function SearchPage({ params }: { params: { query: string } }) {
-  const [end, setEnd] = useState(false);
-  const [cards, setCards] = useState<React.ReactElement[]>([]);
-  const query = decodeURIComponent(params.query);
+  const [po, setPo] = useState<number[]>()
+  const { user_id } = useUserState((state) => state);
 
   useEffect(() => {
-    void getData();
-  }, []);
+    void firstLoad();
+    //eslint-disable-next-line
+  }, [user_id]);
 
-  async function getData() {
-    if (!end) {
-      const results = await searchEmbeddings(query);
-      if (results.length === 0) {
-        setEnd(true);
-      }
-      console.log(results);
+  async function firstLoad() {
+    if (user_id) {
+      const po = await searchEmbeddings(params.query);
+      setPo(po)
     } else {
-      console.warn("End of results");
-      //TODO: Alert end of results
+      console.info("Waiting for user state");
     }
   }
-  return (
-    <div className="h-screen w-screen pt-16 text-center text-lg text-white">
-      <div>{query}</div>
-      <button
-        className="rounded-md border border-zinc-300 bg-black/50 px-4 py-2 text-zinc-300 backdrop-blur-sm hover:border-white hover:text-white"
-        onMouseDown={() => getData()}
-      >
-        Load more results
-      </button>
-    </div>
-  );
+
+  if (po) {
+    return (
+      <div className={"h-screen w-screen pt-20"}>
+        <PostsPage order={po} />
+      </div>
+    );
+  } else {
+    return (
+      <div className={"h-screen w-screen pt-20"}>
+        <VscLoading className={"animate-roll mx-auto h-8 w-8"}/>
+      </div>
+    );
+  }
 }
