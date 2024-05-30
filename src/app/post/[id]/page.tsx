@@ -125,7 +125,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
           id={`${key}`}
           key={key}
           className={
-            "z-10 my-2 min-h-fit w-[99%] translate-x-[0.5%] border-b-2 border-white/70  p-1.5 text-zinc-200 duration-300 mr-1"
+            "z-10 my-2 min-h-fit w-[99%] translate-x-[0.5%] border-b-2 border-white/70  p-1.5 text-zinc-200 duration-300 mr-2"
           }
         >
           <div className={"flex flex-col"}>
