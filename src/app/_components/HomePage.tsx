@@ -2,10 +2,7 @@
 
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import {
-  getHomePageOrder,
-  nextHomePage,
-} from "~/server/api/queries";
+import { getHomePageOrder, nextHomePage } from "~/server/api/queries";
 import Link from "next/link";
 import type { like, post } from "~/app/_functions/interfaces";
 import { CiShare1 } from "react-icons/ci";
