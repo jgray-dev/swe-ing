@@ -27,7 +27,7 @@ export const posts = createTable("posts", {
   id: serial("id").primaryKey().notNull(),
   author_id: integer("author_id").notNull().default(0),
   content: varchar("content", { length: 1250 }).notNull(),
-  image_urls: text("image_urls").$type<string[]>(),
+  image_urls: text("image_urls").notNull().default(""),
   post_tags: varchar("post_tags").notNull().default(""),
   created_at: bigint("created_at", { mode: "number" }).notNull(),
   updated_at: bigint("updated_at", { mode: "number" }).notNull(),

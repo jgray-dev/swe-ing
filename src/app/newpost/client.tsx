@@ -13,6 +13,8 @@ import { VscLoading } from "react-icons/vsc";
 export default function ClientSide() {
   const router = useRouter();
   const [content, setContent] = useState("");
+  const [buttonText, setButtonText] = useState("Create post");
+  const [submitting, setSubmitting] = useState(false);
   const [tags, setTags] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [blockSubmit, setBlockSubmit] = useState(false);
@@ -23,6 +25,8 @@ export default function ClientSide() {
         alert("Erorr creating post");
         return;
       }
+      setSubmitting(false);
+      setButtonText("Redirecting...");
       setContent("");
       setTags("");
       setImageUrls([]);
@@ -42,6 +46,7 @@ export default function ClientSide() {
           if (content.length < 5) {
             alert("Please add more content before posting");
           } else {
+            setSubmitting(true);
             createPost.mutate({ content, imageUrls, tags });
           }
         }
@@ -135,8 +140,10 @@ export default function ClientSide() {
               <div>
                 {blockSubmit ? (
                   <VscLoading className={"animate-roll mx-auto h-8 w-8"} />
+                ) : submitting ? (
+                  <VscLoading className={"animate-roll mx-auto h-8 w-8"} />
                 ) : (
-                  "Create post"
+                  `${buttonText}`
                 )}
               </div>
             </button>

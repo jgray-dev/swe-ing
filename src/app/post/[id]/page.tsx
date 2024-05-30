@@ -112,7 +112,9 @@ export default function PostPage({ params }: { params: { id: string } }) {
   }
 
   async function getPostCard() {
+    // @ts-ignore
     const post = (await singlePost(postId)) as post;
+    console.log(post);
     if (post) {
       setRealPost(true);
       const liked =
@@ -182,19 +184,49 @@ export default function PostPage({ params }: { params: { id: string } }) {
                   </div>
                 </div>
               </div>
-              <Link
-                key={post.created_at + post.id + Math.random()}
-                href={`/post/${post.id}`}
+
+              <div
+                id={`${key + "CONTENT"}`}
+                className={
+                  "h-fit max-h-fit min-h-36 min-w-full max-w-full text-wrap break-normal pl-2 text-left"
+                }
               >
-                <div
-                  id={`${key + "CONTENT"}`}
-                  className={
-                    "h-fit max-h-fit min-h-36 min-w-full max-w-full text-wrap break-normal pl-2 text-left"
-                  }
-                >
-                  {post.content}
+                {post.content}
+                <div className={"mt-20 flex w-[80%] flex-wrap"}>
+                  {post.image_urls ? (
+                    post.image_urls.split(",").map((url) => {
+                      return (
+                        <Link
+                          key={url}
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <div className={"group m-1 w-full cursor-pointer"}>
+                            <Image
+                              src={url}
+                              width={256}
+                              height={256}
+                              className="object-cover"
+                              alt=""
+                              sizes="256px"
+                            />
+                            <div
+                              className={
+                                "w-full text-center text-xs text-zinc-600 duration-200 group-hover:text-zinc-400"
+                              }
+                            >
+                              Click to view full image
+                            </div>
+                          </div>
+                        </Link>
+                      );
+                    })
+                  ) : (
+                    <></>
+                  )}
                 </div>
-              </Link>
+              </div>
             </div>
             <div className={"mt-2 border-t border-white/50"}>
               <div
