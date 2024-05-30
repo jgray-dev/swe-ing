@@ -43,6 +43,7 @@ export function UserDataUpdater() {
     if (user && isSignedIn) {
       void getUserData();
     }
+    //eslint-disable-next-line
   }, [isLoaded, setData]);
   return null;
 }
