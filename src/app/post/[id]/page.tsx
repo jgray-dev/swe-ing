@@ -125,7 +125,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
           id={`${key}`}
           key={key}
           className={
-            "z-10 my-2 min-h-fit w-[99%] translate-x-[0.5%] border-b-2 border-white/70  p-1.5 text-zinc-200 duration-300 mr-1"
+            "z-10 my-2 min-h-fit w-[99%] translate-x-[0.5%] border-b-2 border-white/70  p-1.5 text-zinc-200 duration-300"
           }
         >
           <div className={"flex flex-col"}>
@@ -161,7 +161,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
                     "mr-1 h-fit min-h-0 w-20 min-w-20 max-w-20 border-r border-t border-white/50"
                   }
                 >
-                  <div className={"flex max-h-24 flex-wrap overflow-y-hidden"}>
+                  <div className={"flex max-h-24 flex-wrap overflow-hidden"}>
                     {post.post_tags
                       ? post.post_tags.split(",").map((tag) => {
                           if (tag !== "") {
@@ -299,7 +299,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
         >
           <div
             className={
-              "mb-12 mt-20 rounded-lg border border-white/70 bg-black/80 p-2 backdrop-blur-sm"
+              "mb-12 mt-20 rounded-lg border border-white/70 mr-0.5 bg-black/80 p-2 backdrop-blur-sm"
             }
           >
             {postCard}
