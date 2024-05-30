@@ -35,6 +35,9 @@ body {
   .rounded-context {
     border-radius: 0.4rem 0.4rem 0 0.4rem;
   }
+  .rounded-context-comment {
+    border-radius: 0 0.4rem 0.4rem 0.4rem;
+  }
   .animate-roll {
     animation: spin 0.5s infinite;
   }
