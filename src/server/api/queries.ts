@@ -25,6 +25,11 @@ import {
   searchPinecone,
 } from "~/server/api/server-only";
 
+export async function deleteCommentDb(commentId: number) {
+  await db.delete(comments).where(eq(comments.id, commentId));
+  return "Deleted";
+}
+
 export async function followUserDb(user_id: number, following_id: number) {
   const previous = await db.query.follows.findFirst({
     where: and(
