@@ -1,4 +1,3 @@
-import { eq } from "drizzle-orm/sql/expressions/conditions";
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
@@ -20,6 +19,7 @@ export const usersRouter = createTRPCRouter({
         name: `${input.firstName ? input.firstName : "Unknown"} ${input.lastName ? input.lastName : ""}`,
         image_url: input.imageUrl,
         recent_likes: [],
+        new_likes: [],
       });
     }),
 });
