@@ -7,7 +7,7 @@ import { VscLoading } from "react-icons/vsc";
 import PostsPage from "~/app/_components/PostsPage";
 
 export default function HomePage() {
-  const [hpo, setHpo] = useState<number[]>()
+  const [hpo, setHpo] = useState<number[]>();
   const { user_id } = useUserState((state) => state);
 
   useEffect(() => {
@@ -18,17 +18,17 @@ export default function HomePage() {
   async function firstLoad() {
     if (user_id) {
       const hpo = await getHomePageOrder(user_id);
-      setHpo(hpo)
+      setHpo(hpo);
     } else {
       console.info("Waiting for user state");
     }
   }
-  
+
   if (hpo) {
-    console.log("HPO")
-    return <PostsPage order={hpo}/>
+    console.log("HPO");
+    return <PostsPage order={hpo} />;
   } else {
-    console.log("NO")
-    return <VscLoading className={"animate-roll mx-auto h-8 w-8"} />
+    console.log("NO");
+    return <VscLoading className={"animate-roll mx-auto h-8 w-8"} />;
   }
 }
