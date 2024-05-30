@@ -192,12 +192,17 @@ export default function PostPage({ params }: { params: { id: string } }) {
                 }
               >
                 {post.content}
-                <div className={"mt-20 w-[80%] flex flex-wrap"}>
+                <div className={"mt-20 flex w-[80%] flex-wrap"}>
                   {post.image_urls ? (
                     post.image_urls.split(",").map((url) => {
                       return (
-                        <Link key={url} href={url} target="_blank" rel="noopener noreferrer">
-                          <div className={"w-full cursor-pointer m-1 group"}>
+                        <Link
+                          key={url}
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <div className={"group m-1 w-full cursor-pointer"}>
                             <Image
                               src={url}
                               width={256}
@@ -206,7 +211,13 @@ export default function PostPage({ params }: { params: { id: string } }) {
                               alt=""
                               sizes="256px"
                             />
-                            <div className={"w-full text-center text-zinc-600 text-xs group-hover:text-zinc-400 duration-200"}>Click to view full image</div>
+                            <div
+                              className={
+                                "w-full text-center text-xs text-zinc-600 duration-200 group-hover:text-zinc-400"
+                              }
+                            >
+                              Click to view full image
+                            </div>
                           </div>
                         </Link>
                       );
