@@ -1,10 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import {
+  followUserDb,
   getDbUserFromId,
   isUserFollowing,
   resetUserEmbed,
-  updateUserEmbed,
   updateUserProfile,
 } from "~/server/api/queries";
 import { useUserState } from "~/app/_functions/store";
@@ -35,10 +35,16 @@ export default function UserPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     void userCard();
+    //eslint-disable-next-line
   }, [isUser]);
 
-  function followUser() {
-    console.log("Follow user");
+  async function followUser(targetId: number) {
+    if (!isUser) {
+      void await followUserDb(user_id, targetId); // Follow user from DB 
+      void userCard(); // Refresh user card
+    } else {
+      console.error("lol");
+    }
   }
 
   async function saveProfile() {
@@ -46,18 +52,17 @@ export default function UserPage({ params }: { params: { id: string } }) {
     console.log(newSkills);
     console.log(newLocation);
     console.log(newWebsite);
-    const response = await updateUserProfile(
+    void await updateUserProfile(
       newBio,
       newLocation,
       newSkills,
       newWebsite,
     );
-    location.reload()
-    console.log(response);
+    void userCard();
   }
 
   async function userCard() {
-    const following = await isUserFollowing(userId, user_id);
+    const following = await isUserFollowing(user_id, userId);
     const fullUser = await getDbUserFromId(userId);
     if (fullUser) {
       setNewBio(fullUser.bio || "");
@@ -73,7 +78,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
             }
           >
             <div className={"flex flex-row"}>
-              <div className={"border-r border-white/50 pr-2"}>
+              <div className={"border-r border-white/50 pr-2 pl-2"}>
                 <div className="relative h-28 max-h-28 min-h-28 w-28 min-w-28 max-w-28 select-none overflow-hidden rounded-full ">
                   <Image
                     src={fullUser.image_url}
@@ -86,10 +91,10 @@ export default function UserPage({ params }: { params: { id: string } }) {
                   />
                 </div>
                 <button
-                  className={`mt-4 rounded-full border-2 border-white/50 px-4 py-2 ${isUser ? "cursor-not-allowed" : "cursor-pointer"} ${!!following ? "bg-red-400" : "bg-white/30"} text-white/80 hover:text-white`}
-                  onClick={() => followUser()}
+                  className={`mt-4 font-semibold rounded-full border-2 duration-200 px-4 py-1 ${isUser ? "cursor-not-allowed" : "cursor-pointer"} ${following ? "bg-white text-black hover:border-black/60 border-black/20" : "bg-black text-white hover:border-white/60 border-white/20"}`}
+                  onClick={() => followUser(fullUser.id)}
                 >
-                  {!!following ? "Unfollow" : "Follow"}
+                  {following ? "Following" : "Follow"}
                 </button>
               </div>
               <div className={"w-full"}>
@@ -128,7 +133,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
                           return (
                             <div
                               key={Math.random()}
-                              className="mx-0.5 mb-0.5 ml-0 mt-1 w-fit max-w-20 overflow-x-hidden truncate rounded-sm bg-white/5 p-0.5 text-left text-xs text-zinc-200"
+                              className="mx-0.5 mb-0.5 ml-0 mt-1 w-fit max-w-32 overflow-x-hidden truncate rounded-sm bg-white/5 p-0.5 text-left text-xs text-zinc-200"
                               title={skill}
                             >
                               <span className={"pb-0.5"}>{skill}</span>
@@ -153,12 +158,12 @@ export default function UserPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="fixed left-0 top-0 h-screen w-screen overflow-y-scroll bg-black/10 pt-20 text-white">
+    <div className="fixed left-0 top-0 h-screen w-screen bg-black/10 pt-20 text-white">
       {fullUserCard}
       {isUser ? (
         <div
           className={
-            "mx-auto mb-20 mt-12 w-screen bg-white/10 p-4 text-left sm:w-[30rem]"
+            "mx-auto mb-20 mt-12 w-screen bg-white/[2%] rounded-lg p-4 text-left sm:w-[30rem]"
           }
         >
           <div className={"pb-8 text-2xl text-white"}>Account settings</div>
@@ -176,20 +181,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
               </div>
             </div>
             <div className={"flex flex-row justify-between py-2"}>
-              <div className={"pt-2.5"}>Refresh recommendations</div>
-              <div className={""}>
-                <button
-                  className={
-                    "rounded-lg border-2 border-red-400 bg-red-500 px-4 py-2 text-zinc-200 duration-100 hover:bg-red-400 hover:text-white"
-                  }
-                  onClick={() => updateUserEmbed(clerk_id)}
-                >
-                  Refresh
-                </button>
-              </div>
-            </div>
-            <div className={"flex flex-row justify-between py-2"}>
-              <div className={"pt-2.5"}>Reset recommendations</div>
+              <div className={"pt-2.5"}>Reset recommendations<br/><span className={"text-xs text-zinc-400"}>This will reset your home page to chronological order until recommendations are re-assigned</span></div>
               <div className={""}>
                 <button
                   className={
