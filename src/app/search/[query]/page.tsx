@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {getHomePageOrder, searchEmbeddings} from "~/server/api/queries";
+import { searchEmbeddings } from "~/server/api/queries";
 import { useUserState } from "~/app/_functions/store";
 import { VscLoading } from "react-icons/vsc";
 import PostsPage from "~/app/_components/PostsPage";
 
 export default function SearchPage({ params }: { params: { query: string } }) {
-  const [po, setPo] = useState<number[]>()
+  const [po, setPo] = useState<number[]>();
   const { user_id } = useUserState((state) => state);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export default function SearchPage({ params }: { params: { query: string } }) {
   async function firstLoad() {
     if (user_id) {
       const po = await searchEmbeddings(params.query);
-      setPo(po)
+      setPo(po);
     } else {
       console.info("Waiting for user state");
     }
@@ -33,7 +33,7 @@ export default function SearchPage({ params }: { params: { query: string } }) {
   } else {
     return (
       <div className={"h-screen w-screen pt-20"}>
-        <VscLoading className={"animate-roll mx-auto h-8 w-8"}/>
+        <VscLoading className={"animate-roll mx-auto h-8 w-8"} />
       </div>
     );
   }
