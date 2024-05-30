@@ -123,7 +123,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
           id={`${key}`}
           key={key}
           className={
-            "backdrop-blur-xs z-10 my-2 min-h-fit w-[99%] translate-x-[0.5%] border-b-2 border-white/70 bg-black/90 p-1.5 text-zinc-200 duration-300"
+            "z-10 my-2 min-h-fit w-[99%] translate-x-[0.5%] border-b-2 border-white/70  p-1.5 text-zinc-200 duration-300"
           }
         >
           <div className={"flex flex-col"}>
@@ -265,7 +265,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
           className={"min-h-screen overflow-x-hidden overflow-y-scroll"}
           id="scrolls"
         >
-          <div className={"mb-12 mt-20 rounded-lg border border-white/70 p-2"}>
+          <div className={"mb-12 mt-20 rounded-lg border border-white/70 p-2 bg-black/50 backdrop-blur-sm"}>
             {postCard}
             {commentCards}
             <div className={"text-center"}>
