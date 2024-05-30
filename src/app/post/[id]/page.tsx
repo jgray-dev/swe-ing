@@ -125,7 +125,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
           id={`${key}`}
           key={key}
           className={
-            "z-10 my-2 min-h-fit w-[99%] translate-x-[0.5%] border-b-2 border-white/70  p-1.5 text-zinc-200 duration-300"
+            "z-10 my-2 min-h-fit w-[99%] translate-x-[0.5%] border-b-2 border-white/70  p-1.5 text-zinc-200 duration-300 mr-1"
           }
         >
           <div className={"flex flex-col"}>
@@ -188,7 +188,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
               <div
                 id={`${key + "CONTENT"}`}
                 className={
-                  "h-fit max-h-fit min-h-36 min-w-[85%] max-w-[85%] text-wrap break-normal pl-2 text-left sm:min-w-[80%] sm:max-w-[80%]"
+                  "h-fit max-h-fit min-h-36 text-wrap break-normal pl-2 text-left min-w-[80%] max-w-[80%]"
                 }
               >
                 {post.content}
