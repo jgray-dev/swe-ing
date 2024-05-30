@@ -429,21 +429,6 @@ export async function updateUserEmbed(userId: string) {
     where: eq(users.clerk_id, userId),
   });
   if (user) {
-    // const following = await db.query.follows.findMany({
-    //   where: eq(follows.user_id, user.id),
-    //   with: {
-    //     following_user: {
-    //       columns: {},
-    //       with: {
-    //         posts: {
-    //           columns: {
-    //             id: true,
-    //           },
-    //         },
-    //       },
-    //     },
-    //   },
-    // });
     let oldEmbedding = await embeddingFromID("users", user.id);
     if (!oldEmbedding) {
       oldEmbedding = [];
