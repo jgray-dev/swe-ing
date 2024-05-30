@@ -25,10 +25,8 @@ export default function HomePage() {
   }
 
   if (hpo) {
-    console.log("HPO");
     return <PostsPage order={hpo} />;
   } else {
-    console.log("NO");
     return <VscLoading className={"animate-roll mx-auto h-8 w-8"} />;
   }
 }
