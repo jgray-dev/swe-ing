@@ -74,7 +74,7 @@ export default function NavBar() {
             </Link>
           </div>
           <div title={"Manage account"} className={"flex flex-row"}>
-            <span className={"text-xs text-zinc-800 mr-2 mt-1"}>{user_id}</span>
+            <span className={"mr-2 mt-1 text-xs text-zinc-800"}>{user_id}</span>
             <SignedIn>
               <div className="h-fit min-w-8">
                 <Link href={`/user/${user_id}`}>
