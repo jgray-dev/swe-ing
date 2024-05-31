@@ -55,6 +55,7 @@ export const likesRouter = createTRPCRouter({
           })
           .where(eq(users.id, user.id));
         if (newLikes.length > 4) {
+          console.log("Updating user embedding");
           void updateUserEmbed(user.clerk_id);
         }
         return "Liked";
