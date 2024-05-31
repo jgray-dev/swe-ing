@@ -23,6 +23,7 @@ export function UserDataUpdater() {
   const { user, isLoaded, isSignedIn } = useUser();
   const setData = useUserState((state) => state.setData);
   React.useEffect(() => {
+    console.log("userState useEffect (iL, iS)", isLoaded, isSignedIn);
     const fetchData = async () => {
       if (user && isSignedIn) {
         try {
@@ -45,7 +46,7 @@ export function UserDataUpdater() {
       }
     };
     void fetchData();
-  }, [isLoaded, setData, isSignedIn, user]);
+  }, [isLoaded,isSignedIn, user]);
 
   return null;
 }
