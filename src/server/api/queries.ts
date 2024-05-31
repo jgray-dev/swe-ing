@@ -385,17 +385,6 @@ export async function deleteProfile(profile: profile) {
   }
 }
 
-// export async function deletePost(post: post) {
-//   console.log("Cascading (delete) post ", post.id)
-//   await db.delete(comments)
-//     .where(eq(comments.post_id, post.id));
-//   await db.delete(likes)
-//     .where(eq(likes.post_id, post.id));
-//   await db
-//     .delete(posts)
-//     .where(eq(posts.id, post.id))
-// }
-
 export async function searchEmbeddings(search: string) {
   const searchEmbedding = await getEmbedding(search);
   const results = await searchPinecone("posts", searchEmbedding);
