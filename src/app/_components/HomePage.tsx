@@ -29,7 +29,7 @@ export default function HomePage() {
   if (hpo) {
     console.log("We have HPO")
     return (
-      <div className={"h-screen w-screen pt-20"}>
+      <div className={""}>
         <PostsPage order={hpo} />
       </div>
     );
