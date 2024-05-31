@@ -11,13 +11,13 @@ export default function SearchPage({ params }: { params: { query: string } }) {
   const { user_id } = useUserState((state) => state);
 
   useEffect(() => {
-    console.log("useEffect called")
+    console.log("useEffect called");
     void firstLoad();
     //eslint-disable-next-line
-  }, [user_id,]);
+  }, [user_id]);
 
   async function firstLoad() {
-    console.log("firstLoad called")
+    console.log("firstLoad called");
     if (user_id) {
       const po = await searchEmbeddings(params.query);
       setPo(po);
@@ -27,16 +27,16 @@ export default function SearchPage({ params }: { params: { query: string } }) {
   }
 
   if (po) {
-    console.log("We have PO")
+    console.log("We have PO");
     return (
       <div className={"h-screen w-screen pt-20"}>
         <PostsPage order={po} />
       </div>
     );
   } else {
-    console.log("Waiting for PO")
+    console.log("Waiting for PO");
     return (
-      <div className={"w-screen h-screen text-center text-zinc-600 pt-20"}>
+      <div className={"h-screen w-screen pt-20 text-center text-zinc-600"}>
         <VscLoading className={"animate-roll mx-auto h-8 w-8 text-white"} />
         <span>user_id {user_id}</span>
       </div>
