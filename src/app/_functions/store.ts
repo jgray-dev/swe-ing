@@ -46,7 +46,7 @@ export function UserDataUpdater() {
       }
     };
     void fetchData();
-  }, [isLoaded,isSignedIn, user]);
+  }, [isLoaded, isSignedIn, user]);
 
   return null;
 }
