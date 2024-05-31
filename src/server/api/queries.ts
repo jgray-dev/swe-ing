@@ -446,9 +446,6 @@ export async function updateUserEmbed(userId: string) {
     const rlAmount = user.recent_likes.length;
     const nlAmount = user.new_likes.length;
     const newEmbeddings = await getPostEmbeddings(user.new_likes);
-    if (newEmbeddings.length == 0) {
-      console.log("Nothing to refresh");
-    }
     if (newEmbeddings.length > 0 && oldEmbedding) {
       const userEmbedding = await getAverageEmbedding(
         oldEmbedding,
@@ -465,6 +462,9 @@ export async function updateUserEmbed(userId: string) {
         })
         .where(eq(users.id, user.id));
       return 0;
+    } else {
+      console.log("Nothing to refresh for ", user.id);
+      return 1;
     }
   }
   return 1;
