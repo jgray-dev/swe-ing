@@ -31,10 +31,6 @@ export interface post {
   };
 }
 
-export async function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 export interface like {
   post_id: number;
   user_id: number;
