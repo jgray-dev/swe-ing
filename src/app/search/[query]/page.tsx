@@ -32,8 +32,9 @@ export default function SearchPage({ params }: { params: { query: string } }) {
     );
   } else {
     return (
-      <div className={"h-screen w-screen pt-20"}>
-        <VscLoading className={"animate-roll mx-auto h-8 w-8"} />
+      <div className={"w-screen h-screen text-center text-zinc-600 pt-20"}>
+        <VscLoading className={"animate-roll mx-auto h-8 w-8 text-white"} />
+        <span>user_id {user_id}</span>
       </div>
     );
   }
