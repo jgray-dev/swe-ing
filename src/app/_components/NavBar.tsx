@@ -73,7 +73,8 @@ export default function NavBar() {
               <CiSquarePlus className="h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-white" />
             </Link>
           </div>
-          <div title={"Manage account"}>
+          <div title={"Manage account"} className={"flex flex-row"}>
+            <span className={"text-xs text-zinc-800 mr-2 mt-1"}>{user_id}</span>
             <SignedIn>
               <div className="h-fit min-w-8">
                 <Link href={`/user/${user_id}`}>
