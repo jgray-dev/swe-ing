@@ -22,29 +22,31 @@ export const useUserState = create<User>((set) => ({
 export function UserDataUpdater() {
   const { user, isLoaded, isSignedIn } = useUser();
   const setData = useUserState((state) => state.setData);
-
-  async function getUserData() {
-    if (user) {
-      const dbUser = await getDbUser(user.id);
-      if (dbUser) {
-        setData({
-          user_id: dbUser.id,
-          clerk_id: user.id,
-          name: `${user.fullName}`,
-        });
-      } else {
-        alert("Error getting user data");
-        location.reload()
-      }
-    }
-  }
-
   React.useEffect(() => {
-    if (user && isSignedIn) {
-      void getUserData();
-    }
-    //eslint-disable-next-line
-  }, [isLoaded, setData]);
+    const fetchData = async () => {
+      if (user && isSignedIn) {
+        try {
+          const dbUser = await getDbUser(user.id);
+          if (dbUser) {
+            setData({
+              user_id: dbUser.id,
+              clerk_id: user.id,
+              name: `${user.fullName}`,
+            });
+          } else {
+            alert("Error getting user data");
+            location.reload();
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      } else {
+        console.log("User not signed in");
+      }
+    };
+    void fetchData();
+  }, [isLoaded, setData, isSignedIn, user]);
+
   return null;
 }
 
