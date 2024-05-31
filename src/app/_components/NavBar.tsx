@@ -39,10 +39,10 @@ export default function NavBar() {
   }
 
   function submitSearch() {
-    router.push(`/search/${searchQuery}`);
     setSearchQuery("");
     // console.log(searchQuery);
     setSearchOpen(false);
+    router.push(`/search/${searchQuery}`);
   }
 
   return (
@@ -73,7 +73,8 @@ export default function NavBar() {
               <CiSquarePlus className="h-7 w-7 cursor-pointer fill-zinc-400 duration-200 hover:fill-white" />
             </Link>
           </div>
-          <div title={"Manage account"}>
+          <div title={"Manage account"} className={"flex flex-row"}>
+            <span className={"mr-2 mt-1 text-xs text-zinc-800"}>{user_id}</span>
             <SignedIn>
               <div className="h-fit min-w-8">
                 <Link href={`/user/${user_id}`}>

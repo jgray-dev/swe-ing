@@ -385,17 +385,6 @@ export async function deleteProfile(profile: profile) {
   }
 }
 
-// export async function deletePost(post: post) {
-//   console.log("Cascading (delete) post ", post.id)
-//   await db.delete(comments)
-//     .where(eq(comments.post_id, post.id));
-//   await db.delete(likes)
-//     .where(eq(likes.post_id, post.id));
-//   await db
-//     .delete(posts)
-//     .where(eq(posts.id, post.id))
-// }
-
 export async function searchEmbeddings(search: string) {
   const searchEmbedding = await getEmbedding(search);
   const results = await searchPinecone("posts", searchEmbedding);
@@ -446,9 +435,6 @@ export async function updateUserEmbed(userId: string) {
     const rlAmount = user.recent_likes.length;
     const nlAmount = user.new_likes.length;
     const newEmbeddings = await getPostEmbeddings(user.new_likes);
-    if (newEmbeddings.length == 0) {
-      console.log("Nothing to refresh");
-    }
     if (newEmbeddings.length > 0 && oldEmbedding) {
       const userEmbedding = await getAverageEmbedding(
         oldEmbedding,
@@ -465,6 +451,9 @@ export async function updateUserEmbed(userId: string) {
         })
         .where(eq(users.id, user.id));
       return 0;
+    } else {
+      console.log("Nothing to refresh for ", user.id);
+      return 1;
     }
   }
   return 1;

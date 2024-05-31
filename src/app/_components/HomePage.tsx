@@ -11,11 +11,13 @@ export default function HomePage() {
   const { user_id } = useUserState((state) => state);
 
   useEffect(() => {
+    console.log("useEffect called");
     void firstLoad();
     //eslint-disable-next-line
   }, [user_id]);
 
   async function firstLoad() {
+    console.log("Firstload called");
     if (user_id) {
       const hpo = await getHomePageOrder(user_id);
       setHpo(hpo);
@@ -25,8 +27,19 @@ export default function HomePage() {
   }
 
   if (hpo) {
-    return <PostsPage order={hpo} />;
+    console.log("We have HPO");
+    return (
+      <div className={""}>
+        <PostsPage order={hpo} />
+      </div>
+    );
   } else {
-    return <VscLoading className={"animate-roll mx-auto h-8 w-8"} />;
+    console.log("Waiting for HPO");
+    return (
+      <div className={"w-screen text-center text-zinc-600"}>
+        <VscLoading className={"animate-roll mx-auto h-8 w-8 text-white"} />
+        <span>user_id {user_id}</span>
+      </div>
+    );
   }
 }

@@ -29,12 +29,12 @@ export async function getAverageEmbedding(
     for (const item of embeddings2) {
       if (item[i] !== undefined) {
         // @ts-expect-error fts
-        weightedSum += item[i] * weight2;
+        weightedSum += item[i] * (weight2 / embeddings2.length);
       }
     }
     average[i] = weightedSum / totalWeight;
   }
-
+  // console.log(average)
   return average;
 }
 

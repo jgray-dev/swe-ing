@@ -25,7 +25,10 @@ export default function PostPage({ params }: { params: { id: string } }) {
   const [realPost, setRealPost] = useState(false);
   const [commentCards, setCommentCards] = useState<React.ReactElement[]>([]);
   const [postCard, setPostCard] = useState<React.ReactElement>(
-    <VscLoading className={"animate-roll mx-auto h-10 w-10"} />,
+    <div className={"w-screen text-center text-zinc-600"}>
+      <VscLoading className={"animate-roll mx-auto h-8 w-8 text-green-200"} />
+      <span>user_id {user_id}</span>
+    </div>,
   );
   const { setReplyData } = useReplyState((state) => state);
 

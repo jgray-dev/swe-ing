@@ -279,9 +279,11 @@ export default function PostsPage({ order }: PostsPageProps) {
       >
         <div className={"overflow-x-hidden overflow-y-scroll"}>
           {cards}
-          <div className={"pb-20 pt-24 text-center"}>
+          <div className={"pb-20 pt-24 text-center text-white"}>
             {!end && (loading || cards.length == 0) ? (
-              <VscLoading className={"animate-roll mx-auto h-10 w-10"} />
+              <VscLoading
+                className={"animate-roll mx-auto h-10 w-10 text-emerald-700"}
+              />
             ) : (
               ""
             )}
