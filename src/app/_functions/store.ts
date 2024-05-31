@@ -22,10 +22,12 @@ export const useUserState = create<User>((set) => ({
 export function UserDataUpdater() {
   const { user, isLoaded, isSignedIn } = useUser();
   const setData = useUserState((state) => state.setData);
+  const [isLoading, setIsLoading] = React.useState(false);
+
   React.useEffect(() => {
-    console.log("userState useEffect (iL, iS)", isLoaded, isSignedIn);
     const fetchData = async () => {
-      if (user && isSignedIn) {
+      if (isLoaded && isSignedIn && !isLoading) {
+        setIsLoading(true);
         try {
           const dbUser = await getDbUser(user.id);
           if (dbUser) {
@@ -40,6 +42,8 @@ export function UserDataUpdater() {
           }
         } catch (error) {
           console.error("Error fetching user data:", error);
+        } finally {
+          setIsLoading(false);
         }
       } else {
         console.log("User not signed in");
