@@ -15,7 +15,7 @@ export const postsRouter = createTRPCRouter({
     .input(
       z.object({
         content: z.string().min(1),
-        imageUrls: z.array(z.string()).optional(),
+        imageUrls: z.string().optional(),
         tags: z.string().optional(),
       }),
     )
