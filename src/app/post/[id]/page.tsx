@@ -197,30 +197,31 @@ export default function PostPage({ params }: { params: { id: string } }) {
                   {post.image_urls ? (
                     post.image_urls.split(",").map((url) => {
                       return (
-                        <Link
-                          key={url}
-                          href={`https://utfs.io/f/${url}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <div className={"group m-1 w-full cursor-pointer"}>
-                            <Image
-                              src={`https://utfs.io/f/${url}`}
-                              width={256}
-                              height={256}
-                              className="object-cover"
-                              alt=""
-                              sizes="256px"
-                            />
-                            <div
-                              className={
-                                "w-full text-center text-xs text-zinc-600 duration-200 group-hover:text-zinc-400"
-                              }
-                            >
-                              Click to view full image
+                        <div key={url} id={url}>
+                          <Link
+                            href={`https://utfs.io/f/${url}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <div className={"group m-1 w-full cursor-pointer"}>
+                              <Image
+                                src={`https://utfs.io/f/${url}`}
+                                width={256}
+                                height={256}
+                                className="object-cover"
+                                alt=""
+                                sizes="256px"
+                              />
+                              <div
+                                className={
+                                  "w-full text-center text-xs text-zinc-600 duration-200 group-hover:text-zinc-400"
+                                }
+                              >
+                                Click to view full image
+                              </div>
                             </div>
-                          </div>
-                        </Link>
+                          </Link>
+                        </div>
                       );
                     })
                   ) : (
