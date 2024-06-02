@@ -194,12 +194,11 @@ export default function PostsPage({ order }: PostsPageProps) {
               href={`/post/${post.id}`}
             >
               <div
-                id={`${key + "CONTENT"}`}
                 className={
                   "line-clamp-[10] h-fit max-h-72 min-h-36 min-w-full max-w-full text-wrap break-normal pl-2 text-left"
                 }
               >
-                {post.content}
+                <div id={`${key + "CONTENT"}`}>{post.content}</div>
                 <div className={"flex w-[80%] flex-row justify-between pt-20"}>
                   {post.image_urls ? (
                     post.image_urls.split(",").map((url) => {
