@@ -78,7 +78,7 @@ export const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
                       >
                         <div
                           className={
-                            "group ml-1 flex flex-row pt-0.5 text-base text-zinc-300 duration-200 hover:text-red-500 hover:cursor-pointer"
+                            "group ml-1 flex flex-row pt-0.5 text-base text-zinc-300 duration-200 hover:cursor-pointer hover:text-red-500"
                           }
                           onMouseDown={() => deleteComment()}
                         >

@@ -2,14 +2,15 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { UploadDropzone } from "@uploadthing/react";
+import { UploadButton } from "@uploadthing/react";
 import type { AppFileRouter } from "~/app/api/uploadthing/core";
-import { FaImages } from "react-icons/fa";
 import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/nextjs";
 import { api } from "~/trpc/react";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { VscLoading } from "react-icons/vsc";
-import {deleteImage} from "~/server/api/queries";
+import { deleteImage } from "~/server/api/queries";
+import Image from "next/image";
+import { CiTrash } from "react-icons/ci";
 
 export default function ClientSide() {
   const router = useRouter();
@@ -17,7 +18,7 @@ export default function ClientSide() {
   const [buttonText, setButtonText] = useState("Create post");
   const [submitting, setSubmitting] = useState(false);
   const [tags, setTags] = useState("");
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [imageUrls, setImageUrls] = useState("");
   const [blockSubmit, setBlockSubmit] = useState(false);
 
   const createPost = api.posts.create.useMutation({
@@ -30,13 +31,17 @@ export default function ClientSide() {
       setButtonText("Redirecting...");
       setContent("");
       setTags("");
-      setImageUrls([]);
+      setImageUrls("");
       router.push(`/post/${data[0]?.id}`);
     },
     onError: (err) => {
       console.error(err.message);
     },
   });
+
+  async function removeImages(key: string[]) {
+    void deleteImage(key);
+  }
 
   async function handleSubmit() {
     if (!blockSubmit) {
@@ -59,9 +64,20 @@ export default function ClientSide() {
     }
   }
 
+  async function removeImage(key: string) {
+    console.log(key);
+    const arr = imageUrls.split(",");
+    const index = arr.indexOf(key);
+    arr.splice(index, 1);
+    setImageUrls(arr.join(","));
+    void removeImages([key]);
+  }
+
   async function cancelPost() {
-    for (const url of imageUrls) {
-      void (await deleteImage(url));
+    if (imageUrls) {
+      for (const url of imageUrls.split(",")) {
+        void (await deleteImage(url));
+      }
     }
     router.back();
   }
@@ -118,32 +134,78 @@ export default function ClientSide() {
                 onChange={(e) => setTags(e.target.value)}
                 value={tags}
               ></textarea>
-              <div className={"group h-8 w-8"}>
-                <UploadDropzone<AppFileRouter, "postImageUploader">
-                  className="absolute z-30 h-6 max-h-12 w-12 max-w-12 border-0 bg-transparent ut-button:hidden ut-allowed-content:hidden ut-label:hidden ut-upload-icon:hidden"
+              <div className={"group h-24 overflow-y-hidden rounded-lg"}>
+                <UploadButton<AppFileRouter, "postImageUploader">
+                  className="h-24 w-full border-0 duration-150 ut-button:bg-black/70 hover:ut-button:bg-black/80 ut-allowed-content:hidden ut-label:hidden ut-upload-icon:hidden"
+                  content={{
+                    button({ isUploading }) {
+                      if (isUploading) return <div>Uploading...</div>;
+                      return <div>Upload images</div>;
+                    },
+                  }}
                   endpoint="postImageUploader"
                   onBeforeUploadBegin={(files) => {
                     setBlockSubmit(true);
                     return files;
                   }}
                   onUploadError={() => {
-                    alert(
-                      `Error uploading image. Did you upload too many? (max 3)`,
-                    );
+                    alert(`Error uploading image.`);
                     setBlockSubmit(false);
                   }}
                   config={{
                     mode: "auto",
                   }}
                   onClientUploadComplete={(res) => {
-                    setImageUrls(res.map((img) => img.key));
+                    if (imageUrls.split(",").length >= 3) {
+                      setBlockSubmit(false);
+                      void removeImages(res.map((img) => img.key));
+                      alert("You can only upload 3 images");
+                      return;
+                    }
+                    setImageUrls(
+                      `${imageUrls ? imageUrls + "," : ""}${res.map((img) => img.key).join(",")}`,
+                    );
                     setBlockSubmit(false);
                   }}
                 />
-                <FaImages className="absolute z-20 h-8 w-8 text-white/80 duration-200 group-hover:text-white" />
               </div>
             </div>
-            <div className={"h-1/2 select-none px-24 text-white"}></div>
+            <div
+              className={
+                "flex h-1/2 select-none flex-row justify-center text-white"
+              }
+            >
+              {imageUrls ? (
+                imageUrls.split(",").map((iurl) => {
+                  return (
+                    <div
+                      key={iurl}
+                      className={"group m-2 flex w-1/4 flex-col"}
+                      onClick={() => removeImage(iurl)}
+                    >
+                      <Image
+                        src={`https://utfs.io/f/${iurl}`}
+                        width={128}
+                        height={128}
+                        className="object-cover"
+                        alt=""
+                        sizes="128px"
+                      />
+                      <div
+                        className={
+                          "mt-1 flex flex-row text-sm text-zinc-200 duration-150 group-hover:text-red-500"
+                        }
+                      >
+                        <CiTrash className={"mr-1 h-5 w-5"} />
+                        Remove
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <></>
+              )}
+            </div>
             <button
               className={`mb-4 mt-12 h-8 w-full select-none rounded-full bg-white/70 font-bold text-black/90 duration-100 hover:bg-white/80 hover:text-black ${blockSubmit ? "cursor-progress" : "cursor-pointer"}`}
               onMouseDown={() => handleSubmit()}
