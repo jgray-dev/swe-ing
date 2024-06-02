@@ -189,12 +189,11 @@ export default function PostPage({ params }: { params: { id: string } }) {
               </div>
 
               <div
-                id={`${key + "CONTENT"}`}
                 className={
                   "h-fit max-h-fit min-h-36 min-w-[80%] max-w-[80%] text-wrap break-normal pl-2 text-left"
                 }
               >
-                {post.content}
+                <div id={`${key + "CONTENT"}`}>{post.content}</div>
                 <div className={"flex w-[80%] flex-wrap pt-20"}>
                   {post.image_urls ? (
                     post.image_urls.split(",").map((url) => {
