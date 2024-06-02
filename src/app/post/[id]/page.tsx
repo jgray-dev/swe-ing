@@ -199,13 +199,13 @@ export default function PostPage({ params }: { params: { id: string } }) {
                       return (
                         <Link
                           key={url}
-                          href={url}
+                          href={`https://utfs.io/f/${url}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
                           <div className={"group m-1 w-full cursor-pointer"}>
                             <Image
-                              src={url}
+                              src={`https://utfs.io/f/${url}`}
                               width={256}
                               height={256}
                               className="object-cover"
