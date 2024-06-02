@@ -28,11 +28,14 @@ import {
 import { UTApi } from "uploadthing/server";
 const utapi = new UTApi();
 
-
-export async function deleteImage(key: string) {
-  await utapi.deleteFiles(key);
+export async function deleteImage(keys: string[] | string) {
+  console.log("deleteImage()", keys);
+  if (!Array.isArray(keys)) keys = [keys];
+  for (const key of keys) {
+    console.log("Deleting image", key);
+    await utapi.deleteFiles(key);
+  }
 }
-
 
 export async function dbDeletePost(post: post) {
   void (await pineconeDelete([post.id], "posts"));
