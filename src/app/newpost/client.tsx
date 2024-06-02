@@ -180,7 +180,7 @@ export default function ClientSide() {
                   return (
                     <div
                       key={iurl}
-                      className={"m-2 w-1/4 group flex flex-col"}
+                      className={"group m-2 flex w-1/4 flex-col"}
                       onClick={() => removeImage(iurl)}
                     >
                       <Image
@@ -193,7 +193,7 @@ export default function ClientSide() {
                       />
                       <div
                         className={
-                          "mt-1 duration-150 flex flex-row group-hover:text-red-500 text-zinc-200 text-sm"
+                          "mt-1 flex flex-row text-sm text-zinc-200 duration-150 group-hover:text-red-500"
                         }
                       >
                         <CiTrash className={"mr-1 h-5 w-5"} />
