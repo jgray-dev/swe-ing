@@ -25,18 +25,26 @@ import {
   searchPinecone,
 } from "~/server/api/server-only";
 
-// import { UTApi } from "uploadthing/server";
-// const utapi = new UTApi();
-//
-//
-// export async function deleteImages(imagestring: string) {
-//   let images = imagestring.split(",");
-//   images = images.map((url)=>{
-//     const url = url.split("/")
-//     return url[url]
-//   })
-//   await utapi.deleteFiles(images.map(img => img.key));
-// }
+import { UTApi } from "uploadthing/server";
+const utapi = new UTApi();
+
+
+export async function deleteImage(key: string) {
+  await utapi.deleteFiles(key);
+}
+
+
+export async function dbDeletePost(post: post) {
+  void (await pineconeDelete([post.id], "posts"));
+  const images = post.image_urls.split(",");
+  for (const url of images) {
+    await deleteImage(url);
+  }
+  await db.delete(comments).where(eq(comments.post_id, post.id));
+  await db.delete(likes).where(eq(likes.post_id, post.id));
+  await db.delete(posts).where(eq(posts.id, post.id));
+  return "Deleted";
+}
 
 export async function deleteCommentDb(commentId: number) {
   await db.delete(comments).where(eq(comments.id, commentId));
@@ -345,13 +353,6 @@ export async function createProfile(profile: profile) {
   }
 }
 
-export async function dbDeletePost(post: post) {
-  void (await pineconeDelete([post.id], "posts"));
-  await db.delete(comments).where(eq(comments.post_id, post.id));
-  await db.delete(likes).where(eq(likes.post_id, post.id));
-  await db.delete(posts).where(eq(posts.id, post.id));
-  return "Deleted";
-}
 
 export async function deleteProfile(profile: profile) {
   console.log("deleteProfile()", profile.data.id);
