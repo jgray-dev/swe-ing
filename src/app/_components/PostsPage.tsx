@@ -199,7 +199,7 @@ export default function PostsPage({ order }: PostsPageProps) {
                 }
               >
                 <div id={`${key + "CONTENT"}`}>{post.content}</div>
-                <div className={"flex w-[80%] flex-row justify-between pt-20"}>
+                <div className={"flex w-[80%] flex-row justify-between"}>
                   {post.image_urls ? (
                     post.image_urls.split(",").map((url) => {
                       return (
@@ -261,7 +261,7 @@ export default function PostsPage({ order }: PostsPageProps) {
               </div>
 
               <div className={"cursor-pointer"}>
-                <ContextMenu post={post} id={`${key}`} />
+                <ContextMenu post={post} id={`${key}`} postPage={false}/>
               </div>
             </div>
           </div>
