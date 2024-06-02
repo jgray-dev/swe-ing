@@ -4,7 +4,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { CiEdit, CiTrash } from "react-icons/ci";
 import { IoWarningOutline } from "react-icons/io5";
 import { IoIosLink } from "react-icons/io";
-import {dbDeletePost, dbEditPost, dbReportPost, deleteImage} from "~/server/api/queries";
+import {
+  dbDeletePost,
+  dbEditPost,
+  dbReportPost,
+  deleteImage,
+} from "~/server/api/queries";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { useUserState } from "~/app/_functions/store";
 import { useRouter } from "next/navigation";
@@ -17,7 +22,7 @@ interface ContextMenuProps {
 }
 
 export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
-  console.log(postPage)
+  console.log(postPage);
   const router = useRouter();
   const { user_id } = useUserState((state) => state);
   const [editing, setEditing] = useState(false);
@@ -103,19 +108,18 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
       console.log("Deleting: ", oldRemoved);
     }
   }
-  
-  
+
   function ImageEditor() {
     if (post.image_urls) {
       const arr = post.image_urls.split(",");
       return (
-        <div className={"flex flex-row h-[30%] w-[120%]"}>
+        <div className={"flex h-[30%] w-[120%] flex-row"}>
           {arr.map((iurl) => {
             const removing = removeUrls?.includes(iurl);
             return (
               <div
                 key={iurl}
-                className={"m-2 w-1/4 group flex flex-col"}
+                className={"group m-2 flex w-1/4 flex-col"}
                 onClick={() => {
                   if (removing) {
                     reAddImage(iurl);
@@ -128,7 +132,7 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
                   src={`https://utfs.io/f/${iurl}`}
                   width={128}
                   height={128}
-                  className={`object-cover ${removing?"grayscale":"grayscale-0"}`}
+                  className={`object-cover ${removing ? "grayscale" : "grayscale-0"}`}
                   alt=""
                   sizes="128px"
                 />
@@ -162,7 +166,7 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
             oldContent.innerText = newContent;
             setEditing(false);
             setOpen(false);
-            void deleteImage(removeUrls??[]);
+            void deleteImage(removeUrls ?? []);
           } else {
             //TODO: Alert DOM content not found
             console.warn("DOM content not found");
@@ -254,7 +258,7 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
             </div>
           </div>
         ) : null}
-        {isAuthor && postPage? (
+        {isAuthor && postPage ? (
           <div
             className={"group mb-2 flex cursor-pointer flex-row duration-200"}
             onMouseDown={() => editPost()}
