@@ -208,7 +208,7 @@ export default function PostsPage({ order }: PostsPageProps) {
                           className={"m-1 max-w-[40%] cursor-pointer"}
                         >
                           <Image
-                            src={url}
+                            src={`https://utfs.io/f/${url}`}
                             width={128}
                             height={128}
                             className="object-cover"
