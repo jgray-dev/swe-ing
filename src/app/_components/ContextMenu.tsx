@@ -4,10 +4,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { CiEdit, CiTrash } from "react-icons/ci";
 import { IoWarningOutline } from "react-icons/io5";
 import { IoIosLink } from "react-icons/io";
-import { dbDeletePost, dbEditPost, dbReportPost } from "~/server/api/queries";
+import {dbDeletePost, dbEditPost, dbReportPost, deleteImage} from "~/server/api/queries";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { useUserState } from "~/app/_functions/store";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface ContextMenuProps {
   post: post;
@@ -19,6 +20,8 @@ export default function ContextMenu({ post, id }: ContextMenuProps) {
   const { user_id } = useUserState((state) => state);
   const [editing, setEditing] = useState(false);
   const [open, setOpen] = useState(false);
+  const [newImageUrls, setNewImageUrls] = useState(post.image_urls);
+  const [removeUrls, setRemoveUrls] = useState("");
   const [isAuthor, setIsAuthor] = useState(user_id === post.author_id);
 
   useEffect(() => {
@@ -39,7 +42,7 @@ export default function ContextMenu({ post, id }: ContextMenuProps) {
         const element = document.getElementById(id);
         if (element) {
           element.remove();
-          router.push("/")
+          router.push("/");
         }
       }
     }
@@ -69,6 +72,74 @@ export default function ContextMenu({ post, id }: ContextMenuProps) {
       //TODO: Alert error copying link
     }
   }
+
+  function reAddImage(key: string) {
+    const arr = removeUrls?.split(",").filter(Boolean);
+    const index = arr.indexOf(key);
+    if (index !== -1) {
+      arr.splice(index, 1);
+      setRemoveUrls(arr.join(","));
+      // Add the removed image to a new state
+      const oldNewImageUrls = newImageUrls.split(",").filter(Boolean);
+      oldNewImageUrls.push(key);
+      setNewImageUrls(oldNewImageUrls.join(","));
+      console.log("Adding: ", oldNewImageUrls);
+    }
+  }
+
+  function removeImageFromPost(key: string) {
+    console.log("Deleting image", key);
+    const arr = newImageUrls.split(",").filter(Boolean);
+    const index = arr.indexOf(key);
+    if (index !== -1) {
+      arr.splice(index, 1);
+      setNewImageUrls(arr.join(","));
+      // Add the removed image to a new state
+      const oldRemoved = removeUrls.split(",").filter(Boolean);
+      oldRemoved.push(key);
+      setRemoveUrls(oldRemoved.join(","));
+      console.log("Deleting: ", oldRemoved);
+    }
+  }
+  
+  
+  function ImageEditor() {
+    if (post.image_urls) {
+      const arr = post.image_urls.split(",");
+      return (
+        <div className={"flex flex-row h-[30%] w-[120%]"}>
+          {arr.map((iurl) => {
+            const removing = removeUrls?.includes(iurl);
+            return (
+              <div
+                key={iurl}
+                className={"m-2 w-1/4 group flex flex-col"}
+                onClick={() => {
+                  if (removing) {
+                    reAddImage(iurl);
+                  } else {
+                    removeImageFromPost(iurl);
+                  }
+                }}
+              >
+                <Image
+                  src={`https://utfs.io/f/${iurl}`}
+                  width={128}
+                  height={128}
+                  className={`object-cover ${removing?"grayscale":"grayscale-0"}`}
+                  alt=""
+                  sizes="128px"
+                />
+              </div>
+            );
+          })}
+        </div>
+      );
+    } else {
+      console.log("No image");
+    }
+  }
+
   function EditBox() {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -82,13 +153,14 @@ export default function ContextMenu({ post, id }: ContextMenuProps) {
     async function submitEdit() {
       if (isAuthor && textareaRef.current && user_id) {
         const newContent = textareaRef.current.value;
-        const resp = await dbEditPost(post, newContent, user_id);
+        const resp = await dbEditPost(post, newContent, user_id, newImageUrls);
         if (resp) {
           const oldContent = document.getElementById(`${id + "CONTENT"}`);
           if (oldContent) {
             oldContent.innerText = newContent;
             setEditing(false);
             setOpen(false);
+            void deleteImage(removeUrls??[]);
           } else {
             //TODO: Alert DOM content not found
             console.warn("DOM content not found");
@@ -110,10 +182,11 @@ export default function ContextMenu({ post, id }: ContextMenuProps) {
           <textarea
             ref={textareaRef}
             className={
-              " z-50 ml-[86px] h-full w-full translate-x-[2.5px] resize-none rounded-md bg-transparent pl-2 pt-1 focus:outline-none"
+              " z-50 ml-[86px] h-[70%] w-full translate-x-[2.5px] resize-none rounded-md bg-transparent pl-2 pt-1 focus:outline-none"
             }
             defaultValue={post.content}
           ></textarea>
+          <ImageEditor />
           <div className={"pb-4"}>
             <button
               className={
@@ -134,7 +207,7 @@ export default function ContextMenu({ post, id }: ContextMenuProps) {
       user_id ? (
         <div>
           <HiOutlineXMark
-            className={`h-6 w-6 duration-150 hover:text-red-600 motion-safe:hover:scale-[115%] text-zinc-200`}
+            className={`h-6 w-6 text-zinc-200 duration-150 hover:text-red-600 motion-safe:hover:scale-[115%]`}
             onMouseDown={() => {
               setEditing(false);
               setOpen(false);
