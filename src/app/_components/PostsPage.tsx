@@ -261,7 +261,7 @@ export default function PostsPage({ order }: PostsPageProps) {
               </div>
 
               <div className={"cursor-pointer"}>
-                <ContextMenu post={post} id={`${key}`} postPage={false}/>
+                <ContextMenu post={post} id={`${key}`} postPage={false} />
               </div>
             </div>
           </div>
