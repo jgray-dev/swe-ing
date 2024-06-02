@@ -12,7 +12,7 @@ export const ourFileRouter = {
       return { user: await clerkClient.users.getUser(`${user.userId}`) };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      return { url: file.url, userId: `${metadata.user.id}` };
+      return { url: file.url, userId: `${metadata.user.id}`, key: file.key };
     }),
 } satisfies FileRouter;
 
