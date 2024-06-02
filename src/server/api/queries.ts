@@ -30,7 +30,7 @@ const utapi = new UTApi();
 
 export async function deleteImage(keys: string[] | string) {
   console.log("deleteImage()", keys);
-  if (!Array.isArray(keys)) keys = [keys];
+  if (!Array.isArray(keys)) keys = keys.split(",") || [keys];
   for (const key of keys) {
     console.log("Deleting image", key);
     await utapi.deleteFiles(key);
@@ -109,13 +109,15 @@ export async function updateUserProfile(
   }
 }
 
-export async function dbEditPost(post: post, content: string, user_id: number) {
+export async function dbEditPost(post: post, content: string, user_id: number, newImageUrls: string) {
+  console.log("DB Editing post");
   try {
     await db
       .update(posts)
       .set({
         content: content,
         updated_at: Date.now(),
+        image_urls: newImageUrls
       })
       .where(and(eq(posts.author_id, user_id), eq(posts.id, post.id)));
     const newEmbedding = await getEmbedding(content);
