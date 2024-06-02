@@ -109,7 +109,12 @@ export async function updateUserProfile(
   }
 }
 
-export async function dbEditPost(post: post, content: string, user_id: number, newImageUrls: string) {
+export async function dbEditPost(
+  post: post,
+  content: string,
+  user_id: number,
+  newImageUrls: string,
+) {
   console.log("DB Editing post");
   try {
     await db
@@ -117,7 +122,7 @@ export async function dbEditPost(post: post, content: string, user_id: number, n
       .set({
         content: content,
         updated_at: Date.now(),
-        image_urls: newImageUrls
+        image_urls: newImageUrls,
       })
       .where(and(eq(posts.author_id, user_id), eq(posts.id, post.id)));
     const newEmbedding = await getEmbedding(content);
@@ -357,7 +362,6 @@ export async function createProfile(profile: profile) {
       .returning();
   }
 }
-
 
 export async function deleteProfile(profile: profile) {
   console.log("deleteProfile()", profile.data.id);
