@@ -35,6 +35,12 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
     //eslint-disable-next-line
   }, [user_id]);
 
+
+  useEffect(() => {
+    setNewImageUrls(post.image_urls)
+    setRemoveUrls("")
+  }, [editing]);
+  
   async function editPost() {
     setOpen(!open);
     setEditing(true);
@@ -137,8 +143,6 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
           })}
         </div>
       );
-    } else {
-      console.log("No image");
     }
   }
 
