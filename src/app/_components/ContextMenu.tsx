@@ -13,9 +13,11 @@ import Image from "next/image";
 interface ContextMenuProps {
   post: post;
   id: string;
+  postPage: boolean;
 }
 
-export default function ContextMenu({ post, id }: ContextMenuProps) {
+export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
+  console.log(postPage)
   const router = useRouter();
   const { user_id } = useUserState((state) => state);
   const [editing, setEditing] = useState(false);
@@ -252,7 +254,7 @@ export default function ContextMenu({ post, id }: ContextMenuProps) {
             </div>
           </div>
         ) : null}
-        {isAuthor ? (
+        {isAuthor && postPage? (
           <div
             className={"group mb-2 flex cursor-pointer flex-row duration-200"}
             onMouseDown={() => editPost()}
