@@ -115,7 +115,6 @@ export default function PostPage({ params }: { params: { id: string } }) {
   }
 
   async function getPostCard() {
-    // @ts-ignore
     const post = (await singlePost(postId)) as post;
     console.log(post);
     if (post) {
@@ -189,25 +188,24 @@ export default function PostPage({ params }: { params: { id: string } }) {
               </div>
 
               <div
-                id={`${key + "CONTENT"}`}
                 className={
                   "h-fit max-h-fit min-h-36 min-w-[80%] max-w-[80%] text-wrap break-normal pl-2 text-left"
                 }
               >
-                {post.content}
+                <div id={`${key + "CONTENT"}`}>{post.content}</div>
                 <div className={"flex w-[80%] flex-wrap pt-20"}>
                   {post.image_urls ? (
                     post.image_urls.split(",").map((url) => {
                       return (
                         <Link
                           key={url}
-                          href={url}
+                          href={`https://utfs.io/f/${url}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
                           <div className={"group m-1 w-full cursor-pointer"}>
                             <Image
-                              src={url}
+                              src={`https://utfs.io/f/${url}`}
                               width={256}
                               height={256}
                               className="object-cover"
