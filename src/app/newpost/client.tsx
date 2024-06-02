@@ -9,6 +9,7 @@ import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/nextjs";
 import { api } from "~/trpc/react";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { VscLoading } from "react-icons/vsc";
+import {deleteImage} from "~/server/api/queries";
 
 export default function ClientSide() {
   const router = useRouter();
@@ -58,6 +59,13 @@ export default function ClientSide() {
     }
   }
 
+  async function cancelPost() {
+    for (const url of imageUrls) {
+      void (await deleteImage(url));
+    }
+    router.back();
+  }
+
   return (
     <div>
       <SignedOut>
@@ -66,7 +74,7 @@ export default function ClientSide() {
       <SignedIn>
         <div
           className="fixed top-0 h-screen w-full pt-32"
-          onMouseDown={() => router.back()}
+          onMouseDown={() => void cancelPost()}
         >
           <div
             className={
@@ -81,7 +89,7 @@ export default function ClientSide() {
                 "group flex w-fit cursor-pointer flex-row border-b border-transparent text-left text-zinc-400 duration-150 hover:border-white/50"
               }
               onMouseDown={() => {
-                router.back();
+                void cancelPost();
               }}
             >
               <HiOutlineXMark
