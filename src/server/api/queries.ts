@@ -25,6 +25,19 @@ import {
   searchPinecone,
 } from "~/server/api/server-only";
 
+// import { UTApi } from "uploadthing/server";
+// const utapi = new UTApi();
+//
+//
+// export async function deleteImages(imagestring: string) {
+//   let images = imagestring.split(",");
+//   images = images.map((url)=>{
+//     const url = url.split("/")
+//     return url[url]
+//   })
+//   await utapi.deleteFiles(images.map(img => img.key));
+// }
+
 export async function deleteCommentDb(commentId: number) {
   await db.delete(comments).where(eq(comments.id, commentId));
   return "Deleted";
