@@ -22,7 +22,6 @@ interface ContextMenuProps {
 }
 
 export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
-  console.log(postPage);
   const router = useRouter();
   const { user_id } = useUserState((state) => state);
   const [editing, setEditing] = useState(false);
@@ -90,12 +89,10 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
       const oldNewImageUrls = newImageUrls.split(",").filter(Boolean);
       oldNewImageUrls.push(key);
       setNewImageUrls(oldNewImageUrls.join(","));
-      console.log("Adding: ", oldNewImageUrls);
     }
   }
 
   function removeImageFromPost(key: string) {
-    console.log("Deleting image", key);
     const arr = newImageUrls.split(",").filter(Boolean);
     const index = arr.indexOf(key);
     if (index !== -1) {
@@ -105,7 +102,6 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
       const oldRemoved = removeUrls.split(",").filter(Boolean);
       oldRemoved.push(key);
       setRemoveUrls(oldRemoved.join(","));
-      console.log("Deleting: ", oldRemoved);
     }
   }
 
@@ -166,7 +162,13 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
             oldContent.innerText = newContent;
             setEditing(false);
             setOpen(false);
-            void deleteImage(removeUrls ?? []);
+            for (const url of removeUrls.split(",")) {
+              const element = document.getElementById(url);
+              if (element) {
+                element.remove();
+              }
+            }
+            void deleteImage(removeUrls);
           } else {
             //TODO: Alert DOM content not found
             console.warn("DOM content not found");
