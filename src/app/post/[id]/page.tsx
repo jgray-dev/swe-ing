@@ -264,7 +264,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
                 </div>
 
                 <div className={"cursor-pointer"}>
-                  <ContextMenu post={post} id={`${key}`} />
+                  <ContextMenu post={post} id={`${key}`} postPage={true} />
                 </div>
               </div>
             </div>
