@@ -7,6 +7,7 @@ import { IoIosLink } from "react-icons/io";
 import { dbDeletePost, dbEditPost, dbReportPost } from "~/server/api/queries";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { useUserState } from "~/app/_functions/store";
+import {useRouter} from "next/navigation";
 
 interface ContextMenuProps {
   post: post;
@@ -14,6 +15,7 @@ interface ContextMenuProps {
 }
 
 export default function ContextMenu({ post, id }: ContextMenuProps) {
+  const router = useRouter();
   const { user_id } = useUserState((state) => state);
   const [editing, setEditing] = useState(false);
   const [open, setOpen] = useState(false);
@@ -37,6 +39,7 @@ export default function ContextMenu({ post, id }: ContextMenuProps) {
         const element = document.getElementById(id);
         if (element) {
           element.remove();
+          router.push("/")
         }
       }
     }
@@ -131,7 +134,7 @@ export default function ContextMenu({ post, id }: ContextMenuProps) {
       user_id ? (
         <div>
           <HiOutlineXMark
-            className={`h-6 w-6  duration-150 hover:text-white motion-safe:hover:scale-[115%] ${isAuthor ? "text-green-400" : "text-zinc-400"}`}
+            className={`h-6 w-6 duration-150 hover:text-red-600 motion-safe:hover:scale-[115%] text-zinc-200`}
             onMouseDown={() => {
               setEditing(false);
               setOpen(false);
