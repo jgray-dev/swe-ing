@@ -115,7 +115,6 @@ export default function PostPage({ params }: { params: { id: string } }) {
   }
 
   async function getPostCard() {
-    // @ts-ignore
     const post = (await singlePost(postId)) as post;
     console.log(post);
     if (post) {
