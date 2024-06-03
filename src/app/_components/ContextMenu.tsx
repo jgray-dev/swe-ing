@@ -39,6 +39,7 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
   useEffect(() => {
     setNewImageUrls(post.image_urls)
     setRemoveUrls("")
+    //eslint-disable-next-line
   }, [editing]);
   
   async function editPost() {
