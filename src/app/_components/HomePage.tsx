@@ -6,6 +6,8 @@ import { useUserState } from "~/app/_functions/store";
 import { VscLoading } from "react-icons/vsc";
 import PostsPage from "~/app/_components/PostsPage";
 
+//TODO: Add following post's to the top of the home page (!)
+
 export default function HomePage() {
   const [hpo, setHpo] = useState<number[]>();
   const { user_id } = useUserState((state) => state);
