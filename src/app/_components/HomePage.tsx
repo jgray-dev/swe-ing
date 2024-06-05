@@ -27,7 +27,7 @@ export default function HomePage() {
       setHpo(hpo);
     } else {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      setAlert({ text: "Waiting for user state", type: "info" });
+      setAlert({ text: "Waiting for user state", type: "loading" });
     }
   }
 
