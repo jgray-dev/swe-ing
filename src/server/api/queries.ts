@@ -29,10 +29,8 @@ import { UTApi } from "uploadthing/server";
 const utapi = new UTApi();
 
 export async function deleteImage(keys: string[] | string) {
-  console.log("deleteImage()", keys);
   if (!Array.isArray(keys)) keys = keys.split(",") || [keys];
   for (const key of keys) {
-    console.log("Deleting image", key);
     await utapi.deleteFiles(key);
   }
 }
