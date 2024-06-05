@@ -7,7 +7,7 @@ import {
   resetUserEmbed,
   updateUserProfile,
 } from "~/server/api/queries";
-import {useAlertState, useUserState} from "~/app/_functions/store";
+import { useAlertState, useUserState } from "~/app/_functions/store";
 import { VscLoading } from "react-icons/vsc";
 import Link from "next/link";
 import Image from "next/image";
@@ -61,12 +61,12 @@ export default function UserPage({ params }: { params: { id: string } }) {
   async function resetRecs(clerk: string) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     setAlert({ text: "Resetting recommendations", type: "loading" });
-    
-    void await resetUserEmbed(clerk)
+
+    void (await resetUserEmbed(clerk));
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     setAlert({ text: "Reset recommendations", type: "info" });
   }
-  
+
   async function userCard() {
     const following = await isUserFollowing(user_id, userId);
     const fullUser = await getDbUserFromId(userId);
