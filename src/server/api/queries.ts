@@ -11,7 +11,11 @@ import {
 } from "~/server/db/schema";
 import { desc } from "drizzle-orm/sql/expressions/select";
 import { and, eq, inArray, or } from "drizzle-orm/sql/expressions/conditions";
-import type {profile, post, webhookRequest} from "~/app/_functions/interfaces";
+import type {
+  profile,
+  post,
+  webhookRequest,
+} from "~/app/_functions/interfaces";
 import {
   getAverageEmbedding,
   getEmbedding,
