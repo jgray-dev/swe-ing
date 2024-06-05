@@ -110,10 +110,14 @@ export default function NewPost() {
         <RedirectToSignIn />
       </SignedOut>
       <SignedIn>
-        <div className={"w-screen h-screen text-white overflow-y-scroll no-scrollbar"}>
+        <div
+          className={
+            "no-scrollbar h-screen w-screen overflow-y-scroll text-white"
+          }
+        >
           <div
             className={
-              "relative mx-auto max-h-fit min-h-fit w-full overflow-y-scroll rounded-md bg-neutral-800/60 p-4 mt-24 mb-12 sm:w-96"
+              "relative mx-auto mb-12 mt-24 max-h-fit min-h-fit w-full overflow-y-scroll rounded-md bg-neutral-800/60 p-4 sm:w-96"
             }
             onMouseDown={(e) => {
               e.stopPropagation();
