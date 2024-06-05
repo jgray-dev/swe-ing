@@ -1,15 +1,38 @@
 "use server";
 
-import { embed } from "ai";
-import { openai } from "@ai-sdk/openai";
 import { embeddingFromID } from "~/server/api/server-only";
+import type { Response } from "~/app/_functions/interfaces";
 
-export async function getEmbedding(text: string, tags?: string) {
-  const { embedding } = await embed({
-    model: openai.embedding("text-embedding-3-small"),
-    value: text + tags,
-  });
-  return embedding;
+export async function getEmbedding(
+  text: string,
+  tags?: string,
+): Promise<number[]> {
+  const apiKey = process.env.VOYAGE_API_KEY;
+
+  try {
+    const response = await fetch("https://api.voyageai.com/v1/embeddings", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        input: `${text} ${tags}`,
+        model: "voyage-large-2-instruct",
+      }),
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const data: Response = await response.json();
+    if (data.data[0]?.embedding) {
+      return data.data[0].embedding;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    return [];
+  }
 }
 
 export async function getAverageEmbedding(
@@ -20,7 +43,7 @@ export async function getAverageEmbedding(
 ) {
   const average: number[] = [];
   const totalWeight = weight1 + weight2;
-  for (let i = 0; i < 1536; i++) {
+  for (let i = 0; i < 1024; i++) {
     let weightedSum = 0;
     if (embeddings1[i] !== undefined) {
       // @ts-expect-error fts
