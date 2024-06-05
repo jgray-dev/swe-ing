@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import { Webhook } from "svix";
-import {profile, webhookRequest} from "~/app/_functions/interfaces";
-import {createProfile, deleteProfile, updateProfile} from "~/server/api/queries";
+import { profile, webhookRequest } from "~/app/_functions/interfaces";
+import {
+  createProfile,
+  deleteProfile,
+  updateProfile,
+} from "~/server/api/queries";
 
-const webhookSecret: string | undefined = process.env.WEBHOOK_SECRET
+const webhookSecret: string | undefined = process.env.WEBHOOK_SECRET;
 
 export const maxDuration = 10;
 
@@ -29,9 +33,9 @@ export async function handler(req: Request) {
       } catch (err) {
         return new Response("Bad Request", { status: 400 });
       }
-      msg = msg as webhookRequest
+      msg = msg as webhookRequest;
       console.log("Verified webhook request for user " + msg.data.id);
-      
+
       try {
         if (msg.type === "user.updated") {
           await updateProfile(msg);
@@ -45,8 +49,7 @@ export async function handler(req: Request) {
       } catch {
         return new Response("Error calling functions", { status: 500 });
       }
-      
-      
+
       return new Response("OK", { status: 200 });
     } catch (error) {
       return NextResponse.json(
