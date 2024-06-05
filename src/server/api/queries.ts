@@ -379,12 +379,11 @@ export async function createProfile(profile: webhookRequest) {
 }
 
 export async function deleteProfile(profile: webhookRequest) {
-  console.log("deleteProfile()", profile.data.id);
   const user = await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.clerk_id, profile.data.id),
   });
   if (user) {
-    console.log("Got user");
+    console.log("Deleting user");
     const deletedPosts: { post_id: number }[] = await db
       .delete(posts)
       .where(eq(posts.author_id, user.id))
