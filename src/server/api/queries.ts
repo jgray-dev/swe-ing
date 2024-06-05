@@ -379,12 +379,11 @@ export async function createProfile(profile: webhookRequest) {
 }
 
 export async function deleteProfile(profile: webhookRequest) {
-  console.log("deleteProfile()", profile.data.id);
   const user = await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.clerk_id, profile.data.id),
   });
   if (user) {
-    console.log("Got user");
+    console.log("Deleting user");
     const deletedPosts: { post_id: number }[] = await db
       .delete(posts)
       .where(eq(posts.author_id, user.id))
@@ -432,8 +431,12 @@ export async function searchEmbeddings(search: string) {
 export async function updateEmbed() {
   const user = auth();
   if (user?.userId) {
-    void (await updateUserEmbed(user?.userId));
-    return 0;
+    const resp = await updateUserEmbed(user?.userId);
+    if (resp === 2) {
+      return 2;
+    } else {
+      return 0;
+    }
   } else {
     return 1;
   }
@@ -491,7 +494,7 @@ export async function updateUserEmbed(userId: string) {
       return 0;
     } else {
       console.log("Nothing to refresh for ", user.id);
-      return 1;
+      return 2;
     }
   }
   return 1;
