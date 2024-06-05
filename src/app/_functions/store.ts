@@ -11,12 +11,12 @@ type User = {
   name: string;
   setData: (data: Partial<User>) => void;
 };
-
-export const useUserState = create<User>((set) => ({
+export const useUserState = create<User & { isLoaded: boolean }>((set) => ({
   user_id: 0,
   clerk_id: "",
   name: "",
-  setData: (data) => set(data),
+  isLoaded: false,
+  setData: (data) => set({ ...data, isLoaded: true }),
 }));
 
 export function UserDataUpdater() {
@@ -54,6 +54,7 @@ export function UserDataUpdater() {
 
   return null;
 }
+
 
 type Reply = {
   post_id: number;
