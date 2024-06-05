@@ -104,10 +104,13 @@ export default function PostsPage({ order }: PostsPageProps) {
         setAlert({ text: "", type: "info" });
       }
     } else {
-      console.warn("End of posts");
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      setAlert({ text: "", type: "info" });
       setEnd(true);
     }
     if (!end) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      setAlert({ text: "", type: "info" });
       setLoading(false);
     }
   }
