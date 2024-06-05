@@ -27,7 +27,7 @@ export default function ClientSide() {
         alert("Erorr creating post");
         return;
       }
-      setSubmitting(false);
+      setBlockSubmit(true);
       setButtonText("Redirecting...");
       setContent("");
       setTags("");
