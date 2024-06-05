@@ -306,7 +306,6 @@ export async function nextHomePage(
       const other_posts = uoPosts.filter(
         (post) => !following_ids.includes(post.author_id),
       );
-      console.log("Sorting posts");
       const sorted_other_posts = other_posts.sort((a, b) => {
         const indexA = postIds.indexOf(a.id);
         const indexB = postIds.indexOf(b.id);
