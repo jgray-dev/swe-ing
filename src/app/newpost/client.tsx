@@ -53,19 +53,19 @@ export default function ClientSide() {
             alert("Please add more content before posting");
           } else {
             setSubmitting(true);
+            setBlockSubmit(true);
             createPost.mutate({ content, imageUrls, tags });
           }
         }
       } else {
-        console.warn("No content detected. . .");
+        console.warn("No content detected..");
       }
     } else {
-      console.warn("Images are still uploading. . .");
+      console.warn("Stuff is currently happening... Please be patient");
     }
   }
 
   async function removeImage(key: string) {
-    console.log(key);
     const arr = imageUrls.split(",");
     const index = arr.indexOf(key);
     arr.splice(index, 1);
@@ -118,10 +118,8 @@ export default function ClientSide() {
             <div className={"text-left"}>
               Post:
               <textarea
-                className={
-                  "min-h-48 w-full rounded-md border border-white/50 bg-black/30 p-2 text-white placeholder-white/60 outline-none focus:border-white/80 focus:outline-none"
-                }
-                placeholder={"Enter post content here"}
+                className={`min-h-48 w-full rounded-md border border-white/50 bg-black/30 p-2 text-white placeholder-white/60 outline-none ${content.length > 1250 || content.length < 5 ? "border-red-500" : "border-white/80"}`}
+                placeholder="Enter post content here"
                 onChange={(e) => setContent(e.target.value)}
                 value={content}
               ></textarea>
