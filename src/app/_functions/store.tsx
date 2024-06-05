@@ -26,27 +26,35 @@ export function UserDataUpdater() {
 
   React.useEffect(() => {
     const fetchData = async () => {
-      if (isLoaded && isSignedIn && !isLoading) {
-        setIsLoading(true);
-        try {
-          const dbUser = await getDbUser(user.id);
-          if (dbUser) {
-            setData({
-              user_id: dbUser.id,
-              clerk_id: user.id,
-              name: `${user.fullName}`,
-            });
+      if (isLoaded) {
+        if (!isLoading) {
+          if (isSignedIn) {
+            setIsLoading(true);
+            try {
+              const dbUser = await getDbUser(user.id);
+              if (dbUser) {
+                setData({
+                  user_id: dbUser.id,
+                  clerk_id: user.id,
+                  name: `${user.fullName}`,
+                });
+              } else {
+                alert("Error getting user data");
+                location.reload();
+              }
+            } catch (error) {
+              console.error("Error fetching user data:", error);
+            } finally {
+              setIsLoading(false);
+            }
           } else {
-            alert("Error getting user data");
-            location.reload();
+            console.log("User not signed in");
           }
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        } finally {
-          setIsLoading(false);
+        } else {
+          console.log("Already loading user data");
         }
       } else {
-        console.log("User not signed in");
+        console.log("Clerk state loading");
       }
     };
     void fetchData();
