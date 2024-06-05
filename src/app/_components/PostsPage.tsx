@@ -157,7 +157,7 @@ export default function PostsPage({ order }: PostsPageProps) {
                 {/*@ts-expect-error fuck typescript*/}
                 {post.author.name}
                 <br />
-                <span className={"text-xs text-zinc-600"}>
+                <span className={"text-center text-xs text-zinc-600"}>
                   {getTime(post.updated_at)} ago
                 </span>
               </div>
