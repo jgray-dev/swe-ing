@@ -252,8 +252,8 @@ export async function getHomePageOrder(user_id?: number) {
 
 export async function nextHomePage(
   page: number,
-  user_id?: number,
-  postIds?: number[],
+  user_id: number,
+  postIds: number[],
 ) {
   const pageSize = 20;
   const offset = (page - 1) * pageSize;
@@ -261,41 +261,57 @@ export async function nextHomePage(
     const user = await db.query.users.findFirst({
       where: eq(users.id, user_id),
     });
-    if (user?.id && postIds && postIds?.length > 0) {
-      postIds = postIds.slice(offset, offset + pageSize);
-      if (postIds?.length > 0) {
-        const uoPosts = await db.query.posts.findMany({
-          where: inArray(posts.id, postIds),
-          with: {
-            author: {
-              columns: {
-                id: true,
-                image_url: true,
-                name: true,
-              },
-            },
-            comments: {
-              columns: {
-                id: true,
-              },
-            },
-            likes: {
-              columns: {
-                user_id: true,
-              },
+    if (user?.id && postIds.length > 0) {
+      const following = await db.query.follows.findMany({
+        where: and(
+          eq(follows.user_id, user_id),
+          eq(follows.following_user_id, follows.following_user_id),
+        ),
+        columns: {
+          following_user_id: true,
+        },
+      });
+      const following_ids = following.map((f) => f.following_user_id);
+      const uoPosts = await db.query.posts.findMany({
+        where: or(
+          inArray(posts.id, postIds),
+          inArray(posts.author_id, (following_ids.length > 0 ? following_ids : [0])),
+        ),
+        with: {
+          author: {
+            columns: {
+              id: true,
+              image_url: true,
+              name: true,
             },
           },
-        });
-        return uoPosts.sort((a, b) => {
-          // @ts-expect-error i fucking hate ts
-          const indexA = postIds.indexOf(a.id);
-          // @ts-expect-error i fucking hate ts
-          const indexB = postIds.indexOf(b.id);
-          return indexA - indexB;
-        });
-      } else {
-        return null;
-      }
+          comments: {
+            columns: {
+              id: true,
+            },
+          },
+          likes: {
+            columns: {
+              user_id: true,
+            },
+          },
+        },
+      });
+      const followed_posts = uoPosts.filter(post => following_ids.includes(post.author_id));
+      const other_posts = uoPosts.filter(post => !following_ids.includes(post.author_id));
+      console.log("Sorting posts")
+      const sorted_other_posts = other_posts.sort((a, b) => {
+        const indexA = postIds.indexOf(a.id);
+        const indexB = postIds.indexOf(b.id);
+        return indexA - indexB;
+      });
+      const sorted_followed_posts = followed_posts.sort((a, b) => {
+        const indexA = postIds.indexOf(a.id);
+        const indexB = postIds.indexOf(b.id);
+        return indexA - indexB;
+      });
+      const all_posts = [...sorted_followed_posts, ...sorted_other_posts];
+      return all_posts.slice(offset, offset + pageSize);
     }
   }
   // No userID or postIds list or whatever - return chronological home page
@@ -324,6 +340,8 @@ export async function nextHomePage(
     },
   });
 }
+
+
 
 // export async function getSinglePost(post_id: number) {
 //   return db.query.posts.findFirst({
