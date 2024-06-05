@@ -20,6 +20,7 @@ export default function SearchPage({ params }: { params: { query: string } }) {
     console.log("firstLoad called");
     if (user_id) {
       const po = await searchEmbeddings(params.query);
+      console.log("PO", po);
       setPo(po);
     } else {
       console.info("Waiting for user state");
