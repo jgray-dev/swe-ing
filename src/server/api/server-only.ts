@@ -10,9 +10,10 @@ const pc = new Pinecone({
 
 const index = pc.Index(env.PINECONE_ENVIRONMENT);
 
-export async function deletePineconeNamespace(table: string) {
-  await index.namespace(table).deleteAll();
-}
+// export async function deletePineconeNamespace(table: string) {
+//   await index.namespace(table).deleteAll();
+//   console.log("Deleted namespace");
+// }
 
 export async function pineconeDelete(ids: number[], table: string) {
   const ns = index.namespace(table);
