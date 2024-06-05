@@ -11,7 +11,7 @@ import {
   deleteImage,
 } from "~/server/api/queries";
 import { HiOutlineXMark } from "react-icons/hi2";
-import { useUserState } from "~/app/_functions/store";
+import { useAlertState, useUserState } from "~/app/_functions/store";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -22,6 +22,8 @@ interface ContextMenuProps {
 }
 
 export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+  const setAlert = useAlertState((state) => state.setAlert);
   const router = useRouter();
   const { user_id } = useUserState((state) => state);
   const [editing, setEditing] = useState(false);
@@ -65,9 +67,11 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
     if (user_id) {
       const resp = await dbReportPost(post, user_id);
       if (resp === "duplicate") {
-        //TODO: Alert duplicate report
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        setAlert({ text: "You've already reported this post", type: "warn" });
       } else {
-        //TODO: Alert report created
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        setAlert({ text: "Post reported successfully", type: "info" });
       }
     } else {
       console.error("Unable to report - no user_id");
@@ -78,10 +82,12 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
     setOpen(!open);
     try {
       await navigator.clipboard.writeText(`https://swe.ing/post/${post.id}`);
-      //TODO: Alert text copied successfully
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      setAlert({ text: "Link copied", type: "info" });
     } catch (error) {
       alert("Your environment does not support the clipboard");
-      //TODO: Alert error copying link
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      setAlert({ text: "Unsupported environment", type: "error" });
     }
   }
 
@@ -174,12 +180,17 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
             }
             void deleteImage(removeUrls);
           } else {
-            //TODO: Alert DOM content not found
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            setAlert({ text: "Post not found on page", type: "warn" });
             console.warn("DOM content not found");
           }
         }
       } else {
-        //TODO: alert no user_id or ref or wtv
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        setAlert({
+          text: "No user_id || edit box reference found",
+          type: "error",
+        });
         console.warn("No user_id or edit box ref found");
       }
     }

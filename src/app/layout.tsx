@@ -11,7 +11,7 @@ import React from "react";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "~/app/api/uploadthing/core";
-import { UserDataUpdater } from "~/app/_functions/store";
+import { Alert, UserDataUpdater } from "~/app/_functions/store";
 import { Analytics } from "@vercel/analytics/react";
 
 export const metadata = {
@@ -31,6 +31,7 @@ export default function RootLayout({
       <UserDataUpdater />
       <html lang="en" className={`${GeistSans.variable}`}>
         <body className={"bg-black"}>
+          <Alert />
           <TRPCReactProvider>
             <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
             <NavBar />
