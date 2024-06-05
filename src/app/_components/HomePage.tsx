@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { getHomePageOrder } from "~/server/api/queries";
-import {useAlertState, useUserState} from "~/app/_functions/store";
+import { useAlertState, useUserState } from "~/app/_functions/store";
 import { VscLoading } from "react-icons/vsc";
 import PostsPage from "~/app/_components/PostsPage";
 
@@ -11,7 +11,6 @@ export default function HomePage() {
   const { user_id } = useUserState((state) => state);
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
   const setAlert = useAlertState((state) => state.setAlert);
-  
 
   useEffect(() => {
     // console.log("useEffect called");
@@ -23,12 +22,12 @@ export default function HomePage() {
     // console.log("Firstload called");
     if (user_id) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      setAlert({text: "Getting post order", type: "loading"});
+      setAlert({ text: "Getting post order", type: "loading" });
       const hpo = await getHomePageOrder(user_id);
       setHpo(hpo);
     } else {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      setAlert({text: "Waiting for user state", type: "info"});
+      setAlert({ text: "Waiting for user state", type: "info" });
     }
   }
 
