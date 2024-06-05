@@ -18,7 +18,7 @@ export async function getEmbedding(
       },
       body: JSON.stringify({
         input: `${text} ${tags}`,
-        model: "voyage-large-2-instruct",
+        model: "voyage-large-2",
       }),
     });
 
@@ -43,7 +43,7 @@ export async function getAverageEmbedding(
 ) {
   const average: number[] = [];
   const totalWeight = weight1 + weight2;
-  for (let i = 0; i < 1024; i++) {
+  for (let i = 0; i < 1536; i++) {
     let weightedSum = 0;
     if (embeddings1[i] !== undefined) {
       // @ts-expect-error fts
