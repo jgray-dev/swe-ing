@@ -156,9 +156,7 @@ export function Alert() {
         <div className="flex">
           <div className="flex-shrink-0">{icons[type]}</div>
           <div className="ml-3">
-            <p className={`text-sm font-medium ${textcolor[type]}`}>
-              {text}
-            </p>
+            <p className={`text-sm font-medium ${textcolor[type]}`}>{text}</p>
           </div>
           <div className="ml-auto pl-3">
             <div className="-mx-1.5 -my-1.5">
@@ -170,7 +168,7 @@ export function Alert() {
                 <XMarkIcon
                   className="h-5 w-5"
                   aria-hidden="true"
-                  onClick={() => setAlert({text: ""})}
+                  onClick={() => setAlert({ text: "" })}
                 />
               </button>
             </div>
