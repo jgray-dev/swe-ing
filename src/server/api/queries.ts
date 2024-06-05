@@ -275,7 +275,10 @@ export async function nextHomePage(
       const uoPosts = await db.query.posts.findMany({
         where: or(
           inArray(posts.id, postIds),
-          inArray(posts.author_id, (following_ids.length > 0 ? following_ids : [0])),
+          inArray(
+            posts.author_id,
+            following_ids.length > 0 ? following_ids : [0],
+          ),
         ),
         with: {
           author: {
@@ -297,9 +300,13 @@ export async function nextHomePage(
           },
         },
       });
-      const followed_posts = uoPosts.filter(post => following_ids.includes(post.author_id));
-      const other_posts = uoPosts.filter(post => !following_ids.includes(post.author_id));
-      console.log("Sorting posts")
+      const followed_posts = uoPosts.filter((post) =>
+        following_ids.includes(post.author_id),
+      );
+      const other_posts = uoPosts.filter(
+        (post) => !following_ids.includes(post.author_id),
+      );
+      console.log("Sorting posts");
       const sorted_other_posts = other_posts.sort((a, b) => {
         const indexA = postIds.indexOf(a.id);
         const indexB = postIds.indexOf(b.id);
@@ -340,8 +347,6 @@ export async function nextHomePage(
     },
   });
 }
-
-
 
 // export async function getSinglePost(post_id: number) {
 //   return db.query.posts.findFirst({
