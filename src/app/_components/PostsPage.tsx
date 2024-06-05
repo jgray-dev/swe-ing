@@ -10,7 +10,7 @@ import { GoCommentDiscussion } from "react-icons/go";
 import LikeButton from "~/app/_components/LikeButton";
 import ContextMenu from "~/app/_components/ContextMenu";
 import { getTime } from "~/app/_functions/functions";
-import {useAlertState, useUserState} from "~/app/_functions/store";
+import { useAlertState, useUserState } from "~/app/_functions/store";
 import { VscLoading } from "react-icons/vsc";
 
 interface PostsPageProps {
