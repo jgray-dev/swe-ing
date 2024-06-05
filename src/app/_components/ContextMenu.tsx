@@ -11,7 +11,7 @@ import {
   deleteImage,
 } from "~/server/api/queries";
 import { HiOutlineXMark } from "react-icons/hi2";
-import {useAlertState, useUserState} from "~/app/_functions/store";
+import { useAlertState, useUserState } from "~/app/_functions/store";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -68,10 +68,10 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
       const resp = await dbReportPost(post, user_id);
       if (resp === "duplicate") {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        setAlert({text: "You've already reported this post", type: "warn"});
+        setAlert({ text: "You've already reported this post", type: "warn" });
       } else {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        setAlert({text: "Post reported successfully", type: "info"});
+        setAlert({ text: "Post reported successfully", type: "info" });
       }
     } else {
       console.error("Unable to report - no user_id");
@@ -83,11 +83,11 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
     try {
       await navigator.clipboard.writeText(`https://swe.ing/post/${post.id}`);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      setAlert({text: "Link copied", type: "info"});
+      setAlert({ text: "Link copied", type: "info" });
     } catch (error) {
       alert("Your environment does not support the clipboard");
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      setAlert({text: "Unsupported environment", type: "error"});
+      setAlert({ text: "Unsupported environment", type: "error" });
     }
   }
 
@@ -181,13 +181,16 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
             void deleteImage(removeUrls);
           } else {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-            setAlert({text: "Post not found on page", type: "warn"});
+            setAlert({ text: "Post not found on page", type: "warn" });
             console.warn("DOM content not found");
           }
         }
       } else {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        setAlert({text: "No user_id || edit box reference found", type: "error"});
+        setAlert({
+          text: "No user_id || edit box reference found",
+          type: "error",
+        });
         console.warn("No user_id or edit box ref found");
       }
     }
