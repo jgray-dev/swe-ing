@@ -1,59 +1,61 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import { NextResponse } from "next/server";
-import { safeParseJSON } from "@uploadthing/shared";
-import {
-  createProfile,
-  deleteProfile,
-  updateProfile,
-  updateUserEmbed,
-} from "~/server/api/queries";
-import type { profile } from "~/app/_functions/interfaces";
+import { Webhook } from "svix";
+import {profile, webhookRequest} from "~/app/_functions/interfaces";
+import {createProfile, deleteProfile, updateProfile} from "~/server/api/queries";
 
-export const maxDuration = 300;
+const webhookSecret: string | undefined = process.env.WEBHOOK_SECRET
 
-export async function handler(req: NextApiRequest, res: NextApiResponse) {
+export const maxDuration = 10;
+
+export async function handler(req: Request) {
   if (req.method === "POST" || req.method == "OPTIONS") {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
-      const reader = req.body.getReader();
-      const chunks = [];
-      while (true) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
-        const { done, value } = await reader.read();
-        if (done) break;
-        chunks.push(value);
+      if (!webhookSecret) {
+        return new Response("Secret not set", { status: 500 });
       }
-      const bodyBuffer = Buffer.concat(chunks);
-      const bodyText = bodyBuffer.toString("utf-8");
-      if (bodyText !== "") {
-        const jsonBody = await safeParseJSON(bodyText);
-        const body = jsonBody as profile;
-        if (body.type === "user.updated") {
-          void (await updateProfile(body));
-        }
-        if (body.type === "user.created") {
-          void (await createProfile(body));
-        }
-        if (body.type === "user.deleted") {
-          void (await deleteProfile(body));
-        }
-        return NextResponse.json(
-          { message: `Webhook received` },
-          { status: 200 },
-        );
-      } else {
-        return NextResponse.json({ error: "Invalid input" }, { status: 500 });
+      const svix_id = req.headers.get("svix-id") ?? "";
+      const svix_timestamp = req.headers.get("svix-timestamp") ?? "";
+      const svix_signature = req.headers.get("svix-signature") ?? "";
+      const body = await req.text();
+      const sivx = new Webhook(webhookSecret);
+      let msg;
+
+      try {
+        msg = sivx.verify(body, {
+          "svix-id": svix_id,
+          "svix-timestamp": svix_timestamp,
+          "svix-signature": svix_signature,
+        });
+      } catch (err) {
+        return new Response("Bad Request", { status: 400 });
       }
+      msg = msg as webhookRequest
+      console.log("Verified webhook request for user " + msg.data.id);
+      
+      try {
+        if (msg.type === "user.updated") {
+          await updateProfile(msg);
+        }
+        if (msg.type === "user.created") {
+          await createProfile(msg);
+        }
+        if (msg.type === "user.deleted") {
+          await deleteProfile(msg);
+        }
+      } catch {
+        return new Response("Error calling functions", { status: 500 });
+      }
+      
+      
+      return new Response("OK", { status: 200 });
     } catch (error) {
-      console.error("Error processing webhook:", error);
       return NextResponse.json(
         { error: "Internal Server Error" },
         { status: 500 },
       );
     }
   } else {
-    res.setHeader("Allow", "POST");
-    return NextResponse.json({ error: "Method Not Allowed" }, { status: 405 });
+    return NextResponse.json({ error: "Invalid method" }, { status: 405 });
   }
 }
 
