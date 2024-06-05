@@ -10,10 +10,12 @@ import { TfiReload } from "react-icons/tfi";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { IoIosSearch } from "react-icons/io";
 import { CiSquarePlus } from "react-icons/ci";
-import { useUserState } from "~/app/_functions/store";
+import { useAlertState, useUserState } from "~/app/_functions/store";
 import { VscAccount } from "react-icons/vsc";
 
 export default function NavBar() {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+  const setAlert = useAlertState((state) => state.setAlert);
   const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -30,11 +32,18 @@ export default function NavBar() {
 
   async function refreshEmbed() {
     // void seedAllData()
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    setAlert({ text: "Refreshing recommendations", type: "loading" });
     const resp = await updateEmbed();
     if (resp === 1) {
-      alert("Failed to refresh user embed (user?.userId)");
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      setAlert({ text: "Failed to refresh recommendations", type: "error" });
     } else {
-      location.reload();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      setAlert({ text: "Refreshed recommendations", type: "info" });
+      setTimeout(() => {
+        location.reload();
+      }, 1000);
     }
   }
 

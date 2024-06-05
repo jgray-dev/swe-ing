@@ -34,24 +34,32 @@ export function UserDataUpdater() {
   React.useEffect(() => {
     const fetchData = async () => {
       if (isLoaded) {
+        console.log("Clerk state loaded");
         if (!isLoading) {
+          console.log("Local loading is false");
           if (isSignedIn) {
+            console.log("Clerk is signed in");
             setIsLoading(true);
             try {
+              console.log("Trying dbUser");
               const dbUser = await getDbUser(user.id);
               if (dbUser) {
+                console.log("We got dbUser");
                 setData({
                   user_id: dbUser.id,
                   clerk_id: user.id,
                   name: `${user.fullName}`,
                 });
               } else {
+                console.log("We DONT got dbUser - reload page");
                 alert("Error getting user data");
                 location.reload();
               }
             } catch (error) {
+              console.log("Caught error:");
               console.error("Error fetching user data:", error);
             } finally {
+              console.log("Finally not loading");
               setIsLoading(false);
             }
           } else {
@@ -151,7 +159,7 @@ export function Alert() {
   };
 
   return (
-    <div className="fixed bottom-10 right-10 z-50 h-fit shadow-xl shadow-black">
+    <div className="fixed bottom-10 right-10 z-50 h-fit bg-black shadow-xl shadow-black">
       <div className={`rounded-md bg-green-50 ${bgcolor[type]} p-4`}>
         <div className="flex">
           <div className="flex-shrink-0">{icons[type]}</div>

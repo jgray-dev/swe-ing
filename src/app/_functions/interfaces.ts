@@ -1,3 +1,15 @@
+export interface webhookRequest {
+  data: {
+    image_url: string;
+    id: string;
+    first_name?: string;
+    last_name?: string;
+    user_id?: string;
+  };
+  object: string;
+  type: string;
+}
+
 export interface profile {
   data: {
     image_url: string;

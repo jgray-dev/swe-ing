@@ -7,7 +7,7 @@ import {
   resetUserEmbed,
   updateUserProfile,
 } from "~/server/api/queries";
-import { useUserState } from "~/app/_functions/store";
+import { useAlertState, useUserState } from "~/app/_functions/store";
 import { VscLoading } from "react-icons/vsc";
 import Link from "next/link";
 import Image from "next/image";
@@ -24,6 +24,8 @@ export default function UserPage({ params }: { params: { id: string } }) {
   const [newWebsite, setNewWebsite] = useState("");
   const [newSkills, setNewSkills] = useState("");
   const [newLocation, setNewLocation] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+  const setAlert = useAlertState((state) => state.setAlert);
 
   useEffect(() => {
     if (user_id !== 0) {
@@ -54,6 +56,15 @@ export default function UserPage({ params }: { params: { id: string } }) {
     // console.log(newWebsite);
     void (await updateUserProfile(newBio, newLocation, newSkills, newWebsite));
     void userCard();
+  }
+
+  async function resetRecs(clerk: string) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    setAlert({ text: "Resetting recommendations", type: "loading" });
+
+    void (await resetUserEmbed(clerk));
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    setAlert({ text: "Reset recommendations", type: "info" });
   }
 
   async function userCard() {
@@ -194,7 +205,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
                   className={
                     "rounded-lg border-2 border-red-400 bg-red-500 px-4 py-2 text-zinc-200 duration-100 hover:bg-red-400 hover:text-white"
                   }
-                  onMouseDown={() => resetUserEmbed(clerk_id)}
+                  onMouseDown={() => resetRecs(clerk_id)}
                 >
                   Reset
                 </button>

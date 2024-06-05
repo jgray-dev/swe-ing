@@ -10,7 +10,7 @@ import { GoCommentDiscussion } from "react-icons/go";
 import LikeButton from "~/app/_components/LikeButton";
 import ContextMenu from "~/app/_components/ContextMenu";
 import { getTime } from "~/app/_functions/functions";
-import { useUserState } from "~/app/_functions/store";
+import { useAlertState, useUserState } from "~/app/_functions/store";
 import { VscLoading } from "react-icons/vsc";
 
 interface PostsPageProps {
@@ -25,6 +25,8 @@ export default function PostsPage({ order }: PostsPageProps) {
   const [allPosts, setAllPosts] = useState<Array<post>>([]);
   const [cards, setCards] = useState<React.ReactElement[]>([]);
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+  const setAlert = useAlertState((state) => state.setAlert);
 
   useEffect(() => {
     void firstLoad();
@@ -69,6 +71,8 @@ export default function PostsPage({ order }: PostsPageProps) {
   }, [loading]);
 
   async function fetchData(postOrder: number[]) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    setAlert({ text: "Fetching more posts", type: "loading" });
     setLoading(true);
     const data = await nextHomePage(page, user_id, postOrder);
     if (!data) {
@@ -96,6 +100,8 @@ export default function PostsPage({ order }: PostsPageProps) {
         setAllPosts([...allPosts, ...newPosts]);
         setCards([...cards, ...getCards(newPosts)]);
         setLoading(false);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        setAlert({ text: "", type: "info" });
       }
     } else {
       console.warn("End of posts");
