@@ -55,7 +55,6 @@ export function UserDataUpdater() {
   return null;
 }
 
-
 type Reply = {
   post_id: number;
   setReplyData: (data: Partial<Reply>) => void;
