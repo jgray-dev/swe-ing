@@ -172,6 +172,7 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
             oldContent.innerText = newContent;
             setEditing(false);
             setOpen(false);
+            post.image_urls = newImageUrls;
             for (const url of removeUrls.split(",")) {
               const element = document.getElementById(url);
               if (element) {
