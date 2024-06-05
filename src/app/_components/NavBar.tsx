@@ -35,11 +35,10 @@ export default function NavBar() {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     setAlert({ text: "Refreshing recommendations", type: "loading" });
     const resp = await updateEmbed();
-    console.log(resp)
+    console.log(resp);
     if (resp === 2) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       setAlert({ text: "No new recommendations", type: "info" });
-      
     } else if (resp === 1) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       setAlert({ text: "Failed to refresh recommendations", type: "error" });
