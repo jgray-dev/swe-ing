@@ -60,3 +60,21 @@ export interface user {
   skills?: string;
   recent_likes?: number[];
 }
+
+// Embeddings interfaces
+interface Embedding {
+  object: string;
+  embedding: number[];
+  index: number;
+}
+
+interface Usage {
+  total_tokens: number;
+}
+
+export interface Response {
+  object: string;
+  data: Embedding[];
+  model: string;
+  usage: Usage;
+}
