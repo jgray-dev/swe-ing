@@ -11,7 +11,7 @@ import {
 } from "~/server/db/schema";
 import { desc } from "drizzle-orm/sql/expressions/select";
 import { and, eq, inArray, or } from "drizzle-orm/sql/expressions/conditions";
-import type { profile, post } from "~/app/_functions/interfaces";
+import type {profile, post, webhookRequest} from "~/app/_functions/interfaces";
 import {
   getAverageEmbedding,
   getEmbedding,
@@ -345,16 +345,7 @@ export async function nextHomePage(
   });
 }
 
-// export async function getSinglePost(post_id: number) {
-//   return db.query.posts.findFirst({
-//     where: eq(posts.id, post_id),
-//     columns: {
-//       embedding: false,
-//     },
-//   });
-// }
-
-export async function updateProfile(profile: profile) {
+export async function updateProfile(profile: webhookRequest) {
   return db
     .update(users)
     .set({
@@ -365,7 +356,7 @@ export async function updateProfile(profile: profile) {
     .returning();
 }
 
-export async function createProfile(profile: profile) {
+export async function createProfile(profile: webhookRequest) {
   const user = await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.clerk_id, profile.data.id),
   });
@@ -383,13 +374,13 @@ export async function createProfile(profile: profile) {
   }
 }
 
-export async function deleteProfile(profile: profile) {
+export async function deleteProfile(profile: webhookRequest) {
   console.log("deleteProfile()", profile.data.id);
   const user = await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.clerk_id, profile.data.id),
   });
-  console.log("Got user");
   if (user) {
+    console.log("Got user");
     const deletedPosts: { post_id: number }[] = await db
       .delete(posts)
       .where(eq(posts.author_id, user.id))
