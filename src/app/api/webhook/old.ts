@@ -39,7 +39,6 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
           void (await deleteProfile(body));
         }
 
-
         return NextResponse.json(
           { message: `Webhook received` },
           { status: 200 },
