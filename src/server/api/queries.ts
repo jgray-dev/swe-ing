@@ -755,3 +755,42 @@ export async function createComment(
     return 1;
   }
 }
+
+
+// LIKE QUERIES
+
+export async function createLike(
+  user_id: number,
+  post_id: number,
+) {
+  const user = await db.query.users.findFirst({
+    where: (user, { eq }) => eq(user.id, user_id),
+  });
+  if (!user) {
+    return "NO USER";
+  }
+  const previousLike = await db.query.likes.findFirst({
+    where: and(eq(likes.user_id, user_id), eq(likes.post_id, post_id)),
+  });
+  if (previousLike) {
+    //Unlike the post
+    const newLikes = (user.recent_likes ?? []).filter(
+      (id) => id !== post_id,
+    );
+    void await db.delete(likes).where(and(eq(likes.user_id, user_id), eq(likes.post_id, post_id)));
+    void await db.update(users).set({recent_likes: newLikes}).where(eq(users.id, user_id));
+    return "Unliked";
+  } else {
+    //Like the post
+    const newLikes = [post_id, ...(user.new_likes ?? [])];
+    void await db.insert(likes).values({
+      user_id: user.id,
+      post_id: post_id,
+    });
+    void await db.update(users).set({new_likes: newLikes}).where(eq(users.id, user_id));
+    if (newLikes.length > 4) {
+      void updateUserEmbed(user.clerk_id);
+    }
+    return "Liked";
+  }
+}
