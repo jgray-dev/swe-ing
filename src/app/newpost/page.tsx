@@ -117,7 +117,7 @@ export default function NewPost() {
         >
           <div
             className={
-              "relative mx-auto mb-12 mt-24 max-h-fit min-h-fit w-full overflow-y-scroll rounded-md bg-neutral-800/60 p-4 sm:w-96"
+              "relative mx-auto mb-12 mt-24 max-h-fit min-h-fit w-full overflow-y-scroll rounded-md bg-neutral-800/60 p-4 sm:w-96 backdrop-blur-sm"
             }
             onMouseDown={(e) => {
               e.stopPropagation();
