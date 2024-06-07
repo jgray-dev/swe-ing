@@ -27,7 +27,6 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <Analytics />
       <UserDataUpdater />
       <html lang="en" className={`${GeistSans.variable}`}>
         <body className={"bg-black"}>
@@ -35,6 +34,7 @@ export default function RootLayout({
           <TRPCReactProvider>
             <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
             <NavBar />
+            <Analytics />
             <div className="bg-black/85">{children}</div>
           </TRPCReactProvider>
         </body>
