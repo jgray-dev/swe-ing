@@ -13,7 +13,7 @@ export default function HomePage() {
   const setAlert = useAlertState((state) => state.setAlert);
 
   useEffect(() => {
-    // console.log("useEffect called");
+    console.log("HomePage useEffect called");
     void firstLoad();
     //eslint-disable-next-line
   }, [user_id]);
@@ -24,7 +24,9 @@ export default function HomePage() {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       setAlert({ text: "Getting post order", type: "loading" });
       const hpo = await getHomePageOrder(user_id);
+      console.log("Got post order")
       setHpo(hpo);
+      console.log("Set post order")
     } else {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       setAlert({ text: "Waiting for user state", type: "loading" });
