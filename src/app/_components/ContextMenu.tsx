@@ -216,7 +216,7 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
           <div className={"pb-4"}>
             <button
               className={
-                "mb-1 h-8 w-full bottom-0 rounded-lg bg-green-700 text-zinc-200 hover:bg-green-600 hover:text-white"
+                "bottom-0 mb-1 h-8 w-full rounded-lg bg-green-700 text-zinc-200 hover:bg-green-600 hover:text-white"
               }
               onMouseDown={() => submitEdit()}
             >
