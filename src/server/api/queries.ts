@@ -727,26 +727,31 @@ export async function createPost(
   }
 }
 
-
 // COMMENT QUERIES
 
-
-export async function createComment(user_id: number, post_id: number, content: string) {
+export async function createComment(
+  user_id: number,
+  post_id: number,
+  content: string,
+) {
   const user = await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.id, user_id),
   });
   if (!user) {
-    return 1
+    return 1;
   }
-  const newComment = await db.insert(comments).values({
-    author_id: user.id,
-    post_id: post_id,
-    content: `${content}`,
-    created_at: Date.now(),
-  }).returning();
+  const newComment = await db
+    .insert(comments)
+    .values({
+      author_id: user.id,
+      post_id: post_id,
+      content: `${content}`,
+      created_at: Date.now(),
+    })
+    .returning();
   if (newComment[0]?.id) {
-    return 0
+    return 0;
   } else {
-    return 1
+    return 1;
   }
-  }
+}
