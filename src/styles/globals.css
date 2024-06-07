@@ -8,8 +8,6 @@ body {
   background-position: center;
 }
 
-
-
 .backdrop-blur-xs {
   --tw-backdrop-blur: blur(2px);
   backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness)
