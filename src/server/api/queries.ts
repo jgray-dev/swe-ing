@@ -685,3 +685,120 @@ export async function seedAllData() {
   console.log("FINISHED SEEDING");
   return 1;
 }
+
+// POST QUERIES
+
+export async function createPost(
+  user_id: number,
+  content: string,
+  post_tags?: string,
+  image_urls?: string,
+) {
+  console.log("Creating post");
+  const user = await db.query.users.findFirst({
+    where: (user, { eq }) => eq(user.id, user_id),
+  });
+  if (!user) {
+    console.log("No user");
+    return {
+      id: 0,
+      error: "Unauthorized",
+    };
+  }
+  console.log("We have user");
+  const newPost = await db
+    .insert(posts)
+    .values({
+      author_id: user.id,
+      content: `${content}`,
+      post_tags: `${post_tags ? post_tags : ""}`,
+      image_urls: image_urls,
+      created_at: Date.now(),
+      updated_at: Date.now(),
+    })
+    .returning();
+
+  console.log("Post created?");
+  if (newPost[0]?.id) {
+    console.log("newpost id confirmed");
+    const embedding = await getEmbedding(content, post_tags);
+    void (await insertPinecone("posts", embedding, newPost[0].id));
+    return newPost[0];
+  } else {
+    console.log("No newpost id");
+    return {
+      id: 0,
+      error: "Embedding error",
+    };
+  }
+}
+
+// COMMENT QUERIES
+
+export async function createComment(
+  user_id: number,
+  post_id: number,
+  content: string,
+) {
+  const user = await db.query.users.findFirst({
+    where: (user, { eq }) => eq(user.id, user_id),
+  });
+  if (!user) {
+    return 1;
+  }
+  const newComment = await db
+    .insert(comments)
+    .values({
+      author_id: user.id,
+      post_id: post_id,
+      content: `${content}`,
+      created_at: Date.now(),
+    })
+    .returning();
+  if (newComment[0]?.id) {
+    return 0;
+  } else {
+    return 1;
+  }
+}
+
+// LIKE QUERIES
+
+export async function createLike(user_id: number, post_id: number) {
+  const user = await db.query.users.findFirst({
+    where: (user, { eq }) => eq(user.id, user_id),
+  });
+  if (!user) {
+    return "NO USER";
+  }
+  const previousLike = await db.query.likes.findFirst({
+    where: and(eq(likes.user_id, user_id), eq(likes.post_id, post_id)),
+  });
+  if (previousLike) {
+    //Unlike the post
+    const newLikes = (user.recent_likes ?? []).filter((id) => id !== post_id);
+    void (await db
+      .delete(likes)
+      .where(and(eq(likes.user_id, user_id), eq(likes.post_id, post_id))));
+    void (await db
+      .update(users)
+      .set({ recent_likes: newLikes })
+      .where(eq(users.id, user_id)));
+    return "Unliked";
+  } else {
+    //Like the post
+    const newLikes = [post_id, ...(user.new_likes ?? [])];
+    void (await db.insert(likes).values({
+      user_id: user.id,
+      post_id: post_id,
+    }));
+    void (await db
+      .update(users)
+      .set({ new_likes: newLikes })
+      .where(eq(users.id, user_id)));
+    if (newLikes.length > 4) {
+      void updateUserEmbed(user.clerk_id);
+    }
+    return "Liked";
+  }
+}

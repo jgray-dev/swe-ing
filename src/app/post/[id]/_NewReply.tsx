@@ -1,38 +1,27 @@
-import { useReplyState } from "~/app/_functions/store";
+import { useReplyState, useUserState } from "~/app/_functions/store";
 import React, { useState } from "react";
 import { VscLoading } from "react-icons/vsc";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { api } from "~/trpc/react";
+import { createComment } from "~/server/api/queries";
 
 // @ts-expect-error fts
 export default function NewReply({ closeReply }) {
   const { post_id } = useReplyState((state) => state);
   const [content, setContent] = useState("");
   const [blockSubmit, setBlockSubmit] = useState(false);
+  const { user_id } = useUserState((state) => state);
 
-  const createComment = api.comments.create.useMutation({
-    onSuccess: (data) => {
-      if (!data) {
-        alert("Erorr creating post");
-        return;
-      }
-      setBlockSubmit(false);
-      setContent("");
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      closeReply();
-      // TODO: reload page with router?
-      location.reload();
-    },
-    onError: (err) => {
-      console.error(err.message);
-    },
-  });
-
-  function handleSubmit() {
+  async function handleSubmit() {
     if (content.length > 5) {
       if (content.length < 750) {
         setBlockSubmit(true);
-        createComment.mutate({ content, post_id });
+        const resp = await createComment(user_id, post_id, content);
+        if (resp === 0) {
+          location.reload();
+        } else {
+          alert("Error creating comment");
+        }
       } else {
         alert(`Max reply length 750 characters (${content.length})`);
       }

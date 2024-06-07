@@ -121,7 +121,7 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
     if (post.image_urls) {
       const arr = post.image_urls.split(",");
       return (
-        <div className={"flex h-[30%] w-[120%] flex-row"}>
+        <div className={"flex h-[100%] w-[120%] flex-row"}>
           {arr.map((iurl) => {
             const removing = removeUrls?.includes(iurl);
             return (
@@ -210,11 +210,13 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
             }
             defaultValue={post.content}
           ></textarea>
-          <ImageEditor />
+          <div className={"h-[30%]"}>
+            <ImageEditor />
+          </div>
           <div className={"pb-4"}>
             <button
               className={
-                "mb-1 h-8 w-full rounded-lg bg-green-700 text-zinc-200 hover:bg-green-600 hover:text-white"
+                "bottom-0 mb-1 h-8 w-full rounded-lg bg-green-700 text-zinc-200 hover:bg-green-600 hover:text-white"
               }
               onMouseDown={() => submitEdit()}
             >

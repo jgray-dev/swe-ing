@@ -5,46 +5,22 @@ import { useRouter } from "next/navigation";
 import { UploadButton } from "@uploadthing/react";
 import type { AppFileRouter } from "~/app/api/uploadthing/core";
 import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/nextjs";
-import { api } from "~/trpc/react";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { VscLoading } from "react-icons/vsc";
-import { deleteImage } from "~/server/api/queries";
+import { createPost, deleteImage } from "~/server/api/queries";
 import Image from "next/image";
 import { CiTrash } from "react-icons/ci";
-import { useAlertState } from "~/app/_functions/store";
+import { useAlertState, useUserState } from "~/app/_functions/store";
 
 export default function NewPost() {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
   const setAlert = useAlertState((state) => state.setAlert);
   const router = useRouter();
   const [content, setContent] = useState("");
-  const [buttonText, setButtonText] = useState("Create post");
   const [submitting, setSubmitting] = useState(false);
   const [tags, setTags] = useState("");
   const [imageUrls, setImageUrls] = useState("");
   const [blockSubmit, setBlockSubmit] = useState(false);
-
-  const createPost = api.posts.create.useMutation({
-    onSuccess: (data) => {
-      if (!data) {
-        alert("Erorr creating post");
-        return;
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      setAlert({ text: "Redirecting", type: "loading" });
-      setBlockSubmit(true);
-      setButtonText("Redirecting...");
-      setContent("");
-      setTags("");
-      setImageUrls("");
-      router.push(`/post/${data[0]?.id}`);
-    },
-    onError: (err) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      setAlert({ text: `Error: ${err.message}`, type: "error" });
-      console.error(err.message);
-    },
-  });
+  const { user_id } = useUserState((state) => state);
 
   async function removeImages(key: string[]) {
     void deleteImage(key);
@@ -71,18 +47,26 @@ export default function NewPost() {
             setAlert({ text: "Creating post", type: "loading" });
             setSubmitting(true);
             setBlockSubmit(true);
-            createPost.mutate({ content, imageUrls, tags });
+            const resp = await createPost(user_id, content, tags, imageUrls);
+            if (resp?.id !== 0) {
+              setContent("");
+              setTags("");
+              setImageUrls("");
+              router.push(`/post/${resp.id}`);
+              setAlert({ text: ``, type: "info" });
+            } else {
+              console.log(resp);
+              setAlert({ text: `Error creating post`, type: "error" });
+            }
           }
         }
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         setAlert({
           text: "Please add content before submitting",
           type: "error",
         });
       }
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       setAlert({ text: "Stuff is already happening!", type: "warn" });
     }
   }
@@ -117,7 +101,7 @@ export default function NewPost() {
         >
           <div
             className={
-              "relative mx-auto mb-12 mt-24 max-h-fit min-h-fit w-full overflow-y-scroll rounded-md bg-neutral-800/60 p-4 sm:w-96"
+              "relative mx-auto mb-12 mt-24 max-h-fit min-h-fit w-full overflow-y-scroll rounded-md bg-black/80 p-4 backdrop-blur-sm sm:w-96"
             }
             onMouseDown={(e) => {
               e.stopPropagation();
@@ -139,9 +123,13 @@ export default function NewPost() {
               </span>
             </div>
             <div className={"text-left"}>
-              Post:
+              Post:{" "}
+              <span className={"text-md text-red-700/30"}>
+                {content.length > 1250 ? `${content.length}/1250` : ""}
+                {content.length < 5 ? `${content.length}/5` : ""}
+              </span>
               <textarea
-                className={`min-h-48 w-full rounded-md border border-white/50 bg-black/30 p-2 text-white placeholder-white/60 outline-none ${content.length > 1250 || content.length < 5 ? "border-red-500" : "border-white/80"}`}
+                className={`min-h-48 w-full rounded-md border border-white/80 bg-black/30 p-2 text-white placeholder-white/60 outline-none ${content.length > 1250 || content.length < 5 ? "border-red-700/60" : "border-white/80"}`}
                 placeholder="Enter post content here"
                 onChange={(e) => setContent(e.target.value)}
                 value={content}
@@ -250,7 +238,7 @@ export default function NewPost() {
                 ) : submitting ? (
                   <VscLoading className={"animate-roll mx-auto h-8 w-8"} />
                 ) : (
-                  `${buttonText}`
+                  `Submit Post`
                 )}
               </div>
             </button>
