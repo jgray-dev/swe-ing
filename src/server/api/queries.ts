@@ -699,11 +699,13 @@ export async function createPost(
     where: (user, { eq }) => eq(user.id, user_id),
   });
   if (!user) {
+    console.log("No user");
     return {
       id: 0,
       error: "Unauthorized",
     };
   }
+  console.log("We have user");
   const newPost = await db
     .insert(posts)
     .values({
@@ -715,11 +717,15 @@ export async function createPost(
       updated_at: Date.now(),
     })
     .returning();
+
+  console.log("Post created?");
   if (newPost[0]?.id) {
+    console.log("newpost id confirmed");
     const embedding = await getEmbedding(content, post_tags);
     void (await insertPinecone("posts", embedding, newPost[0].id));
     return newPost[0];
   } else {
+    console.log("No newpost id");
     return {
       id: 0,
       error: "Embedding error",
