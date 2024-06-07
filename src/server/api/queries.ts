@@ -685,3 +685,68 @@ export async function seedAllData() {
   console.log("FINISHED SEEDING");
   return 1;
 }
+
+// POST QUERIES
+
+export async function createPost(
+  user_id: number,
+  content: string,
+  post_tags?: string,
+  image_urls?: string,
+) {
+  console.log("Creating post");
+  const user = await db.query.users.findFirst({
+    where: (user, { eq }) => eq(user.id, user_id),
+  });
+  if (!user) {
+    return {
+      id: 0,
+      error: "Unauthorized",
+    };
+  }
+  const newPost = await db
+    .insert(posts)
+    .values({
+      author_id: user.id,
+      content: `${content}`,
+      post_tags: `${post_tags ? post_tags : ""}`,
+      image_urls: image_urls,
+      created_at: Date.now(),
+      updated_at: Date.now(),
+    })
+    .returning();
+  if (newPost[0]?.id) {
+    const embedding = await getEmbedding(content, post_tags);
+    void (await insertPinecone("posts", embedding, newPost[0].id));
+    return newPost[0];
+  } else {
+    return {
+      id: 0,
+      error: "Embedding error",
+    };
+  }
+}
+
+
+// COMMENT QUERIES
+
+
+export async function createComment(user_id: number, post_id: number, content: string) {
+  const user = await db.query.users.findFirst({
+    where: (user, { eq }) => eq(user.id, user_id),
+  });
+  if (!user) {
+    return 1
+  }
+  const newComment = await db.insert(comments).values({
+    author_id: user.id,
+    post_id: post_id,
+    content: `${content}`,
+    created_at: Date.now(),
+  }).returning();
+  if (newComment[0]?.id) {
+    return 0
+  } else {
+    return 1
+  }
+  }
