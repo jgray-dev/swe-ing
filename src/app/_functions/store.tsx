@@ -43,6 +43,7 @@ export function UserDataUpdater() {
             try {
               console.log("Trying dbUser");
               const dbUser = await getDbUser(user.id);
+              console.log("Finished dbUser", dbUser);
               if (dbUser) {
                 console.log("We got dbUser");
                 setData({
