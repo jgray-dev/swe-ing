@@ -191,7 +191,12 @@ export default function PostPage({ params }: { params: { id: string } }) {
                   "h-fit max-h-fit min-h-36 min-w-[80%] max-w-[80%] text-wrap break-normal pl-2 text-left"
                 }
               >
-                <div id={`${key + "CONTENT"}`} className="whitespace-pre-wrap break-keep overflow-x-hidden">{post.content}</div>
+                <div
+                  id={`${key + "CONTENT"}`}
+                  className="overflow-x-hidden whitespace-pre-wrap break-keep"
+                >
+                  {post.content}
+                </div>
                 <div className={"flex w-[80%] flex-wrap pt-20"}>
                   {post.image_urls ? (
                     post.image_urls.split(",").map((url) => {
