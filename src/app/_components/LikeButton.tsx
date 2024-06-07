@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 import { api } from "~/trpc/react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import {createLike} from "~/server/api/queries";
-import {useUserState} from "~/app/_functions/store";
+import { createLike } from "~/server/api/queries";
+import { useUserState } from "~/app/_functions/store";
 
 interface LikeButtonProps {
   postId: number;
@@ -19,7 +19,7 @@ export default function LikeButton({
 }: LikeButtonProps): React.ReactElement {
   const [liked, setLiked] = useState(dbliked);
   const [likes, setLikes] = useState(dblikes);
-  const {user_id} = useUserState((state) => state);
+  const { user_id } = useUserState((state) => state);
 
   async function likePost() {
     if (liked) {
@@ -29,7 +29,7 @@ export default function LikeButton({
       setLiked(true);
       setLikes(likes + 1);
     }
-    void await createLike(user_id, postId);
+    void (await createLike(user_id, postId));
   }
   return (
     <div
