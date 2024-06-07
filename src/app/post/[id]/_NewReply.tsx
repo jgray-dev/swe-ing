@@ -1,16 +1,16 @@
-import {useReplyState, useUserState} from "~/app/_functions/store";
+import { useReplyState, useUserState } from "~/app/_functions/store";
 import React, { useState } from "react";
 import { VscLoading } from "react-icons/vsc";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { api } from "~/trpc/react";
-import {createComment} from "~/server/api/queries";
+import { createComment } from "~/server/api/queries";
 
 // @ts-expect-error fts
 export default function NewReply({ closeReply }) {
   const { post_id } = useReplyState((state) => state);
   const [content, setContent] = useState("");
   const [blockSubmit, setBlockSubmit] = useState(false);
-  const {user_id} = useUserState(state=>state)
+  const { user_id } = useUserState((state) => state);
 
   async function handleSubmit() {
     if (content.length > 5) {
