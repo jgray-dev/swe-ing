@@ -201,13 +201,16 @@ export default function PostsPage({ order }: PostsPageProps) {
             <Link
               key={post.created_at + post.id + Math.random()}
               href={`/post/${post.id}`}
+              className={"max-w-full pr-14 min-w-full"}
             >
               <div
                 className={
-                  "line-clamp-[10] h-fit max-h-72 min-h-36 min-w-full max-w-full text-wrap break-normal pl-2 text-left"
+                  "line-clamp-[10] h-fit max-h-72 min-h-36 min-w-full max-w-full pl-1 text-left"
                 }
               >
-                <div id={`${key + "CONTENT"}`}>{post.content}</div>
+                <div id={`${key + "CONTENT"}`} className="whitespace-pre-wrap break-keep w-[90%] overflow-x-hidden">
+                  {post.content}
+                </div>
                 <div className={"flex w-[80%] flex-row justify-between"}>
                   {post.image_urls ? (
                     post.image_urls.split(",").map((url) => {
