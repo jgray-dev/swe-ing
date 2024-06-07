@@ -24,9 +24,9 @@ export default function HomePage() {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       setAlert({ text: "Getting post order", type: "loading" });
       const hpo = await getHomePageOrder(user_id);
-      console.log("Got post order")
+      console.log("Got post order");
       setHpo(hpo);
-      console.log("Set post order")
+      console.log("Set post order");
     } else {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       setAlert({ text: "Waiting for user state", type: "loading" });
