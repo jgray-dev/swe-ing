@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from "react";
 import {
   followUserDb,
-  getDbUserFromId, getUsersPosts,
+  getDbUserFromId,
+  getUsersPosts,
   isUserFollowing,
   resetUserEmbed,
   updateUserProfile,
@@ -43,8 +44,8 @@ export default function UserPage({ params }: { params: { id: string } }) {
 
   async function viewPosts() {
     console.log(`Viewing posts ${params.id}`);
-    const ids = await getUsersPosts(Number(params.id))
-    console.log(ids)
+    const ids = await getUsersPosts(Number(params.id));
+    console.log(ids);
     setShowingPosts(true);
     setUserPosts(<PostsPage order={ids} />);
   }
@@ -284,11 +285,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
       )}
       {fullUserCard ? (
         <div className={"mx-auto mt-4 w-screen sm:w-[30rem]"}>
-          <div
-            className={
-              "justify-center text-center text-white"
-            }
-          >
+          <div className={"justify-center text-center text-white"}>
             {!showingPosts ? (
               <button
                 className={
