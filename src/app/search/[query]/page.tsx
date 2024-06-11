@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { searchEmbeddings } from "~/server/api/queries";
+import {getSearchPageOrder} from "~/server/api/queries";
 import { useUserState } from "~/app/_functions/store";
 import { VscLoading } from "react-icons/vsc";
 import PostsPage from "~/app/_components/PostsPage";
@@ -19,7 +19,7 @@ export default function SearchPage({ params }: { params: { query: string } }) {
   async function firstLoad() {
     // console.log("firstLoad called");
     if (user_id) {
-      const po = await searchEmbeddings(params.query);
+      const po = await getSearchPageOrder(params.query);
       setPo(po);
     } else {
       // console.info("Waiting for user state");
@@ -29,7 +29,7 @@ export default function SearchPage({ params }: { params: { query: string } }) {
   if (po) {
     // console.log("We have PO");
     return (
-      <div className={"h-screen w-screen pt-20"}>
+      <div className={"h-screen w-screen text-white"}>
         <PostsPage order={po} />
       </div>
     );
