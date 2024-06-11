@@ -51,5 +51,5 @@ export async function searchPinecone(table: string, embedding: number[]) {
     vector: embedding,
     includeValues: false,
   });
-  return response.matches.map((r) => r.id);
+  return response.matches.map((r) => Number(r.id));
 }
