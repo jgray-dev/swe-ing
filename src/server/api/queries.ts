@@ -227,8 +227,7 @@ export async function nextCommentsPage(page: number, post_id: number) {
 
 export async function getSearchPageOrder(search: string) {
   const searchEmbedding = await getEmbedding(search);
-  const results = await searchPinecone("posts", searchEmbedding);
-  return results.map((res) => Number(res));
+  return searchPinecone("posts", searchEmbedding);
 }
 
 
@@ -242,15 +241,24 @@ export async function getChronologicalOrder() {
   return results.map((res) => Number(res.id));
 }
 //Break "order" logic into separate functions
-//1: home page. uses user's embedding + following list to return number[] of posts (in order of relevant following, irrelevant following, relevant randoms, irrelevant randoms)
-//2: search page. uses the query embedding to return number[] of posts (in order of relevance)
+
 //3: user page - get posts created by a single user return number[]
-//4: chronological order - for when an error occours or we dont have user's embedding
 //
 // Create new function to return the paginated full posts - with author data, like count, comment count, etc
 // For each page, we fetch the relevant number[] from the respective function, then pass it to the function described directly above (with a page number)
 
 
+
+export async function getUsersPosts(user_id: number) {
+  const usersPosts = await db.query.posts.findMany({
+    where: eq(posts.author_id, user_id),
+    columns: {
+      id: true,
+    },
+    orderBy: desc(posts.created_at),
+  });
+  return usersPosts.map((res) => Number(res.id));
+}
 
 
 //This will merge 2 arrays together in a 4/2/4/2 pattern until array1 is empty, then softly scramble the array to add variance

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import {
   followUserDb,
-  getDbUserFromId, getPostsByUser,
+  getDbUserFromId, getUsersPosts,
   isUserFollowing,
   resetUserEmbed,
   updateUserProfile,
@@ -43,7 +43,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
 
   async function viewPosts() {
     console.log(`Viewing posts ${params.id}`);
-    const ids = await getPostsByUser(Number(params.id))
+    const ids = await getUsersPosts(Number(params.id))
     console.log(ids)
     setShowingPosts(true);
     setUserPosts(<PostsPage order={ids} />);
