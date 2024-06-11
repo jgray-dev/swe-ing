@@ -230,24 +230,15 @@ export async function getSearchPageOrder(search: string) {
   return searchPinecone("posts", searchEmbedding);
 }
 
-
 export async function getChronologicalOrder() {
   const results = await db.query.posts.findMany({
     orderBy: desc(posts.updated_at),
     columns: {
       id: true,
-    }
+    },
   });
   return results.map((res) => Number(res.id));
 }
-//Break "order" logic into separate functions
-
-//3: user page - get posts created by a single user return number[]
-//
-// Create new function to return the paginated full posts - with author data, like count, comment count, etc
-// For each page, we fetch the relevant number[] from the respective function, then pass it to the function described directly above (with a page number)
-
-
 
 export async function getUsersPosts(user_id: number) {
   const usersPosts = await db.query.posts.findMany({
@@ -259,7 +250,6 @@ export async function getUsersPosts(user_id: number) {
   });
   return usersPosts.map((res) => Number(res.id));
 }
-
 
 //This will merge 2 arrays together in a 4/2/4/2 pattern until array1 is empty, then softly scramble the array to add variance
 function mergeArrays(array1: number[], array2: number[]): number[] {
@@ -295,7 +285,8 @@ function shuffleArray(array: number[]): number[] {
   for (let i = 0; i < array.length; i++) {
     const maxIndex = Math.min(i + 2, array.length - 1);
     const minIndex = Math.max(i - 2, 0);
-    const randomIndex = Math.floor(Math.random() * (maxIndex - minIndex + 1)) + minIndex;
+    const randomIndex =
+      Math.floor(Math.random() * (maxIndex - minIndex + 1)) + minIndex;
     swapElements(array, i, randomIndex);
   }
   return array;
@@ -322,17 +313,29 @@ export async function getHomePageOrder(user_id: number) {
       if (relevant) {
         const relevantFollowing = await db.query.posts.findMany({
           where: and(
-            inArray(posts.author_id, following_ids.length > 0 ? following_ids : [0]),
-            inArray(posts.id, relevant.slice(0, Math.round(relevant.length / 1.5))),
+            inArray(
+              posts.author_id,
+              following_ids.length > 0 ? following_ids : [0],
+            ),
+            inArray(
+              posts.id,
+              relevant.slice(0, Math.round(relevant.length / 1.5)),
+            ),
           ),
           columns: {
             id: true,
           },
         });
-        const relevantFollowingPosts = relevantFollowing.map((f) => Number(f.id));
-        const newRelevant = relevant.filter((id) => !relevantFollowingPosts.includes(id));
+        const relevantFollowingPosts = relevantFollowing.map((f) =>
+          Number(f.id),
+        );
+        const newRelevant = relevant.filter(
+          (id) => !relevantFollowingPosts.includes(id),
+        );
         //Sort both relevantFollowingPosts and newRelevant by their position in the relevant array
-        relevantFollowingPosts.sort((a, b) => relevant.indexOf(a) - relevant.indexOf(b));
+        relevantFollowingPosts.sort(
+          (a, b) => relevant.indexOf(a) - relevant.indexOf(b),
+        );
         newRelevant.sort((a, b) => relevant.indexOf(a) - relevant.indexOf(b));
         return shuffleArray(mergeArrays(relevantFollowingPosts, newRelevant));
       } else {
@@ -383,7 +386,6 @@ export async function paginatePosts(page: number, postIds: number[]) {
     return [];
   }
 }
-
 
 //Old logic (with following) for reference
 // export async function nextHomePage(
