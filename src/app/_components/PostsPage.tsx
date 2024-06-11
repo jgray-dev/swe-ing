@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { nextHomePage } from "~/server/api/queries";
+import {paginatePosts} from "~/server/api/queries";
 import Link from "next/link";
 import type { like, post } from "~/app/_functions/interfaces";
 import { CiShare1 } from "react-icons/ci";
@@ -18,6 +18,7 @@ interface PostsPageProps {
 }
 
 export default function PostsPage({ order }: PostsPageProps) {
+  console.log("PostsPage order: ", order);
   const { user_id } = useUserState((state) => state);
   const [loading, setLoading] = useState(false);
   const [end, setEnd] = useState(false);
@@ -74,14 +75,9 @@ export default function PostsPage({ order }: PostsPageProps) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     setAlert({ text: "Fetching more posts", type: "loading" });
     setLoading(true);
-    const data = await nextHomePage(page, user_id, postOrder);
-    if (!data) {
-      console.warn("No data returned from server");
-      setEnd(true);
-      setLoading(false);
-      return;
-    }
+    const data = await paginatePosts(page, postOrder);
     if (data.length > 0) {
+      console.log("data", data);
       const newPosts = data.filter(
         (newPost) => !allPosts.some((post) => post.id === newPost.id),
       );
@@ -147,7 +143,7 @@ export default function PostsPage({ order }: PostsPageProps) {
             <div className={"flex flex-col"}>
               <div
                 className={
-                  "flex w-20 min-w-20 max-w-20 flex-col items-center border-r border-white/50 pr-2 text-xs"
+                  "flex w-20 min-w-20 max-w-20 flex-col items-center border-r border-white/50 pr-2 text-center text-xs"
                 }
               >
                 <div className="relative h-12 w-12 select-none overflow-hidden rounded-full">
@@ -286,30 +282,20 @@ export default function PostsPage({ order }: PostsPageProps) {
   }
 
   return (
-    <div>
-      <div
-        className="no-scrollbar fixed left-1/2 top-0 h-screen w-screen -translate-x-1/2 overflow-y-scroll pt-20 sm:w-96"
-        id={"scrolls"}
-      >
-        <div className={"overflow-x-hidden overflow-y-scroll"}>
-          {cards}
-          <div className={"pb-20 pt-24 text-center text-white"}>
-            {!end && (loading || cards.length == 0) ? (
-              <VscLoading
-                className={"animate-roll mx-auto h-10 w-10 text-emerald-700"}
-              />
-            ) : (
-              ""
-            )}
-            <br />
-            <br />
-            <br />
-            The end. <br />
-            <Link href={"/newpost"} className={"underline"}>
-              {" "}
-              How about creating a new post
-            </Link>
-          </div>
+    <div
+      className="no-scrollbar relative left-1/2 top-0 h-screen w-screen overflow-y-scroll pt-20 -translate-x-1/2 sm:w-96"
+      id={"scrolls"}
+    >
+      <div className={"overflow-x-hidden overflow-y-scroll"}>
+        {cards}
+        <div className={"text-center text-white pb-16"}>
+          {!end && (loading || cards.length == 0) ? (
+            <VscLoading
+              className={"animate-roll mx-auto h-10 w-10 text-emerald-700"}
+            />
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </div>
