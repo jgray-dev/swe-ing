@@ -101,7 +101,7 @@ export default function NewPost() {
         >
           <div
             className={
-              "bg-white/[2%] relative mx-auto mb-12 mt-24 max-h-fit min-h-fit w-full overflow-y-scroll rounded-md p-4 backdrop-blur-sm sm:w-96"
+              "relative mx-auto mb-12 mt-24 max-h-fit min-h-fit w-full overflow-y-scroll rounded-md bg-white/[2%] p-4 backdrop-blur-sm sm:w-96"
             }
           >
             <div
