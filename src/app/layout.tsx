@@ -35,7 +35,7 @@ export default function RootLayout({
             <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
             <NavBar />
             <Analytics />
-            <div className="bg-black/85">{children}</div>
+            <div className="bg-black/95">{children}</div>
           </TRPCReactProvider>
         </body>
       </html>
