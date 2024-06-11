@@ -56,7 +56,7 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
         const element = document.getElementById(id);
         if (element) {
           element.remove();
-          router.push("/");
+          location.reload();
         }
       }
     }
