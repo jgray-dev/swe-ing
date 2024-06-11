@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { nextPostPage, singlePost } from "~/server/api/queries";
+import { nextCommentsPage, singlePost } from "~/server/api/queries";
 import type { comment, post } from "~/app/_functions/interfaces";
 import { CommentCard } from "~/app/post/[id]/_CommentCard";
 import { VscLoading } from "react-icons/vsc";
@@ -55,7 +55,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
   }, [page]);
 
   async function getComments(user_id?: number) {
-    const newData = await nextPostPage(page, postId);
+    const newData = await nextCommentsPage(page, postId);
     if (newData.length == 0) {
       setEnd(true);
       setLoading(true);

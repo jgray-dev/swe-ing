@@ -11,11 +11,7 @@ import {
 } from "~/server/db/schema";
 import { desc } from "drizzle-orm/sql/expressions/select";
 import { and, eq, inArray, or } from "drizzle-orm/sql/expressions/conditions";
-import type {
-  profile,
-  post,
-  webhookRequest,
-} from "~/app/_functions/interfaces";
+import type { post, webhookRequest } from "~/app/_functions/interfaces";
 import {
   getAverageEmbedding,
   getEmbedding,
@@ -209,7 +205,7 @@ export async function singlePost(post_id: number) {
   });
 }
 
-export async function nextPostPage(page: number, post_id: number) {
+export async function nextCommentsPage(page: number, post_id: number) {
   const pageSize = 20;
   const offset = (page - 1) * pageSize;
   return db.query.comments.findMany({
@@ -229,41 +225,81 @@ export async function nextPostPage(page: number, post_id: number) {
   });
 }
 
-export async function getHomePageOrder(user_id?: number) {
-  if (user_id) {
-    const user = await db.query.users.findFirst({
-      where: eq(users.id, user_id),
-    });
-    if (user?.id) {
-      const userEmbedding = await embeddingFromID("users", user.id);
-      if (userEmbedding) {
-        const relevant = await searchPinecone("posts", userEmbedding);
-        return relevant.map((id) => Number(id));
-      } else {
-        return [];
-      }
-    } else {
-      console.log("No user.id found");
-      return [];
-    }
-  } else {
-    console.log("No user_id given");
-    return [];
-  }
+export async function getSearchPageOrder(search: string) {
+  const searchEmbedding = await getEmbedding(search);
+  const results = await searchPinecone("posts", searchEmbedding);
+  return results.map((res) => Number(res));
 }
 
-export async function nextHomePage(
-  page: number,
-  user_id: number,
-  postIds: number[],
-) {
-  const pageSize = 20;
-  const offset = (page - 1) * pageSize;
-  if (user_id) {
-    const user = await db.query.users.findFirst({
-      where: eq(users.id, user_id),
-    });
-    if (user?.id && postIds.length > 0) {
+
+export async function getChronologicalOrder() {
+  const results = await db.query.posts.findMany({
+    orderBy: desc(posts.updated_at),
+    columns: {
+      id: true,
+    }
+  });
+  return results.map((res) => Number(res.id));
+}
+//Break "order" logic into separate functions
+//1: home page. uses user's embedding + following list to return number[] of posts (in order of relevant following, irrelevant following, relevant randoms, irrelevant randoms)
+//2: search page. uses the query embedding to return number[] of posts (in order of relevance)
+//3: user page - get posts created by a single user return number[]
+//4: chronological order - for when an error occours or we dont have user's embedding
+//
+// Create new function to return the paginated full posts - with author data, like count, comment count, etc
+// For each page, we fetch the relevant number[] from the respective function, then pass it to the function described directly above (with a page number)
+
+
+
+
+//This will merge 2 arrays together in a 4/2/4/2 pattern until array1 is empty, then softly scramble the array to add variance
+function mergeArrays(array1: number[], array2: number[]): number[] {
+  let result: number[] = [];
+  let i = 0;
+  if (array1.length == 0) {
+    return array2;
+  }
+  if (array2.length == 0) {
+    return array1;
+  }
+  while (i < array1.length) {
+    const sliceSize = Math.min(4, array1.length - i);
+    result = result.concat(array1.slice(i, i + sliceSize));
+    i += sliceSize;
+
+    if (array2.length > 0) {
+      const sliceSize = Math.min(2, array2.length);
+      result = result.concat(array2.slice(0, sliceSize));
+      array2 = array2.slice(sliceSize);
+    }
+  }
+  return result.concat(array2);
+}
+
+function swapElements(array: number[], index1: number, index2: number): void {
+  const temp: number = array[index1]!;
+  array[index1] = array[index2]!;
+  array[index2] = temp;
+}
+
+function shuffleArray(array: number[]): number[] {
+  for (let i = 0; i < array.length; i++) {
+    const maxIndex = Math.min(i + 2, array.length - 1);
+    const minIndex = Math.max(i - 2, 0);
+    const randomIndex = Math.floor(Math.random() * (maxIndex - minIndex + 1)) + minIndex;
+    swapElements(array, i, randomIndex);
+  }
+  return array;
+}
+
+export async function getHomePageOrder(user_id: number) {
+  const user = await db.query.users.findFirst({
+    where: eq(users.id, user_id),
+  });
+  if (user?.id) {
+    const userEmbedding = await embeddingFromID("users", user.id);
+    if (userEmbedding) {
       const following = await db.query.follows.findMany({
         where: and(
           eq(follows.user_id, user_id),
@@ -274,80 +310,170 @@ export async function nextHomePage(
         },
       });
       const following_ids = following.map((f) => f.following_user_id);
-      const uoPosts = await db.query.posts.findMany({
-        where: or(
-          inArray(posts.id, postIds),
-          inArray(
-            posts.author_id,
-            following_ids.length > 0 ? following_ids : [0],
+      const relevant = await searchPinecone("posts", userEmbedding);
+      if (relevant) {
+        const relevantFollowing = await db.query.posts.findMany({
+          where: and(
+            inArray(posts.author_id, following_ids.length > 0 ? following_ids : [0]),
+            inArray(posts.id, relevant.slice(0, Math.round(relevant.length / 1.5))),
           ),
-        ),
-        with: {
-          author: {
-            columns: {
-              id: true,
-              image_url: true,
-              name: true,
-            },
+          columns: {
+            id: true,
           },
-          comments: {
-            columns: {
-              id: true,
-            },
-          },
-          likes: {
-            columns: {
-              user_id: true,
-            },
-          },
-        },
-      });
-      const followed_posts = uoPosts.filter((post) =>
-        following_ids.includes(post.author_id),
-      );
-      const other_posts = uoPosts.filter(
-        (post) => !following_ids.includes(post.author_id),
-      );
-      const sorted_other_posts = other_posts.sort((a, b) => {
-        const indexA = postIds.indexOf(a.id);
-        const indexB = postIds.indexOf(b.id);
-        return indexA - indexB;
-      });
-      const sorted_followed_posts = followed_posts.sort((a, b) => {
-        const indexA = postIds.indexOf(a.id);
-        const indexB = postIds.indexOf(b.id);
-        return indexA - indexB;
-      });
-      const all_posts = [...sorted_followed_posts, ...sorted_other_posts];
-      return all_posts.slice(offset, offset + pageSize);
+        });
+        const relevantFollowingPosts = relevantFollowing.map((f) => Number(f.id));
+        const newRelevant = relevant.filter((id) => !relevantFollowingPosts.includes(id));
+        //Sort both relevantFollowingPosts and newRelevant by their position in the relevant array
+        relevantFollowingPosts.sort((a, b) => relevant.indexOf(a) - relevant.indexOf(b));
+        newRelevant.sort((a, b) => relevant.indexOf(a) - relevant.indexOf(b));
+        return shuffleArray(mergeArrays(relevantFollowingPosts, newRelevant));
+      } else {
+        console.log("No relevant");
+        return getChronologicalOrder();
+      }
+    } else {
+      console.log("No user embedding");
+      return getChronologicalOrder();
     }
+  } else {
+    console.log("User not found");
+    return getChronologicalOrder();
   }
-  // No userID or postIds list or whatever - return chronological home page
-  return db.query.posts.findMany({
-    orderBy: desc(posts.updated_at),
-    limit: pageSize,
-    offset: offset,
-    with: {
-      author: {
-        columns: {
-          id: true,
-          image_url: true,
-          name: true,
-        },
-      },
-      comments: {
-        columns: {
-          id: true,
-        },
-      },
-      likes: {
-        columns: {
-          user_id: true,
-        },
-      },
-    },
-  });
 }
+
+export async function paginatePosts(page: number, postIds: number[]) {
+  const pageSize = 25;
+  const offset = (page - 1) * pageSize;
+  const slice = postIds.slice(offset, offset + pageSize);
+  if (slice.length > 0) {
+    const allPosts = await db.query.posts.findMany({
+      where: inArray(posts.id, slice),
+      with: {
+        author: {
+          columns: {
+            id: true,
+            image_url: true,
+            name: true,
+          },
+        },
+        comments: {
+          columns: {
+            id: true,
+          },
+        },
+        likes: {
+          columns: {
+            user_id: true,
+          },
+        },
+      },
+    });
+    //Sort them according to the original postIds order
+    allPosts.sort((a, b) => postIds.indexOf(a.id) - postIds.indexOf(b.id));
+    return allPosts;
+  } else {
+    return [];
+  }
+}
+
+
+//Old logic (with following) for reference
+// export async function nextHomePage(
+//   page: number,
+//   user_id: number,
+//   postIds: number[],
+// ) {
+//   const pageSize = 20;
+//   const offset = (page - 1) * pageSize;
+//   if (user_id) {
+//     const user = await db.query.users.findFirst({
+//       where: eq(users.id, user_id),
+//     });
+//     if (user?.id && postIds.length > 0) {
+//       const following = await db.query.follows.findMany({
+//         where: and(
+//           eq(follows.user_id, user_id),
+//           eq(follows.following_user_id, follows.following_user_id),
+//         ),
+//         columns: {
+//           following_user_id: true,
+//         },
+//       });
+//       const following_ids = following.map((f) => f.following_user_id);
+//       const uoPosts = await db.query.posts.findMany({
+//         where: or(
+//           inArray(posts.id, postIds),
+//           inArray(
+//             posts.author_id,
+//             following_ids.length > 0 ? following_ids : [0],
+//           ),
+//         ),
+//         with: {
+//           author: {
+//             columns: {
+//               id: true,
+//               image_url: true,
+//               name: true,
+//             },
+//           },
+//           comments: {
+//             columns: {
+//               id: true,
+//             },
+//           },
+//           likes: {
+//             columns: {
+//               user_id: true,
+//             },
+//           },
+//         },
+//       });
+//       const followed_posts = uoPosts.filter((post) =>
+//         following_ids.includes(post.author_id),
+//       );
+//       const other_posts = uoPosts.filter(
+//         (post) => !following_ids.includes(post.author_id),
+//       );
+//       const sorted_other_posts = other_posts.sort((a, b) => {
+//         const indexA = postIds.indexOf(a.id);
+//         const indexB = postIds.indexOf(b.id);
+//         return indexA - indexB;
+//       });
+//       const sorted_followed_posts = followed_posts.sort((a, b) => {
+//         const indexA = postIds.indexOf(a.id);
+//         const indexB = postIds.indexOf(b.id);
+//         return indexA - indexB;
+//       });
+//       const all_posts = [...sorted_followed_posts, ...sorted_other_posts];
+//       return all_posts.slice(offset, offset + pageSize);
+//     }
+//   }
+//   // No userID or postIds list or whatever - return chronological home page
+//   return db.query.posts.findMany({
+//     orderBy: desc(posts.updated_at),
+//     limit: pageSize,
+//     offset: offset,
+//     with: {
+//       author: {
+//         columns: {
+//           id: true,
+//           image_url: true,
+//           name: true,
+//         },
+//       },
+//       comments: {
+//         columns: {
+//           id: true,
+//         },
+//       },
+//       likes: {
+//         columns: {
+//           user_id: true,
+//         },
+//       },
+//     },
+//   });
+// }
 
 export async function updateProfile(profile: webhookRequest) {
   return db
@@ -420,12 +546,6 @@ export async function deleteProfile(profile: webhookRequest) {
     console.log("User not found");
     return null;
   }
-}
-
-export async function searchEmbeddings(search: string) {
-  const searchEmbedding = await getEmbedding(search);
-  const results = await searchPinecone("posts", searchEmbedding);
-  return results.map((res) => Number(res));
 }
 
 export async function updateEmbed() {
@@ -694,6 +814,10 @@ export async function createPost(
   post_tags?: string,
   image_urls?: string,
 ) {
+  console.log("Wake db hopefully??");
+  const wakeDb = db.query.users.findFirst({
+    where: (user, { eq }) => eq(user.id, user_id),
+  });
   console.log("Creating post");
   const user = await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.id, user_id),
@@ -801,4 +925,19 @@ export async function createLike(user_id: number, post_id: number) {
     }
     return "Liked";
   }
+}
+
+export async function getPostsByUser(user_id: number) {
+  console.log("Getting posts by user");
+  console.log(user_id);
+  const ids = await db.query.posts.findMany({
+    where: eq(posts.author_id, user_id),
+    columns: {
+      id: true,
+      created_at: true,
+    },
+  });
+  //Sort by created_at
+  ids.sort((a, b) => b.created_at - a.created_at);
+  return ids.map((id) => Number(id.id));
 }

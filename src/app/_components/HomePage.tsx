@@ -36,7 +36,7 @@ export default function HomePage() {
   if (hpo) {
     // console.log("We have HPO");
     return (
-      <div className={""}>
+      <div className={"overflow-y-clip"}>
         <PostsPage order={hpo} />
       </div>
     );

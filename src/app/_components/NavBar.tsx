@@ -3,7 +3,7 @@ import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { seedAllData, updateEmbed } from "~/server/api/queries";
+import {updateEmbed} from "~/server/api/queries";
 
 import { IoHomeOutline } from "react-icons/io5";
 import { TfiReload } from "react-icons/tfi";
@@ -31,8 +31,6 @@ export default function NavBar() {
   }
 
   async function refreshEmbed() {
-    // void seedAllData()
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     setAlert({ text: "Refreshing recommendations", type: "loading" });
     const resp = await updateEmbed();
     console.log(resp);
