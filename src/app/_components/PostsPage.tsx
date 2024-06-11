@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import {paginatePosts} from "~/server/api/queries";
+import { paginatePosts } from "~/server/api/queries";
 import Link from "next/link";
 import type { like, post } from "~/app/_functions/interfaces";
 import { CiShare1 } from "react-icons/ci";
@@ -283,12 +283,12 @@ export default function PostsPage({ order }: PostsPageProps) {
 
   return (
     <div
-      className="no-scrollbar relative left-1/2 top-0 h-screen w-screen overflow-y-scroll pt-20 -translate-x-1/2 sm:w-96"
+      className="no-scrollbar relative left-1/2 top-0 h-screen w-screen -translate-x-1/2 overflow-y-scroll pt-20 sm:w-96"
       id={"scrolls"}
     >
       <div className={"overflow-x-hidden overflow-y-scroll"}>
         {cards}
-        <div className={"text-center text-white pb-16"}>
+        <div className={"pb-16 text-center text-white"}>
           {!end && (loading || cards.length == 0) ? (
             <VscLoading
               className={"animate-roll mx-auto h-10 w-10 text-emerald-700"}

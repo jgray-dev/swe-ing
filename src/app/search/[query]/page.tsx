@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {getSearchPageOrder} from "~/server/api/queries";
+import { getSearchPageOrder } from "~/server/api/queries";
 import { useUserState } from "~/app/_functions/store";
 import { VscLoading } from "react-icons/vsc";
 import PostsPage from "~/app/_components/PostsPage";
