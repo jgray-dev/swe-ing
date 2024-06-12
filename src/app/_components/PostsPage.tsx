@@ -13,11 +13,11 @@ import { getTime } from "~/app/_functions/functions";
 import { useAlertState, useUserState } from "~/app/_functions/store";
 import { VscLoading } from "react-icons/vsc";
 
-interface PostsPageProps {
+interface postPageProps {
   order: number[];
 }
 
-export default function PostsPage({ order }: PostsPageProps) {
+export default function PostsPage({order}: postPageProps) {
   console.log("PostsPage order: ", order);
   const { user_id } = useUserState((state) => state);
   const [loading, setLoading] = useState(false);
@@ -26,16 +26,17 @@ export default function PostsPage({ order }: PostsPageProps) {
   const [allPosts, setAllPosts] = useState<Array<post>>([]);
   const [cards, setCards] = useState<React.ReactElement[]>([]);
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
   const setAlert = useAlertState((state) => state.setAlert);
 
   useEffect(() => {
-    void firstLoad();
+    if (user_id !== 0) {
+      void firstLoad();
+    }
     //eslint-disable-next-line
   }, [user_id]);
 
   async function firstLoad() {
-    if (user_id) {
+    if (user_id !== 0) {
       void (await fetchData(order));
     } else {
       console.info("Waiting for user state");
@@ -72,7 +73,6 @@ export default function PostsPage({ order }: PostsPageProps) {
   }, [loading]);
 
   async function fetchData(postOrder: number[]) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     setAlert({ text: "Fetching more posts", type: "loading" });
     setLoading(true);
     const data = await paginatePosts(page, postOrder);
@@ -96,16 +96,13 @@ export default function PostsPage({ order }: PostsPageProps) {
         setAllPosts([...allPosts, ...newPosts]);
         setCards([...cards, ...getCards(newPosts)]);
         setLoading(false);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         setAlert({ text: "", type: "info" });
       }
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       setAlert({ text: "", type: "info" });
       setEnd(true);
     }
     if (!end) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       setAlert({ text: "", type: "info" });
       setLoading(false);
     }
