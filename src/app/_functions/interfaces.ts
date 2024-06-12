@@ -10,17 +10,6 @@ export interface webhookRequest {
   type: string;
 }
 
-export interface profile {
-  data: {
-    image_url: string;
-    id: string;
-    first_name?: string;
-    last_name?: string;
-    user_id?: string;
-  };
-  type: string;
-}
-
 export interface post {
   id: number;
   author_id: number;
