@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Webhook } from "svix";
-import { profile, webhookRequest } from "~/app/_functions/interfaces";
+import type { webhookRequest } from "~/app/_functions/interfaces";
 import {
   createProfile,
   deleteProfile,
@@ -8,8 +8,6 @@ import {
 } from "~/server/api/queries";
 
 const webhookSecret: string | undefined = process.env.WEBHOOK_SECRET;
-
-export const maxDuration = 10;
 
 export async function handler(req: Request) {
   if (req.method === "POST" || req.method == "OPTIONS") {
