@@ -14,12 +14,14 @@ import { TailSpin } from "react-loading-icons";
 
 type User = {
   user_id: number;
+  permission: number;
   clerk_id: string;
   name: string;
   setData: (data: Partial<User>) => void;
 };
 export const useUserState = create<User & { isLoaded: boolean }>((set) => ({
   user_id: 0,
+  permission: 0,
   clerk_id: "",
   name: "",
   isLoaded: false,
@@ -50,6 +52,7 @@ export function UserDataUpdater() {
                   user_id: dbUser.id,
                   clerk_id: user.id,
                   name: `${user.fullName}`,
+                  permission: dbUser.permission
                 });
               } else {
                 console.log("We DONT got dbUser - reload page");
