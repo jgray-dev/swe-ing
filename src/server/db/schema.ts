@@ -7,6 +7,7 @@ import {
   bigint,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
+import {boolean} from "drizzle-orm/pg-core/columns/boolean";
 
 export const createTable = pgTableCreator((name) => `sweing_${name}`);
 
@@ -22,6 +23,7 @@ export const users = createTable("users", {
   recent_likes: integer("recent_likes").array().notNull().default([]),
   new_likes: integer("new_likes").array().notNull().default([]),
   permission: integer("permission").notNull().default(0),
+  banned: boolean("banned").notNull().default(false),
 });
 
 export const posts = createTable("posts", {
