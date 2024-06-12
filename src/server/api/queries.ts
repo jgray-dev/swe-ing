@@ -29,10 +29,6 @@ import { UTApi } from "uploadthing/server";
 const utapi = new UTApi();
 
 
-export async function serverLog(message: string)  {
-  console.log(message);
-}
-
 export async function deleteImage(keys: string[] | string) {
   if (!Array.isArray(keys)) keys = keys.split(",") || [keys];
   for (const key of keys) {
@@ -941,19 +937,4 @@ export async function createLike(user_id: number, post_id: number) {
     }
     return "Liked";
   }
-}
-
-export async function getPostsByUser(user_id: number) {
-  console.log("Getting posts by user");
-  console.log(user_id);
-  const ids = await db.query.posts.findMany({
-    where: eq(posts.author_id, user_id),
-    columns: {
-      id: true,
-      created_at: true,
-    },
-  });
-  //Sort by created_at
-  ids.sort((a, b) => b.created_at - a.created_at);
-  return ids.map((id) => Number(id.id));
 }
