@@ -40,6 +40,7 @@ export interface post {
     location: string;
     website: string;
     skills: string;
+    permission: number;
   };
 }
 
