@@ -28,6 +28,11 @@ import {
 import { UTApi } from "uploadthing/server";
 const utapi = new UTApi();
 
+
+export async function serverLog(message: string)  {
+  console.log(message);
+}
+
 export async function deleteImage(keys: string[] | string) {
   if (!Array.isArray(keys)) keys = keys.split(",") || [keys];
   for (const key of keys) {
@@ -272,7 +277,7 @@ function mergeArrays(array1: number[], array2: number[]): number[] {
       array2 = array2.slice(sliceSize);
     }
   }
-  return result.concat(array2);
+  return shuffleArray(result.concat(array2));
 }
 
 function swapElements(array: number[], index1: number, index2: number): void {
@@ -337,7 +342,7 @@ export async function getHomePageOrder(user_id: number) {
           (a, b) => relevant.indexOf(a) - relevant.indexOf(b),
         );
         newRelevant.sort((a, b) => relevant.indexOf(a) - relevant.indexOf(b));
-        return shuffleArray(mergeArrays(relevantFollowingPosts, newRelevant));
+        return mergeArrays(relevantFollowingPosts, newRelevant);
       } else {
         console.log("No relevant");
         return getChronologicalOrder();
@@ -365,6 +370,7 @@ export async function paginatePosts(page: number, postIds: number[]) {
             id: true,
             image_url: true,
             name: true,
+            permission: true,
           },
         },
         comments: {
