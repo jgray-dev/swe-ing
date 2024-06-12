@@ -12,7 +12,6 @@ import {
 } from "~/server/api/queries";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { useAlertState, useUserState } from "~/app/_functions/store";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 interface ContextMenuProps {
@@ -24,13 +23,13 @@ interface ContextMenuProps {
 export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
   const setAlert = useAlertState((state) => state.setAlert);
-  const router = useRouter();
-  const { user_id } = useUserState((state) => state);
+  const { user_id, permission } = useUserState((state) => state);
   const [editing, setEditing] = useState(false);
   const [open, setOpen] = useState(false);
   const [newImageUrls, setNewImageUrls] = useState(post.image_urls);
   const [removeUrls, setRemoveUrls] = useState("");
   const [isAuthor, setIsAuthor] = useState(user_id === post.author_id);
+  const [isSuperior] = useState(post.author ? permission > post.author.permission : false);
 
   useEffect(() => {
     setIsAuthor(user_id === post.author_id);
@@ -263,6 +262,23 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
           "rounded-context backdrop-blur-xs absolute bottom-7 right-6 z-50 w-fit min-w-40 select-none border border-white bg-black/90 p-4 text-center shadow-lg transition-opacity duration-300"
         }
       >
+        {isSuperior ? (
+          <div
+            className={"group mb-2 flex cursor-pointer flex-row duration-200"}
+            onMouseDown={() => {console.log("GOT PERMS")}}
+          >
+            <div
+              className={
+                "group flex flex-row border-b border-transparent text-zinc-300 duration-200 hover:text-emerald-500 group-hover:border-emerald-500"
+              }
+            >
+              <CiEdit className={"hover: mr-1 h-5 w-5 -translate-x-0.5"} />
+              <span>U GOT PERMS</span>
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
         {isAuthor ? (
           <div
             className={"group mb-2 flex cursor-pointer flex-row duration-200"}
