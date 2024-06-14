@@ -55,7 +55,7 @@ export default function NewPost() {
               router.push(`/post/${resp.id}`);
               setAlert({ text: ``, type: "info" });
             } else {
-              console.log(resp);
+              console.error(resp);
               setAlert({ text: `Error creating post`, type: "error" });
             }
           }
@@ -200,7 +200,7 @@ export default function NewPost() {
                     <div
                       key={iurl}
                       className={"group m-2 flex w-1/4 flex-col"}
-                      onClick={() => removeImage(iurl)}
+                      onMouseDown={() => removeImage(iurl)}
                     >
                       <Image
                         src={`https://utfs.io/f/${iurl}`}
