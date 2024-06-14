@@ -17,7 +17,7 @@ interface postPageProps {
   order: number[];
 }
 
-export default function PostsPage({order}: postPageProps) {
+export default function PostsPage({ order }: postPageProps) {
   const { user_id } = useUserState((state) => state);
   const [loading, setLoading] = useState(false);
   const [end, setEnd] = useState(false);
