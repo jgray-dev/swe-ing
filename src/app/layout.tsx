@@ -13,7 +13,7 @@ import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "~/app/api/uploadthing/core";
 import { Alert, UserDataUpdater } from "~/app/_functions/store";
 import { Analytics } from "@vercel/analytics/react";
-import {KeepAlive} from "~/app/_functions/database";
+import { KeepAlive } from "~/app/_functions/database";
 
 export const metadata = {
   title: "Sweing",
