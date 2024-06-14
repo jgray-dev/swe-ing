@@ -7,7 +7,7 @@ import {
   bigint,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import {boolean} from "drizzle-orm/pg-core/columns/boolean";
+import { boolean } from "drizzle-orm/pg-core/columns/boolean";
 
 export const createTable = pgTableCreator((name) => `sweing_${name}`);
 
