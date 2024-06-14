@@ -3,7 +3,7 @@
 import { create } from "zustand";
 import { useUser } from "@clerk/clerk-react";
 import React from "react";
-import {getDbUser, wakeDatabase} from "~/server/api/queries";
+import { getDbUser, wakeDatabase } from "~/server/api/queries";
 import {
   CheckCircleIcon,
   ExclamationTriangleIcon,
@@ -52,7 +52,7 @@ export function UserDataUpdater() {
                   user_id: dbUser.id,
                   clerk_id: user.id,
                   name: `${user.fullName}`,
-                  permission: dbUser.permission
+                  permission: dbUser.permission,
                 });
               } else {
                 // console.log("We DONT got dbUser - reload page");
