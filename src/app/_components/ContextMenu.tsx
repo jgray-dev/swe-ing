@@ -29,7 +29,11 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
   const [newImageUrls, setNewImageUrls] = useState(post.image_urls);
   const [removeUrls, setRemoveUrls] = useState("");
   const [isAuthor, setIsAuthor] = useState(user_id === post.author_id);
-  const [isSuperior] = useState(post.author ? permission >= post.author.permission && post.author.permission > 0 : false);
+  const [isSuperior] = useState(
+    post.author
+      ? permission >= post.author.permission && post.author.permission > 0
+      : false,
+  );
 
   useEffect(() => {
     setIsAuthor(user_id === post.author_id);
@@ -265,7 +269,9 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
         {isSuperior ? (
           <div
             className={"group mb-2 flex cursor-pointer flex-row duration-200"}
-            onMouseDown={() => {console.log("GOT PERMS")}}
+            onMouseDown={() => {
+              console.log("GOT PERMS");
+            }}
           >
             <div
               className={
