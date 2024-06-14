@@ -28,7 +28,6 @@ import {
 import { UTApi } from "uploadthing/server";
 const utapi = new UTApi();
 
-
 export async function deleteImage(keys: string[] | string) {
   if (!Array.isArray(keys)) keys = keys.split(",") || [keys];
   for (const key of keys) {
@@ -936,11 +935,10 @@ export async function createLike(user_id: number, post_id: number) {
   }
 }
 
-
 // WAKEDB
 export async function wakeDatabase() {
   await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.id, 0),
-  })
-  return
+  });
+  return;
 }
