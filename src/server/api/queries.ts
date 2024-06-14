@@ -826,10 +826,7 @@ export async function createPost(
   post_tags?: string,
   image_urls?: string,
 ) {
-  console.log("Wake db hopefully??");
-  const wakeDb = db.query.users.findFirst({
-    where: (user, { eq }) => eq(user.id, user_id),
-  });
+  void wakeDatabase();
   console.log("Creating post");
   const user = await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.id, user_id),
@@ -937,4 +934,13 @@ export async function createLike(user_id: number, post_id: number) {
     }
     return "Liked";
   }
+}
+
+
+// WAKEDB
+export async function wakeDatabase() {
+  await db.query.users.findFirst({
+    where: (user, { eq }) => eq(user.id, 0),
+  })
+  return
 }
