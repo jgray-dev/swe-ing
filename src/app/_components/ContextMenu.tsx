@@ -29,7 +29,7 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
   const [newImageUrls, setNewImageUrls] = useState(post.image_urls);
   const [removeUrls, setRemoveUrls] = useState("");
   const [isAuthor, setIsAuthor] = useState(user_id === post.author_id);
-  const [isSuperior] = useState(post.author ? permission > post.author.permission : false);
+  const [isSuperior] = useState(post.author ? permission >= post.author.permission && post.author.permission > 0 : false);
 
   useEffect(() => {
     setIsAuthor(user_id === post.author_id);
@@ -127,7 +127,7 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
               <div
                 key={iurl}
                 className={"group m-2 flex w-1/4 flex-col"}
-                onClick={() => {
+                onMouseDown={() => {
                   if (removing) {
                     reAddImage(iurl);
                   } else {
