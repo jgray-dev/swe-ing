@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { wakeDatabase } from "~/server/api/queries";
 
-
 export function KeepAlive() {
   useEffect(() => {
     const interval = setInterval(() => {
