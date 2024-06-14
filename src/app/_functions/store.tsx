@@ -3,7 +3,7 @@
 import { create } from "zustand";
 import { useUser } from "@clerk/clerk-react";
 import React from "react";
-import { getDbUser } from "~/server/api/queries";
+import { getDbUser, wakeDatabase } from "~/server/api/queries";
 import {
   CheckCircleIcon,
   ExclamationTriangleIcon,
@@ -14,12 +14,14 @@ import { TailSpin } from "react-loading-icons";
 
 type User = {
   user_id: number;
+  permission: number;
   clerk_id: string;
   name: string;
   setData: (data: Partial<User>) => void;
 };
 export const useUserState = create<User & { isLoaded: boolean }>((set) => ({
   user_id: 0,
+  permission: 0,
   clerk_id: "",
   name: "",
   isLoaded: false,
@@ -34,43 +36,44 @@ export function UserDataUpdater() {
   React.useEffect(() => {
     const fetchData = async () => {
       if (isLoaded) {
-        console.log("Clerk state loaded");
+        // console.log("Clerk state loaded");
         if (!isLoading) {
-          console.log("Local loading is false");
+          // console.log("Local loading is false");
           if (isSignedIn) {
-            console.log("Clerk is signed in");
+            // console.log("Clerk is signed in");
             setIsLoading(true);
             try {
-              console.log("Trying dbUser");
+              // console.log("Trying dbUser");
               const dbUser = await getDbUser(user.id);
-              console.log("Finished dbUser", dbUser);
+              // console.log("Finished dbUser", dbUser);
               if (dbUser) {
-                console.log("We got dbUser");
+                // console.log("We got dbUser");
                 setData({
                   user_id: dbUser.id,
                   clerk_id: user.id,
                   name: `${user.fullName}`,
+                  permission: dbUser.permission,
                 });
               } else {
-                console.log("We DONT got dbUser - reload page");
+                // console.log("We DONT got dbUser - reload page");
                 alert("Error getting user data");
                 location.reload();
               }
             } catch (error) {
-              console.log("Caught error:");
+              console.warn("Caught error:");
               console.error("Error fetching user data:", error);
             } finally {
-              console.log("Finally not loading");
+              // console.log("Finally not loading");
               setIsLoading(false);
             }
           } else {
-            console.log("User not signed in");
+            // console.log("User not signed in");
           }
         } else {
-          console.log("Already loading user data");
+          // console.log("Already loading user data");
         }
       } else {
-        console.log("Clerk state loading");
+        // console.log("Clerk state loading");
       }
     };
     void fetchData();
@@ -177,7 +180,7 @@ export function Alert() {
                 <XMarkIcon
                   className="h-5 w-5"
                   aria-hidden="true"
-                  onClick={() => setAlert({ text: "" })}
+                  onMouseDown={() => setAlert({ text: "" })}
                 />
               </button>
             </div>

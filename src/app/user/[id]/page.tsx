@@ -43,9 +43,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
   }, [isUser]);
 
   async function viewPosts() {
-    console.log(`Viewing posts ${params.id}`);
     const ids = await getUsersPosts(Number(params.id));
-    console.log(ids);
     setShowingPosts(true);
     setUserPosts(<PostsPage order={ids} />);
   }
@@ -291,7 +289,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
                 className={
                   "mb-12 rounded-lg bg-white/10 px-4 py-2 text-zinc-200 duration-100 hover:bg-white/15 hover:text-white"
                 }
-                onClick={() => viewPosts()}
+                onMouseDown={() => viewPosts()}
               >
                 Click to view user&#39;s posts
               </button>

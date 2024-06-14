@@ -7,20 +7,23 @@ import {
   bigint,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
+import { boolean } from "drizzle-orm/pg-core/columns/boolean";
 
 export const createTable = pgTableCreator((name) => `sweing_${name}`);
 
 export const users = createTable("users", {
   id: serial("id").primaryKey().notNull(),
-  clerk_id: varchar("clerk_id", { length: 191 }).notNull(),
+  clerk_id: varchar("clerk_id", { length: 191 }).notNull().default(""),
   name: varchar("name", { length: 191 }).notNull(),
   image_url: varchar("image_url", { length: 191 }).notNull(),
   bio: varchar("bio", { length: 255 }).notNull().default(""),
   location: varchar("location", { length: 255 }).notNull().default(""),
   website: varchar("website", { length: 255 }).notNull().default(""),
   skills: varchar("skills").notNull().default(""),
-  recent_likes: integer("recent_likes").array().notNull(),
-  new_likes: integer("new_likes").array().notNull(),
+  recent_likes: integer("recent_likes").array().notNull().default([]),
+  new_likes: integer("new_likes").array().notNull().default([]),
+  permission: integer("permission").notNull().default(0),
+  banned: boolean("banned").notNull().default(false),
 });
 
 export const posts = createTable("posts", {
@@ -36,7 +39,7 @@ export const posts = createTable("posts", {
 export const comments = createTable("comments", {
   id: serial("id").primaryKey().notNull(),
   post_id: integer("post_id").notNull(),
-  author_id: integer("author_id").notNull(),
+  author_id: integer("author_id").notNull().default(0),
   content: varchar("content", { length: 750 }).notNull(),
   created_at: bigint("created_at", { mode: "number" }).notNull(),
 });

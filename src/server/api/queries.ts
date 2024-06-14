@@ -272,7 +272,7 @@ function mergeArrays(array1: number[], array2: number[]): number[] {
       array2 = array2.slice(sliceSize);
     }
   }
-  return result.concat(array2);
+  return shuffleArray(result.concat(array2));
 }
 
 function swapElements(array: number[], index1: number, index2: number): void {
@@ -337,7 +337,7 @@ export async function getHomePageOrder(user_id: number) {
           (a, b) => relevant.indexOf(a) - relevant.indexOf(b),
         );
         newRelevant.sort((a, b) => relevant.indexOf(a) - relevant.indexOf(b));
-        return shuffleArray(mergeArrays(relevantFollowingPosts, newRelevant));
+        return mergeArrays(relevantFollowingPosts, newRelevant);
       } else {
         console.log("No relevant");
         return getChronologicalOrder();
@@ -365,6 +365,7 @@ export async function paginatePosts(page: number, postIds: number[]) {
             id: true,
             image_url: true,
             name: true,
+            permission: true,
           },
         },
         comments: {
@@ -824,10 +825,7 @@ export async function createPost(
   post_tags?: string,
   image_urls?: string,
 ) {
-  console.log("Wake db hopefully??");
-  const wakeDb = db.query.users.findFirst({
-    where: (user, { eq }) => eq(user.id, user_id),
-  });
+  void wakeDatabase();
   console.log("Creating post");
   const user = await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.id, user_id),
@@ -937,17 +935,10 @@ export async function createLike(user_id: number, post_id: number) {
   }
 }
 
-export async function getPostsByUser(user_id: number) {
-  console.log("Getting posts by user");
-  console.log(user_id);
-  const ids = await db.query.posts.findMany({
-    where: eq(posts.author_id, user_id),
-    columns: {
-      id: true,
-      created_at: true,
-    },
+// WAKEDB
+export async function wakeDatabase() {
+  await db.query.users.findFirst({
+    where: (user, { eq }) => eq(user.id, 0),
   });
-  //Sort by created_at
-  ids.sort((a, b) => b.created_at - a.created_at);
-  return ids.map((id) => Number(id.id));
+  return;
 }

@@ -33,7 +33,6 @@ export default function NavBar() {
   async function refreshEmbed() {
     setAlert({ text: "Refreshing recommendations", type: "loading" });
     const resp = await updateEmbed();
-    console.log(resp);
     if (resp === 2) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       setAlert({ text: "No new recommendations", type: "info" });
