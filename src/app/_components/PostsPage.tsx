@@ -18,7 +18,6 @@ interface postPageProps {
 }
 
 export default function PostsPage({order}: postPageProps) {
-  console.log("PostsPage order: ", order);
   const { user_id } = useUserState((state) => state);
   const [loading, setLoading] = useState(false);
   const [end, setEnd] = useState(false);
@@ -77,7 +76,6 @@ export default function PostsPage({order}: postPageProps) {
     setLoading(true);
     const data = await paginatePosts(page, postOrder);
     if (data.length > 0) {
-      console.log("data", data);
       const newPosts = data.filter(
         (newPost) => !allPosts.some((post) => post.id === newPost.id),
       );
