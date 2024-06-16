@@ -19,7 +19,7 @@ import {
 } from "~/app/_functions/embedding";
 import { auth } from "@clerk/nextjs/server";
 import {
-  embeddingFromID,
+  embeddingFromID, generalizePost,
   insertPinecone,
   pineconeDelete,
   searchPinecone,
@@ -826,18 +826,15 @@ export async function createPost(
   image_urls?: string,
 ) {
   void wakeDatabase();
-  console.log("Creating post");
   const user = await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.id, user_id),
   });
   if (!user) {
-    console.log("No user");
     return {
       id: 0,
       error: "Unauthorized",
     };
   }
-  console.log("We have user");
   const newPost = await db
     .insert(posts)
     .values({
@@ -850,14 +847,15 @@ export async function createPost(
     })
     .returning();
 
-  console.log("Post created?");
   if (newPost[0]?.id) {
     console.log("newpost id confirmed");
-    const embedding = await getEmbedding(content, post_tags);
+    const generalized = await generalizePost(content, image_urls?.split(","))
+    console.log("generalized")
+    console.log(generalized)
+    const embedding = await getEmbedding(generalized);
     void (await insertPinecone("posts", embedding, newPost[0].id));
     return newPost[0];
   } else {
-    console.log("No newpost id");
     return {
       id: 0,
       error: "Embedding error",
