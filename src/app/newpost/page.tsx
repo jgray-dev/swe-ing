@@ -7,7 +7,7 @@ import type { AppFileRouter } from "~/app/api/uploadthing/core";
 import { RedirectToSignIn, SignedIn, SignedOut } from "@clerk/nextjs";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { VscLoading } from "react-icons/vsc";
-import {createPost, deleteImage, wakeDatabase} from "~/server/api/queries";
+import { createPost, deleteImage, wakeDatabase } from "~/server/api/queries";
 import Image from "next/image";
 import { CiTrash } from "react-icons/ci";
 import { useAlertState, useUserState } from "~/app/_functions/store";
