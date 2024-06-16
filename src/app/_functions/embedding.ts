@@ -3,9 +3,7 @@
 import { embeddingFromID } from "~/server/api/server-only";
 import type { Response } from "~/app/_functions/interfaces";
 
-export async function getEmbedding(
-  text: string,
-): Promise<number[]> {
+export async function getEmbedding(text: string): Promise<number[]> {
   const apiKey = process.env.VOYAGE_API_KEY;
 
   try {
