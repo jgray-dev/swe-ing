@@ -5,7 +5,6 @@ import type { Response } from "~/app/_functions/interfaces";
 
 export async function getEmbedding(
   text: string,
-  tags?: string,
 ): Promise<number[]> {
   const apiKey = process.env.VOYAGE_API_KEY;
 
@@ -17,7 +16,7 @@ export async function getEmbedding(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        input: `${text} ${tags}`,
+        input: `${text}`,
         model: "voyage-large-2",
       }),
     });
