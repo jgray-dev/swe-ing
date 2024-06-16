@@ -3,7 +3,7 @@
 import { create } from "zustand";
 import { useUser } from "@clerk/clerk-react";
 import React from "react";
-import { getDbUser, wakeDatabase } from "~/server/api/queries";
+import { getDbUser } from "~/server/api/queries";
 import {
   CheckCircleIcon,
   ExclamationTriangleIcon,
