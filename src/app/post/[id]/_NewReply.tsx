@@ -2,7 +2,6 @@ import { useReplyState, useUserState } from "~/app/_functions/store";
 import React, { useState } from "react";
 import { VscLoading } from "react-icons/vsc";
 import { HiOutlineXMark } from "react-icons/hi2";
-import { api } from "~/trpc/react";
 import { createComment } from "~/server/api/queries";
 
 // @ts-expect-error fts
