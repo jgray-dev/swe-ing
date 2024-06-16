@@ -74,16 +74,4 @@ export async function getPostEmbeddings(postIds: number[]) {
     }
   }
   return allEmbeds;
-
-  // Pre-PC code
-  // const allPosts = await db.query.posts.findMany({
-  //   where: (post) => inArray(post.id, postIds),
-  //   columns: {
-  //     embedding: true,
-  //   },
-  // });
-  // const returnList: number[][] = [];
-  // // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  // allPosts.forEach((post) => returnList.push(post.embedding));
-  // return returnList;
 }
