@@ -7,7 +7,7 @@ export function KeepAlive() {
   useEffect(() => {
     const interval = setInterval(() => {
       void wakeDatabase();
-    }, 55000);
+    }, 50000);
     return () => clearInterval(interval);
   }, []);
 
