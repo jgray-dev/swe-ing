@@ -1,6 +1,5 @@
 "use server";
 import { env } from "~/env";
-import "server-only";
 
 import { Pinecone } from "@pinecone-database/pinecone";
 
