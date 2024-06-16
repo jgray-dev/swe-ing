@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { api } from "~/trpc/react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { createLike } from "~/server/api/queries";
 import { useUserState } from "~/app/_functions/store";
