@@ -19,7 +19,8 @@ import {
 } from "~/app/_functions/embedding";
 import { auth } from "@clerk/nextjs/server";
 import {
-  embeddingFromID, generalizePost,
+  embeddingFromID,
+  generalizePost,
   insertPinecone,
   pineconeDelete,
   searchPinecone,
@@ -849,9 +850,9 @@ export async function createPost(
 
   if (newPost[0]?.id) {
     console.log("newpost id confirmed");
-    const generalized = await generalizePost(content, image_urls?.split(","))
-    console.log("generalized")
-    console.log(generalized)
+    const generalized = await generalizePost(content, image_urls?.split(","));
+    console.log("generalized");
+    console.log(generalized);
     const embedding = await getEmbedding(generalized);
     void (await insertPinecone("posts", embedding, newPost[0].id));
     return newPost[0];
