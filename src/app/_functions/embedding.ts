@@ -3,10 +3,7 @@
 import { embeddingFromID } from "~/server/api/server-only";
 import type { Response } from "~/app/_functions/interfaces";
 
-export async function getEmbedding(
-  text: string,
-  tags?: string,
-): Promise<number[]> {
+export async function getEmbedding(text: string): Promise<number[]> {
   const apiKey = process.env.VOYAGE_API_KEY;
 
   try {
@@ -17,7 +14,7 @@ export async function getEmbedding(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        input: `${text} ${tags}`,
+        input: `${text}`,
         model: "voyage-large-2",
       }),
     });
@@ -74,16 +71,4 @@ export async function getPostEmbeddings(postIds: number[]) {
     }
   }
   return allEmbeds;
-
-  // Pre-PC code
-  // const allPosts = await db.query.posts.findMany({
-  //   where: (post) => inArray(post.id, postIds),
-  //   columns: {
-  //     embedding: true,
-  //   },
-  // });
-  // const returnList: number[][] = [];
-  // // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  // allPosts.forEach((post) => returnList.push(post.embedding));
-  // return returnList;
 }

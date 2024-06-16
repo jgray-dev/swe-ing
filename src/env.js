@@ -27,7 +27,7 @@ export const env = createEnv({
 
   /**
    * You can't destruct `process.env` as a regular object in the Next.js edge runtimes (e.g.
-   * middlewares) or client-side so we need to destruct manually.
+   * middlewares) or client-side, so we need to destruct manually.
    */
   runtimeEnv: {
     POSTGRES_URL: process.env.POSTGRES_URL,
