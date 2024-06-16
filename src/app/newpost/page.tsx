@@ -71,8 +71,7 @@ export default function NewPost() {
       setAlert({ text: "Stuff is already happening!", type: "warn" });
     }
   }
-  
-  
+
   async function removeImage(key: string) {
     const arr = imageUrls.split(",");
     const index = arr.indexOf(key);
