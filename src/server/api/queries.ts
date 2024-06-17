@@ -116,7 +116,7 @@ export async function dbEditPost(
 ) {
   console.log("DB Editing post");
   try {
-    const generalized = await generalizePost(content, newImageUrls.split(","))
+    const generalized = await generalizePost(content, newImageUrls.split(","));
     await db
       .update(posts)
       .set({
