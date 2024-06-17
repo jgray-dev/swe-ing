@@ -18,6 +18,7 @@ export interface post {
   post_tags: string;
   created_at: number;
   updated_at: number;
+  generalized: string | null;
   comments?: string[];
   likes?: like[];
   author?: {
