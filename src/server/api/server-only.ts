@@ -84,9 +84,6 @@ export async function generalizePost(
       }));
   }
 
-  console.log(keys);
-  console.log(imageUrls);
-
   // @ts-expect-error fts
   const response = await openai.chat.completions.create({
     model: "gpt-4o",
