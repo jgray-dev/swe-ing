@@ -1,7 +1,7 @@
 import type { post } from "~/app/_functions/interfaces";
 import { PiDotsNine } from "react-icons/pi";
 import React, { useEffect, useRef, useState } from "react";
-import {CiEdit, CiMicrochip, CiTrash} from "react-icons/ci";
+import { CiEdit, CiMicrochip, CiTrash } from "react-icons/ci";
 import { IoWarningOutline } from "react-icons/io5";
 import { IoIosLink } from "react-icons/io";
 import {
@@ -32,22 +32,24 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
   const [isSuperior, setIsSuperior] = useState(
     post.author
       ? permission >= post.author.permission && post.author.permission > 0
-      : false
+      : false,
   );
 
   useEffect(() => {
     setIsSuperior(
       post.author
         ? permission >= post.author.permission && post.author.permission > 0
-        : false)
+        : false,
+    );
   }, [post.author]);
-  
+
   useEffect(() => {
     setIsAuthor(user_id === post.author_id);
     setIsSuperior(
       post.author
         ? permission >= post.author.permission && post.author.permission > 0
-        : false)
+        : false,
+    );
     //eslint-disable-next-line
   }, [user_id]);
 
@@ -291,7 +293,7 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
             >
               <div
                 className={
-                  "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:text-emerald-500 group-hover:border-emerald-500"
+                  "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:border-emerald-500 group-hover:text-emerald-500"
                 }
               >
                 <CiEdit className={"hover: mr-1 h-5 w-5 -translate-x-0.5"} />
@@ -301,16 +303,18 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
             <div
               className={"group mb-2 flex cursor-pointer flex-row duration-200"}
               onMouseDown={() => {
-                console.log("Generalized text:")
-                console.log(post.generalized)
+                console.log("Generalized text:");
+                console.log(post.generalized);
               }}
             >
               <div
                 className={
-                  "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:text-orange-400 group-hover:border-orange-400"
+                  "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:border-orange-400 group-hover:text-orange-400"
                 }
               >
-                <CiMicrochip className={"hover: mr-1 h-5 w-5 -translate-x-0.5"} />
+                <CiMicrochip
+                  className={"hover: mr-1 h-5 w-5 -translate-x-0.5"}
+                />
                 <span>Generalized</span>
               </div>
             </div>
@@ -325,14 +329,16 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
           >
             <div
               className={
-                "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:text-red-500 group-hover:border-red-500"
+                "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:border-red-500 group-hover:text-red-500"
               }
             >
               <CiTrash className={"mr-1 h-5 w-5"} />
               <span>Delete post</span>
             </div>
           </div>
-        ) : <></>}
+        ) : (
+          <></>
+        )}
         {isAuthor && postPage ? (
           <div
             className={"group mb-2 flex cursor-pointer flex-row duration-200"}
@@ -340,21 +346,23 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
           >
             <div
               className={
-                "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:text-emerald-500 group-hover:border-emerald-500"
+                "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:border-emerald-500 group-hover:text-emerald-500"
               }
             >
               <CiEdit className={"hover: mr-1 h-5 w-5 -translate-x-0.5"} />
               <span>Edit post</span>
             </div>
           </div>
-        ) : <></>}
+        ) : (
+          <></>
+        )}
         <div
           className={"group flex cursor-pointer flex-row duration-200"}
           onMouseDown={() => reportPost()}
         >
           <div
             className={
-              "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:text-orange-400 group-hover:border-orange-400"
+              "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:border-orange-400 group-hover:text-orange-400"
             }
           >
             <IoWarningOutline className={"hover: mr-1 h-5 w-5"} />
