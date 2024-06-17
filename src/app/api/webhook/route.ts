@@ -6,6 +6,7 @@ import {
   deleteProfile,
   updateProfile,
 } from "~/server/api/queries";
+import { clerkClient } from "@clerk/nextjs/server";
 
 const webhookSecret: string | undefined = process.env.WEBHOOK_SECRET;
 
@@ -39,7 +40,14 @@ export async function handler(req: Request) {
           await updateProfile(msg);
         }
         if (msg.type === "user.created") {
-          await createProfile(msg);
+          const newUser = await createProfile(msg);
+          if (newUser?.[0]?.id) {
+            await clerkClient.users.updateUserMetadata(msg.data.id, {
+              publicMetadata: {
+                database_id: newUser[0].id,
+              },
+            });
+          }
         }
         if (msg.type === "user.deleted") {
           await deleteProfile(msg);

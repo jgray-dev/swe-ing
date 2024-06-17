@@ -10,6 +10,5 @@ export function KeepAlive() {
     }, 50000);
     return () => clearInterval(interval);
   }, []);
-
   return null;
 }

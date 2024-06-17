@@ -1,7 +1,7 @@
 import type { post } from "~/app/_functions/interfaces";
 import { PiDotsNine } from "react-icons/pi";
 import React, { useEffect, useRef, useState } from "react";
-import { CiEdit, CiTrash } from "react-icons/ci";
+import { CiEdit, CiMicrochip, CiTrash } from "react-icons/ci";
 import { IoWarningOutline } from "react-icons/io5";
 import { IoIosLink } from "react-icons/io";
 import {
@@ -29,14 +29,27 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
   const [newImageUrls, setNewImageUrls] = useState(post.image_urls);
   const [removeUrls, setRemoveUrls] = useState("");
   const [isAuthor, setIsAuthor] = useState(user_id === post.author_id);
-  const [isSuperior] = useState(
+  const [isSuperior, setIsSuperior] = useState(
     post.author
       ? permission >= post.author.permission && post.author.permission > 0
       : false,
   );
 
   useEffect(() => {
+    setIsSuperior(
+      post.author
+        ? permission >= post.author.permission && post.author.permission > 0
+        : false,
+    );
+  }, [post.author]);
+
+  useEffect(() => {
     setIsAuthor(user_id === post.author_id);
+    setIsSuperior(
+      post.author
+        ? permission >= post.author.permission && post.author.permission > 0
+        : false,
+    );
     //eslint-disable-next-line
   }, [user_id]);
 
@@ -168,6 +181,7 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
     async function submitEdit() {
       if (isAuthor && textareaRef.current && user_id) {
         const newContent = textareaRef.current.value;
+        setAlert({ text: "Submitting edit", type: "loading" });
         const resp = await dbEditPost(post, newContent, user_id, newImageUrls);
         if (resp) {
           const oldContent = document.getElementById(`${id + "CONTENT"}`);
@@ -188,6 +202,9 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
             setAlert({ text: "Post not found on page", type: "warn" });
             console.warn("DOM content not found");
           }
+        } else {
+          setAlert({ text: "Erroring editing post", type: "error" });
+          console.error(resp);
         }
       } else {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -267,21 +284,41 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
         }
       >
         {isSuperior ? (
-          <div
-            className={"group mb-2 flex cursor-pointer flex-row duration-200"}
-            onMouseDown={() => {
-              console.log("GOT PERMS");
-            }}
-          >
+          <>
             <div
-              className={
-                "group flex flex-row border-b border-transparent text-zinc-300 duration-200 hover:text-emerald-500 group-hover:border-emerald-500"
-              }
+              className={"group mb-2 flex cursor-pointer flex-row duration-200"}
+              onMouseDown={() => {
+                console.log("GOT PERMS");
+              }}
             >
-              <CiEdit className={"hover: mr-1 h-5 w-5 -translate-x-0.5"} />
-              <span>U GOT PERMS</span>
+              <div
+                className={
+                  "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:border-emerald-500 group-hover:text-emerald-500"
+                }
+              >
+                <CiEdit className={"hover: mr-1 h-5 w-5 -translate-x-0.5"} />
+                <span>perms</span>
+              </div>
             </div>
-          </div>
+            <div
+              className={"group mb-2 flex cursor-pointer flex-row duration-200"}
+              onMouseDown={() => {
+                console.log("Generalized text:");
+                console.log(post.generalized);
+              }}
+            >
+              <div
+                className={
+                  "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:border-orange-400 group-hover:text-orange-400"
+                }
+              >
+                <CiMicrochip
+                  className={"hover: mr-1 h-5 w-5 -translate-x-0.5"}
+                />
+                <span>Generalized</span>
+              </div>
+            </div>
+          </>
         ) : (
           <></>
         )}
@@ -292,14 +329,16 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
           >
             <div
               className={
-                "group flex flex-row border-b border-transparent text-zinc-300 duration-200 hover:text-red-500 group-hover:border-red-500"
+                "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:border-red-500 group-hover:text-red-500"
               }
             >
               <CiTrash className={"mr-1 h-5 w-5"} />
               <span>Delete post</span>
             </div>
           </div>
-        ) : null}
+        ) : (
+          <></>
+        )}
         {isAuthor && postPage ? (
           <div
             className={"group mb-2 flex cursor-pointer flex-row duration-200"}
@@ -307,21 +346,23 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
           >
             <div
               className={
-                "group flex flex-row border-b border-transparent text-zinc-300 duration-200 hover:text-emerald-500 group-hover:border-emerald-500"
+                "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:border-emerald-500 group-hover:text-emerald-500"
               }
             >
               <CiEdit className={"hover: mr-1 h-5 w-5 -translate-x-0.5"} />
               <span>Edit post</span>
             </div>
           </div>
-        ) : null}
+        ) : (
+          <></>
+        )}
         <div
           className={"group flex cursor-pointer flex-row duration-200"}
           onMouseDown={() => reportPost()}
         >
           <div
             className={
-              "group flex flex-row border-b border-transparent text-zinc-300 duration-200 hover:text-orange-400 group-hover:border-orange-400"
+              "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:border-orange-400 group-hover:text-orange-400"
             }
           >
             <IoWarningOutline className={"hover: mr-1 h-5 w-5"} />

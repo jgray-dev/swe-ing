@@ -17,7 +17,6 @@ import {
   getEmbedding,
   getPostEmbeddings,
 } from "~/app/_functions/embedding";
-import { auth } from "@clerk/nextjs/server";
 import {
   embeddingFromID,
   generalizePost,
@@ -27,6 +26,7 @@ import {
 } from "~/server/api/server-only";
 
 import { UTApi } from "uploadthing/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 const utapi = new UTApi();
 
 export async function deleteImage(keys: string[] | string) {
@@ -37,6 +37,9 @@ export async function deleteImage(keys: string[] | string) {
 }
 
 export async function dbDeletePost(post: post) {
+  const fullUser = await clerkClient.users.getUser(`${auth().userId}`);
+  if (fullUser.publicMetadata.database_id !== post.author_id)
+    throw new Error("Unauthorized");
   void (await pineconeDelete([post.id], "posts"));
   const images = post.image_urls.split(",");
   for (const url of images) {
@@ -49,11 +52,22 @@ export async function dbDeletePost(post: post) {
 }
 
 export async function deleteCommentDb(commentId: number) {
-  await db.delete(comments).where(eq(comments.id, commentId));
+  const fullUser = await clerkClient.users.getUser(`${auth().userId}`);
+  await db
+    .delete(comments)
+    .where(
+      and(
+        eq(comments.author_id, Number(fullUser.publicMetadata.database_id)),
+        eq(comments.id, commentId),
+      ),
+    );
   return "Deleted";
 }
 
 export async function followUserDb(user_id: number, following_id: number) {
+  const fullUser = await clerkClient.users.getUser(`${auth().userId}`);
+  if (fullUser.publicMetadata.database_id !== user_id)
+    throw new Error("Unauthorized");
   const previous = await db.query.follows.findFirst({
     where: and(
       or(eq(follows.user_id, user_id), eq(follows.following_user_id, user_id)),
@@ -114,17 +128,21 @@ export async function dbEditPost(
   user_id: number,
   newImageUrls: string,
 ) {
-  console.log("DB Editing post");
+  const fullUser = await clerkClient.users.getUser(`${auth().userId}`);
+  if (fullUser.publicMetadata.database_id !== user_id)
+    throw new Error("Unauthorized");
   try {
+    const generalized = await generalizePost(content, newImageUrls.split(","));
     await db
       .update(posts)
       .set({
         content: content,
         updated_at: Date.now(),
         image_urls: newImageUrls,
+        generalized: generalized,
       })
       .where(and(eq(posts.author_id, user_id), eq(posts.id, post.id)));
-    const newEmbedding = await getEmbedding(content);
+    const newEmbedding = await getEmbedding(generalized);
     void (await insertPinecone("posts", newEmbedding, post.id));
     return true;
   } catch {
@@ -133,6 +151,9 @@ export async function dbEditPost(
 }
 
 export async function dbReportPost(post: post, user_id: number) {
+  const fullUser = await clerkClient.users.getUser(`${auth().userId}`);
+  if (fullUser.publicMetadata.database_id !== user_id)
+    throw new Error("Unauthorized");
   const oldReport = await db.query.reports.findFirst({
     where: and(eq(reports.post_id, post.id), eq(reports.reporter_id, user_id)),
   });
@@ -294,6 +315,9 @@ function shuffleArray(array: number[]): number[] {
 }
 
 export async function getHomePageOrder(user_id: number) {
+  const fullUser = await clerkClient.users.getUser(`${auth().userId}`);
+  if (fullUser.publicMetadata.database_id !== user_id)
+    throw new Error("Unauthorized");
   const user = await db.query.users.findFirst({
     where: eq(users.id, user_id),
   });
@@ -388,104 +412,6 @@ export async function paginatePosts(page: number, postIds: number[]) {
     return [];
   }
 }
-
-//Old logic (with following) for reference
-// export async function nextHomePage(
-//   page: number,
-//   user_id: number,
-//   postIds: number[],
-// ) {
-//   const pageSize = 20;
-//   const offset = (page - 1) * pageSize;
-//   if (user_id) {
-//     const user = await db.query.users.findFirst({
-//       where: eq(users.id, user_id),
-//     });
-//     if (user?.id && postIds.length > 0) {
-//       const following = await db.query.follows.findMany({
-//         where: and(
-//           eq(follows.user_id, user_id),
-//           eq(follows.following_user_id, follows.following_user_id),
-//         ),
-//         columns: {
-//           following_user_id: true,
-//         },
-//       });
-//       const following_ids = following.map((f) => f.following_user_id);
-//       const uoPosts = await db.query.posts.findMany({
-//         where: or(
-//           inArray(posts.id, postIds),
-//           inArray(
-//             posts.author_id,
-//             following_ids.length > 0 ? following_ids : [0],
-//           ),
-//         ),
-//         with: {
-//           author: {
-//             columns: {
-//               id: true,
-//               image_url: true,
-//               name: true,
-//             },
-//           },
-//           comments: {
-//             columns: {
-//               id: true,
-//             },
-//           },
-//           likes: {
-//             columns: {
-//               user_id: true,
-//             },
-//           },
-//         },
-//       });
-//       const followed_posts = uoPosts.filter((post) =>
-//         following_ids.includes(post.author_id),
-//       );
-//       const other_posts = uoPosts.filter(
-//         (post) => !following_ids.includes(post.author_id),
-//       );
-//       const sorted_other_posts = other_posts.sort((a, b) => {
-//         const indexA = postIds.indexOf(a.id);
-//         const indexB = postIds.indexOf(b.id);
-//         return indexA - indexB;
-//       });
-//       const sorted_followed_posts = followed_posts.sort((a, b) => {
-//         const indexA = postIds.indexOf(a.id);
-//         const indexB = postIds.indexOf(b.id);
-//         return indexA - indexB;
-//       });
-//       const all_posts = [...sorted_followed_posts, ...sorted_other_posts];
-//       return all_posts.slice(offset, offset + pageSize);
-//     }
-//   }
-//   // No userID or postIds list or whatever - return chronological home page
-//   return db.query.posts.findMany({
-//     orderBy: desc(posts.updated_at),
-//     limit: pageSize,
-//     offset: offset,
-//     with: {
-//       author: {
-//         columns: {
-//           id: true,
-//           image_url: true,
-//           name: true,
-//         },
-//       },
-//       comments: {
-//         columns: {
-//           id: true,
-//         },
-//       },
-//       likes: {
-//         columns: {
-//           user_id: true,
-//         },
-//       },
-//     },
-//   });
-// }
 
 export async function updateProfile(profile: webhookRequest) {
   return db
@@ -826,6 +752,9 @@ export async function createPost(
   post_tags?: string,
   image_urls?: string,
 ) {
+  const fullUser = await clerkClient.users.getUser(`${auth().userId}`);
+  if (fullUser.publicMetadata.database_id !== user_id)
+    throw new Error("Unauthorized");
   void wakeDatabase();
   const user = await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.id, user_id),
@@ -836,6 +765,7 @@ export async function createPost(
       error: "Unauthorized",
     };
   }
+  const generalized = await generalizePost(content, image_urls?.split(","));
   const newPost = await db
     .insert(posts)
     .values({
@@ -845,12 +775,12 @@ export async function createPost(
       image_urls: image_urls,
       created_at: Date.now(),
       updated_at: Date.now(),
+      generalized: generalized,
     })
     .returning();
 
   if (newPost[0]?.id) {
     console.log("newpost id confirmed");
-    const generalized = await generalizePost(content, image_urls?.split(","));
     console.log("generalized");
     console.log(generalized);
     const embedding = await getEmbedding(generalized);
@@ -871,6 +801,9 @@ export async function createComment(
   post_id: number,
   content: string,
 ) {
+  const fullUser = await clerkClient.users.getUser(`${auth().userId}`);
+  if (fullUser.publicMetadata.database_id !== user_id)
+    throw new Error("Unauthorized");
   const user = await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.id, user_id),
   });
@@ -896,6 +829,9 @@ export async function createComment(
 // LIKE QUERIES
 
 export async function createLike(user_id: number, post_id: number) {
+  const fullUser = await clerkClient.users.getUser(`${auth().userId}`);
+  if (fullUser.publicMetadata.database_id !== user_id)
+    throw new Error("Unauthorized");
   const user = await db.query.users.findFirst({
     where: (user, { eq }) => eq(user.id, user_id),
   });

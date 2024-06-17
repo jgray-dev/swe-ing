@@ -34,6 +34,7 @@ export const posts = createTable("posts", {
   post_tags: varchar("post_tags").notNull().default(""),
   created_at: bigint("created_at", { mode: "number" }).notNull(),
   updated_at: bigint("updated_at", { mode: "number" }).notNull(),
+  generalized: varchar("generalized", { length: 4096 }),
 });
 
 export const comments = createTable("comments", {
