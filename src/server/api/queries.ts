@@ -116,15 +116,17 @@ export async function dbEditPost(
 ) {
   console.log("DB Editing post");
   try {
+    const generalized = await generalizePost(content, newImageUrls.split(","))
     await db
       .update(posts)
       .set({
         content: content,
         updated_at: Date.now(),
         image_urls: newImageUrls,
+        generalized: generalized,
       })
       .where(and(eq(posts.author_id, user_id), eq(posts.id, post.id)));
-    const newEmbedding = await getEmbedding(content);
+    const newEmbedding = await getEmbedding(generalized);
     void (await insertPinecone("posts", newEmbedding, post.id));
     return true;
   } catch {
@@ -836,6 +838,7 @@ export async function createPost(
       error: "Unauthorized",
     };
   }
+  const generalized = await generalizePost(content, image_urls?.split(","));
   const newPost = await db
     .insert(posts)
     .values({
@@ -845,12 +848,12 @@ export async function createPost(
       image_urls: image_urls,
       created_at: Date.now(),
       updated_at: Date.now(),
+      generalized: generalized,
     })
     .returning();
 
   if (newPost[0]?.id) {
     console.log("newpost id confirmed");
-    const generalized = await generalizePost(content, image_urls?.split(","));
     console.log("generalized");
     console.log(generalized);
     const embedding = await getEmbedding(generalized);
