@@ -12,6 +12,10 @@ import ContextMenu from "~/app/_components/ContextMenu";
 import { getTime } from "~/app/_functions/functions";
 import { useAlertState, useUserState } from "~/app/_functions/store";
 import { VscLoading } from "react-icons/vsc";
+import { FaCrown } from "react-icons/fa";
+import { FiShield } from "react-icons/fi";
+import { BsGem } from "react-icons/bs";
+import { GiCheckedShield } from "react-icons/gi";
 
 interface postPageProps {
   order: number[];
@@ -154,8 +158,51 @@ export default function PostsPage({ order }: postPageProps) {
                     />
                   </Link>
                 </div>
-                {/*@ts-expect-error fuck typescript*/}
-                {post.author.name}
+                {post.author ? (
+                  <div className={"flex flex-row"}>
+                    <div
+                      className={`${
+                        post.author.permission === 1
+                          ? "text-emerald-200"
+                          : post.author.permission === 2
+                            ? "text-orange-400"
+                            : post.author.permission === 3
+                              ? "text-red-500"
+                              : "text-zinc-200"
+                      }`}
+                    >
+                      {post.author.name}
+                    </div>
+                    <div>
+                      {post.author.permission == 1 ? (
+                        <BsGem
+                          className="ml-1 h-3 w-3 translate-y-0.5 text-emerald-300"
+                          title={"VIP"}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                      {post.author.permission == 2 ? (
+                        <GiCheckedShield
+                          className="ml-1 h-3 w-3 translate-y-0.5 text-orange-500"
+                          title={"Moderator"}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                      {post.author.permission == 3 ? (
+                        <FaCrown
+                          className="ml-1 h-3 w-3 translate-y-0.5 text-red-600"
+                          title={"Owner"}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <></>
+                )}
                 <br />
                 <span className={"text-center text-xs text-zinc-600"}>
                   {getTime(post.updated_at)} ago
