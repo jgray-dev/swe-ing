@@ -13,6 +13,7 @@ import {
 import { HiOutlineXMark } from "react-icons/hi2";
 import { useAlertState, useUserState } from "~/app/_functions/store";
 import Image from "next/image";
+import { AiOutlineDeleteRow } from "react-icons/ai";
 
 interface ContextMenuProps {
   post: post;
@@ -28,7 +29,7 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
   const [open, setOpen] = useState(false);
   const [newImageUrls, setNewImageUrls] = useState(post.image_urls);
   const [removeUrls, setRemoveUrls] = useState("");
-  const [isAuthor, setIsAuthor] = useState(user_id === post.author_id);
+  const [isAuthor] = useState(user_id === post.author_id);
   const [isSuperior, setIsSuperior] = useState(
     post.author
       ? permission >= post.author.permission && post.author.permission > 0
@@ -57,7 +58,7 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
 
   async function deletePost() {
     setOpen(!open);
-    if (isAuthor) {
+    if (isAuthor || isSuperior) {
       const resp = await dbDeletePost(post);
       if (resp === "Deleted") {
         const element = document.getElementById(id);
@@ -188,6 +189,7 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
               }
             }
             void deleteImage(removeUrls);
+            setAlert({ text: "Submitted edit", type: "info" });
           } else {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             setAlert({ text: "Post not found on page", type: "warn" });
@@ -278,21 +280,28 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
       >
         {isSuperior ? (
           <>
-            <div
-              className={"group mb-2 flex cursor-pointer flex-row duration-200"}
-              onMouseDown={() => {
-                console.log("GOT PERMS");
-              }}
-            >
+            {!isAuthor ? (
               <div
                 className={
-                  "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:border-emerald-500 group-hover:text-emerald-500"
+                  "group mb-2 flex cursor-pointer flex-row duration-200"
                 }
+                onMouseDown={() => deletePost()}
               >
-                <CiEdit className={"hover: mr-1 h-5 w-5 -translate-x-0.5"} />
-                <span>perms</span>
+                <div
+                  className={
+                    "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:border-red-500 group-hover:text-red-500"
+                  }
+                >s
+                  <AiOutlineDeleteRow
+                    className={"hover: mr-1 h-5 w-5 -translate-x-0.5"}
+                  />
+                  <span>Force delete</span>
+                </div>
               </div>
-            </div>
+            ) : (
+              <></>
+            )}
+
             <div
               className={"group mb-2 flex cursor-pointer flex-row duration-200"}
               onMouseDown={() => {
