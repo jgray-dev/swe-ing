@@ -38,11 +38,11 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
   useEffect(() => {
     setIsSuperior(
       post.author
-        ? (permission > post.author.permission) || (permission >= post.author.permission && post.author.permission > 0)
-        : false
+        ? permission > post.author.permission ||
+            (permission >= post.author.permission && post.author.permission > 0)
+        : false,
     );
   }, [permission, post.author]);
-  
 
   useEffect(() => {
     setNewImageUrls(post.image_urls);
@@ -259,7 +259,7 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
       <PiDotsNine
         className={`h-6 w-6 text-zinc-400 duration-150 hover:text-white motion-safe:hover:scale-[115%] ${isAuthor ? "rounded-sm bg-white/15" : ""} ${isSuperior && !isAuthor ? "rounded-sm bg-red-600/15" : ""}`}
         onMouseDown={() => {
-          setOpen(!open)
+          setOpen(!open);
         }}
       />
     )
