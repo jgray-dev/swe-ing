@@ -39,12 +39,17 @@ export async function deleteImage(keys: string[] | string) {
 export async function dbDeletePost(post: post) {
   const fullUser = await clerkClient.users.getUser(`${auth().userId}`);
   const actionUser = await db.query.users.findFirst({
-    where: eq(users.id, Number(fullUser.publicMetadata.database_id))
+    where: eq(users.id, Number(fullUser.publicMetadata.database_id)),
   });
   if (!actionUser) throw new Error("Unauthorized1");
   if (!post.author) throw new Error("Unauthorized2");
-  if (fullUser.publicMetadata.database_id !== post.author_id && actionUser.permission <= post.author.permission) throw new Error("Unauthorized3") 
-  if (actionUser.permission < post.author.permission) throw new Error("Unauthorized4");
+  if (
+    fullUser.publicMetadata.database_id !== post.author_id &&
+    actionUser.permission <= post.author.permission
+  )
+    throw new Error("Unauthorized3");
+  if (actionUser.permission < post.author.permission)
+    throw new Error("Unauthorized4");
   void (await pineconeDelete([post.id], "posts"));
   const images = post.image_urls.split(",");
   for (const url of images) {
