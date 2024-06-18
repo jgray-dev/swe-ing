@@ -291,7 +291,8 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
                   className={
                     "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:border-red-500 group-hover:text-red-500"
                   }
-                >s
+                >
+                  s
                   <AiOutlineDeleteRow
                     className={"hover: mr-1 h-5 w-5 -translate-x-0.5"}
                   />
