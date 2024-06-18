@@ -30,17 +30,17 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
   const [newImageUrls, setNewImageUrls] = useState(post.image_urls);
   const [removeUrls, setRemoveUrls] = useState("");
   const [isAuthor] = useState(user_id === post.author_id);
-  const [isSuperior, setIsSuperior] = useState(
-    post.author
-      ? permission >= post.author.permission && post.author.permission > 0
-      : false,
+  const [isSuperior, setIsSuperior] = useState(post.author
+    ? permission > post.author.permission && permission > 1 ||
+    (permission >= post.author.permission && post.author.permission > 0  && permission > 1)
+    : false
   );
 
   useEffect(() => {
     setIsSuperior(
       post.author
-        ? permission > post.author.permission ||
-            (permission >= post.author.permission && post.author.permission > 0)
+        ? permission > post.author.permission && permission > 1 ||
+            (permission >= post.author.permission && post.author.permission > 0  && permission > 1)
         : false,
     );
   }, [permission, post.author]);
