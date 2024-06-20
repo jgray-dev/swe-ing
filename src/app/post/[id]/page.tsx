@@ -121,7 +121,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
       const liked =
         post.likes?.some((like) => like.user_id === user_id) ?? false;
       const key = (post.created_at + post.id) / Math.random();
-      return (
+      return post.author ? (
         <div
           id={`${key}`}
           key={key}
@@ -140,7 +140,6 @@ export default function PostPage({ params }: { params: { id: string } }) {
                   <div className="relative h-12 w-12 select-none overflow-hidden rounded-full">
                     <Link href={`/user/${post.author_id}`}>
                       <Image
-                        // @ts-expect-error fuck typescript
                         src={post.author.image_url}
                         fill
                         loading={"lazy"}
@@ -150,8 +149,23 @@ export default function PostPage({ params }: { params: { id: string } }) {
                       />
                     </Link>
                   </div>
-                  {/*@ts-expect-error fuck typescript*/}
-                  {post.author.name}
+                  <div
+                    className={`${
+                      post.author.permission === 1
+                        ? "text-emerald-200"
+                        : post.author.permission === 2
+                          ? "text-orange-400"
+                          : post.author.permission === 3
+                            ? "text-red-400"
+                            : "text-zinc-200"
+                    }`}
+                  >
+                    <span
+                      title={`${post.author.permission == 1 ? "VIP" : post.author.permission == 2 ? "Moderator" : post.author.permission == 3 ? "Owner" : ""}`}
+                    >
+                      {post.author.name}
+                    </span>
+                  </div>
                   <br />
                   <span className={"text-xs text-zinc-600"}>
                     {getTime(post.created_at)} ago
@@ -275,6 +289,8 @@ export default function PostPage({ params }: { params: { id: string } }) {
             </div>
           </div>
         </div>
+      ) : (
+        <></>
       );
     } else {
       setRealPost(false);
