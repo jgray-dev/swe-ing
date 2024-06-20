@@ -1,33 +1,19 @@
 "use server";
 
 import { embeddingFromID } from "~/server/api/server-only";
-import type { Response } from "~/app/_functions/interfaces";
+
+import { embed } from "ai";
+import { openai } from "@ai-sdk/openai";
 
 export async function getEmbedding(text: string): Promise<number[]> {
-  const apiKey = process.env.VOYAGE_API_KEY;
-
   try {
-    const response = await fetch("https://api.voyageai.com/v1/embeddings", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        input: `${text}`,
-        model: "voyage-large-2",
-      }),
+    const { embedding } = await embed({
+      model: openai.embedding("text-embedding-3-small"),
+      value: text,
     });
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const data: Response = await response.json();
-    if (data.data[0]?.embedding) {
-      return data.data[0].embedding;
-    } else {
-      return [];
-    }
-  } catch (error) {
-    console.error("Error:", error);
+    return embedding;
+  } catch (e) {
+    console.error(e);
     return [];
   }
 }
