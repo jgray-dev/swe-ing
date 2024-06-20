@@ -122,6 +122,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
         post.likes?.some((like) => like.user_id === user_id) ?? false;
       const key = (post.created_at + post.id) / Math.random();
       return (
+        post.author?
         <div
           id={`${key}`}
           key={key}
@@ -140,7 +141,6 @@ export default function PostPage({ params }: { params: { id: string } }) {
                   <div className="relative h-12 w-12 select-none overflow-hidden rounded-full">
                     <Link href={`/user/${post.author_id}`}>
                       <Image
-                        // @ts-expect-error fuck typescript
                         src={post.author.image_url}
                         fill
                         loading={"lazy"}
@@ -150,9 +150,25 @@ export default function PostPage({ params }: { params: { id: string } }) {
                       />
                     </Link>
                   </div>
-                  {/*@ts-expect-error fuck typescript*/}
-                  {post.author.name}
-                  <br />
+
+                  <div
+                    className={`${
+                      post.author.permission === 1
+                        ? "text-emerald-200"
+                        : post.author.permission === 2
+                          ? "text-orange-400"
+                          : post.author.permission === 3
+                            ? "text-red-400"
+                            : "text-zinc-200"
+                    }`}
+                  >
+                    <span
+                      title={`${post.author.permission == 1 ? "VIP" : post.author.permission == 2 ? "Moderator" : post.author.permission == 3 ? "Owner" : ""}`}
+                    >
+                      {post.author.name}
+                    </span>
+                  </div>
+                  <br/>
                   <span className={"text-xs text-zinc-600"}>
                     {getTime(post.created_at)} ago
                   </span>
@@ -165,12 +181,12 @@ export default function PostPage({ params }: { params: { id: string } }) {
                   <div className={"flex max-h-24 flex-wrap overflow-hidden"}>
                     {post.post_tags
                       ? post.post_tags.split(",").map((tag) => {
-                          if (tag !== "") {
-                            return (
-                              <Link key={Math.random()} href={`/search/${tag}`}>
-                                <div
-                                  key={Math.random()}
-                                  className="mx-0.5 ml-0 mt-1 w-fit max-w-20 overflow-x-hidden truncate rounded-sm bg-white/5 p-0.5 text-left text-xs text-zinc-500"
+                        if (tag !== "") {
+                          return (
+                            <Link key={Math.random()} href={`/search/${tag}`}>
+                              <div
+                                key={Math.random()}
+                                className="mx-0.5 ml-0 mt-1 w-fit max-w-20 overflow-x-hidden truncate rounded-sm bg-white/5 p-0.5 text-left text-xs text-zinc-500"
                                   title={tag}
                                 >
                                   {tag}
@@ -274,7 +290,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
               </div>
             </div>
           </div>
-        </div>
+        </div>:<></>
       );
     } else {
       setRealPost(false);
