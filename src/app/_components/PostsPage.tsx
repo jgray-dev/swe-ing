@@ -12,10 +12,6 @@ import ContextMenu from "~/app/_components/ContextMenu";
 import { getTime } from "~/app/_functions/functions";
 import { useAlertState, useUserState } from "~/app/_functions/store";
 import { VscLoading } from "react-icons/vsc";
-import { FaCrown } from "react-icons/fa";
-import { FiShield } from "react-icons/fi";
-import { BsGem } from "react-icons/bs";
-import { GiCheckedShield } from "react-icons/gi";
 
 interface postPageProps {
   order: number[];
@@ -164,13 +160,17 @@ export default function PostsPage({ order }: postPageProps) {
                       post.author.permission === 1
                         ? "text-emerald-200"
                         : post.author.permission === 2
-                          ? "text-orange-400"
+                          ? "text-orange-300"
                           : post.author.permission === 3
-                            ? "text-red-500"
+                            ? "text-red-400"
                             : "text-zinc-200"
                     }`}
                   >
-                    {post.author.name}
+                    <span
+                      title={`${post.author.permission == 1 ? "VIP" : post.author.permission == 2 ? "Moderator" : post.author.permission == 3 ? "Owner" : ""}`}
+                    >
+                      {post.author.name}
+                    </span>
                   </div>
                 ) : (
                   <></>
