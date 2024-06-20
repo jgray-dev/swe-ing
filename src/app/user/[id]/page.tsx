@@ -15,8 +15,8 @@ import Image from "next/image";
 import { UserButton } from "@clerk/nextjs";
 import PostsPage from "~/app/_components/PostsPage";
 import { BsGem } from "react-icons/bs";
-import {GiCheckedShield, GiImperialCrown} from "react-icons/gi";
-import {PiCrownSimpleFill} from "react-icons/pi";
+import { GiCheckedShield, GiImperialCrown } from "react-icons/gi";
+import { PiCrownSimpleFill } from "react-icons/pi";
 
 export default function UserPage({ params }: { params: { id: string } }) {
   const { user_id, clerk_id } = useUserState((state) => state);
