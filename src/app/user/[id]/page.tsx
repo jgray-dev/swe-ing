@@ -15,8 +15,8 @@ import Image from "next/image";
 import { UserButton } from "@clerk/nextjs";
 import PostsPage from "~/app/_components/PostsPage";
 import { BsGem } from "react-icons/bs";
-import { GiCheckedShield } from "react-icons/gi";
-import { FaCrown } from "react-icons/fa";
+import {GiCheckedShield, GiImperialCrown} from "react-icons/gi";
+import {PiCrownSimpleFill} from "react-icons/pi";
 
 export default function UserPage({ params }: { params: { id: string } }) {
   const { user_id, clerk_id } = useUserState((state) => state);
@@ -144,7 +144,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
                           <></>
                         )}
                         {fullUser.permission == 3 ? (
-                          <FaCrown className="ml-1 h-5 w-5 translate-y-0.5 text-red-600" />
+                          <PiCrownSimpleFill className="ml-1 h-5 w-5 translate-y-0.5 text-red-600" />
                         ) : (
                           <></>
                         )}
