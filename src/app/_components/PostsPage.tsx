@@ -125,8 +125,7 @@ export default function PostsPage({ order }: postPageProps) {
   function getCard(post: post): React.ReactElement {
     const liked = post.likes?.some((like) => like.user_id === user_id) ?? false;
     const key = (post.created_at + post.id) / Math.random();
-    return (
-      post.author?
+    return post.author ? (
       <div
         id={`${key}`}
         key={key}
@@ -154,23 +153,23 @@ export default function PostsPage({ order }: postPageProps) {
                     />
                   </Link>
                 </div>
-                  <div
-                    className={`${
-                      post.author.permission === 1
-                        ? "text-emerald-200"
-                        : post.author.permission === 2
-                          ? "text-orange-400"
-                          : post.author.permission === 3
-                            ? "text-red-400"
-                            : "text-zinc-200"
-                    }`}
+                <div
+                  className={`${
+                    post.author.permission === 1
+                      ? "text-emerald-200"
+                      : post.author.permission === 2
+                        ? "text-orange-400"
+                        : post.author.permission === 3
+                          ? "text-red-400"
+                          : "text-zinc-200"
+                  }`}
+                >
+                  <span
+                    title={`${post.author.permission == 1 ? "VIP" : post.author.permission == 2 ? "Moderator" : post.author.permission == 3 ? "Owner" : ""}`}
                   >
-                    <span
-                      title={`${post.author.permission == 1 ? "VIP" : post.author.permission == 2 ? "Moderator" : post.author.permission == 3 ? "Owner" : ""}`}
-                    >
-                      {post.author.name}
-                    </span>
-                  </div>
+                    {post.author.name}
+                  </span>
+                </div>
                 <br />
                 <span className={"text-center text-xs text-zinc-600"}>
                   {getTime(post.updated_at)} ago
@@ -288,7 +287,8 @@ export default function PostsPage({ order }: postPageProps) {
           </div>
         </div>
       </div>
-        :<></>
+    ) : (
+      <></>
     );
   }
 
