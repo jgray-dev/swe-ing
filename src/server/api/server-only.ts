@@ -33,7 +33,10 @@ export async function insertPinecone(
   ]);
 }
 
-export async function embeddingFromID(table: string, queryID: number): Promise<number[]> {
+export async function embeddingFromID(
+  table: string,
+  queryID: number,
+): Promise<number[]> {
   const response = await index.namespace(table).query({
     topK: 1,
     id: `${queryID}`,
