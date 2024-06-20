@@ -149,7 +149,6 @@ export default function PostPage({ params }: { params: { id: string } }) {
                       />
                     </Link>
                   </div>
-
                   <div
                     className={`${
                       post.author.permission === 1
