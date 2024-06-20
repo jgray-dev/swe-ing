@@ -33,7 +33,7 @@ export async function insertPinecone(
   ]);
 }
 
-export async function embeddingFromID(table: string, queryID: number) {
+export async function embeddingFromID(table: string, queryID: number): Promise<number[]> {
   const response = await index.namespace(table).query({
     topK: 1,
     id: `${queryID}`,
@@ -41,6 +41,13 @@ export async function embeddingFromID(table: string, queryID: number) {
   });
   if (response.matches.length > 0) {
     return response.matches[0]?.values as number[];
+  } else {
+    const oldEmbedding = [];
+    for (let i = 0; i < 1535; i++) {
+      oldEmbedding.push(0);
+    }
+    oldEmbedding.push(0.000001);
+    return oldEmbedding;
   }
 }
 
