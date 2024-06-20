@@ -159,46 +159,18 @@ export default function PostsPage({ order }: postPageProps) {
                   </Link>
                 </div>
                 {post.author ? (
-                  <div className={"flex flex-row"}>
-                    <div
-                      className={`${
-                        post.author.permission === 1
-                          ? "text-emerald-200"
-                          : post.author.permission === 2
-                            ? "text-orange-400"
-                            : post.author.permission === 3
-                              ? "text-red-500"
-                              : "text-zinc-200"
-                      }`}
-                    >
-                      {post.author.name}
-                    </div>
-                    <div>
-                      {post.author.permission == 1 ? (
-                        <BsGem
-                          className="ml-1 h-3 w-3 translate-y-0.5 text-emerald-300"
-                          title={"VIP"}
-                        />
-                      ) : (
-                        <></>
-                      )}
-                      {post.author.permission == 2 ? (
-                        <GiCheckedShield
-                          className="ml-1 h-3 w-3 translate-y-0.5 text-orange-500"
-                          title={"Moderator"}
-                        />
-                      ) : (
-                        <></>
-                      )}
-                      {post.author.permission == 3 ? (
-                        <FaCrown
-                          className="ml-1 h-3 w-3 translate-y-0.5 text-red-600"
-                          title={"Owner"}
-                        />
-                      ) : (
-                        <></>
-                      )}
-                    </div>
+                  <div
+                    className={`${
+                      post.author.permission === 1
+                        ? "text-emerald-200"
+                        : post.author.permission === 2
+                          ? "text-orange-400"
+                          : post.author.permission === 3
+                            ? "text-red-500"
+                            : "text-zinc-200"
+                    }`}
+                  >
+                    {post.author.name}
                   </div>
                 ) : (
                   <></>
