@@ -14,6 +14,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { UserButton } from "@clerk/nextjs";
 import PostsPage from "~/app/_components/PostsPage";
+import { BsGem } from "react-icons/bs";
+import { GiCheckedShield } from "react-icons/gi";
+import { FaCrown } from "react-icons/fa";
 
 export default function UserPage({ params }: { params: { id: string } }) {
   const { user_id, clerk_id } = useUserState((state) => state);
@@ -111,8 +114,42 @@ export default function UserPage({ params }: { params: { id: string } }) {
                 <div
                   className={"mx-auto min-h-28 w-full border-b border-white/50"}
                 >
-                  <div className={"text-3xl font-semibold"}>
-                    {fullUser.name}
+                  <div
+                    className={`text-3xl font-semibold ${
+                      fullUser.permission === 1
+                        ? "text-emerald-200"
+                        : fullUser.permission === 2
+                          ? "text-orange-400"
+                          : fullUser.permission === 3
+                            ? "text-red-500"
+                            : "text-zinc-200"
+                    }`}
+                  >
+                    <div
+                      className={
+                        "flex w-full flex-row items-center justify-center"
+                      }
+                      title={`${fullUser.permission == 1 ? "VIP" : fullUser.permission == 2 ? "Moderator" : fullUser.permission == 3 ? "Owner" : ""}`}
+                    >
+                      <div>{fullUser.name}</div>
+                      <div className={""}>
+                        {fullUser.permission == 1 ? (
+                          <BsGem className="ml-1 h-5 w-5 translate-y-0.5 text-emerald-300" />
+                        ) : (
+                          <></>
+                        )}
+                        {fullUser.permission == 2 ? (
+                          <GiCheckedShield className="ml-1 h-5 w-5 translate-y-0.5 text-orange-500" />
+                        ) : (
+                          <></>
+                        )}
+                        {fullUser.permission == 3 ? (
+                          <FaCrown className="ml-1 h-5 w-5 translate-y-0.5 text-red-600" />
+                        ) : (
+                          <></>
+                        )}
+                      </div>
+                    </div>
                   </div>
                   <div className={"px-2 pt-4 text-left text-base"}>
                     {fullUser.bio ? fullUser.bio : "No bio"}
