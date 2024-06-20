@@ -86,15 +86,19 @@ export default function NavBar() {
           <div title={"Manage account"} className={"flex flex-row"}>
             <span className={"mr-2 mt-1 text-xs text-zinc-800"}>{user_id}</span>
             <SignedIn>
-              <div className="h-fit min-w-8">
-                <Link href={`/user/${user_id}`}>
-                  <VscAccount
-                    className={
-                      "h-6 w-6 text-zinc-400 duration-200 hover:text-white"
-                    }
-                  />
-                </Link>
-              </div>
+              {user_id !== 0 ? (
+                <div className="h-fit min-w-8">
+                  <Link href={`/user/${user_id}`}>
+                    <VscAccount
+                      className={
+                        "h-6 w-6 text-zinc-400 duration-200 hover:text-white"
+                      }
+                    />
+                  </Link>
+                </div>
+              ) : (
+                <></>
+              )}
             </SignedIn>
             <SignedOut>
               <SignInButton>Sign in</SignInButton>
