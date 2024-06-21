@@ -57,28 +57,10 @@ export interface user {
   clerk_id: string;
   name: string;
   image_url: string;
+  permission: number;
   bio?: string;
   location?: string;
   website?: string;
   skills?: string;
   recent_likes?: number[];
-  permission?: number;
-}
-
-// Embeddings interfaces
-interface Embedding {
-  object: string;
-  embedding: number[];
-  index: number;
-}
-
-interface Usage {
-  total_tokens: number;
-}
-
-export interface Response {
-  object: string;
-  data: Embedding[];
-  model: string;
-  usage: Usage;
 }

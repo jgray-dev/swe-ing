@@ -12,10 +12,6 @@ export async function checkAuthorized(user: user | null): Promise<boolean> {
     console.log("Authorization failed: User is null");
     return false;
   }
-  if (!user.permission) {
-    console.log("Authorization failed: User has no permission", user);
-    return false;
-  }
   const clerkUser = await clerkClient.users.getUser(`${auth().userId}`);
   // Find our action user in the database
   const actionUser = await db.query.users.findFirst({
@@ -34,13 +30,17 @@ export async function checkAuthorized(user: user | null): Promise<boolean> {
     actionUser.permission <= user.permission &&
     actionUser.permission <= 1
   ) {
-    console.log("Authorization failed: Insufficient permissions for action user");
+    console.log(
+      "Authorization failed: Insufficient permissions for action user",
+    );
     return false;
   }
   // Final check to return true ONLY if the action user is greater permission than the requested user
   // (ex moderators cant force anything on admins posts)
   if (actionUser.permission < user.permission) {
-    console.log("Authorization failed: Action user has lower permission than requested user");
+    console.log(
+      "Authorization failed: Action user has lower permission than requested user",
+    );
     return false;
   }
   return true;
