@@ -27,7 +27,7 @@ import {
 
 import { UTApi } from "uploadthing/server";
 import { auth, clerkClient } from "@clerk/nextjs/server";
-import {checkAuthorized} from "~/server/api/auth";
+import { checkAuthorized } from "~/server/api/auth";
 const utapi = new UTApi();
 
 export async function deleteImage(keys: string[] | string) {
@@ -38,7 +38,7 @@ export async function deleteImage(keys: string[] | string) {
 }
 
 export async function dbDeletePost(post: post) {
-  const authorized = await checkAuthorized(post.author?post.author:null);
+  const authorized = await checkAuthorized(post.author ? post.author : null);
   if (!authorized) throw new Error("Unauthorized");
   void (await pineconeDelete([post.id], "posts"));
   const images = post.image_urls.split(",");
@@ -128,7 +128,7 @@ export async function dbEditPost(
   user_id: number,
   newImageUrls: string,
 ) {
-  const authorized = await checkAuthorized(post.author?post.author:null);
+  const authorized = await checkAuthorized(post.author ? post.author : null);
   if (!authorized) throw new Error("Unauthorized");
   console.log("authorized action");
   try {
@@ -144,8 +144,8 @@ export async function dbEditPost(
         generalized: generalized,
       })
       .where(and(eq(posts.author_id, user_id), eq(posts.id, post.id)));
-    console.log(user_id)
-    console.log(post.id)
+    console.log(user_id);
+    console.log(post.id);
     const newEmbedding = await getEmbedding(generalized);
     void (await insertPinecone("posts", newEmbedding, post.id));
     return true;
