@@ -13,7 +13,7 @@ export async function checkAuthorized(user: user | null): Promise<boolean> {
     return false;
   }
   if (!user.permission) {
-    console.log("Authorization failed: User has no permission");
+    console.log("Authorization failed: User has no permission", user);
     return false;
   }
   const clerkUser = await clerkClient.users.getUser(`${auth().userId}`);
