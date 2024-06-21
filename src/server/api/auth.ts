@@ -6,12 +6,10 @@ import { eq } from "drizzle-orm/sql/expressions/conditions";
 import { users } from "~/server/db/schema";
 import type { user } from "~/app/_functions/interfaces";
 
+// Pass in a user object. Returns true if the user requesting the action is authorized against the action user or the action user IS the requesting user
 export async function checkAuthorized(user: user | null): Promise<boolean> {
   if (!user) return false;
   if (!user.permission) return false;
-  //Default returns if user is null
-
-  // Check the clerk user making the request
   const clerkUser = await clerkClient.users.getUser(`${auth().userId}`);
   // Find our action user in the database
   const actionUser = await db.query.users.findFirst({
