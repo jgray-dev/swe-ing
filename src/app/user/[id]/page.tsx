@@ -116,7 +116,7 @@ export default function UserPage({ params }: { params: { id: string } }) {
                   <div
                     className={`text-3xl font-semibold ${
                       fullUser.permission === 1
-                        ? "text-emerald-200"
+                        ? "text-emerald-300"
                         : fullUser.permission === 2
                           ? "text-orange-400"
                           : fullUser.permission === 3
