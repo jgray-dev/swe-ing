@@ -13,6 +13,7 @@ export async function checkAuthorized(user: user | null): Promise<boolean> {
     return false;
   }
   if (!user.permission) {
+    console.log(user)
     console.log("Authorization failed: User has no permission");
     return false;
   }
