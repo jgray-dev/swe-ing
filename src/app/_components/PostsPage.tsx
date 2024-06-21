@@ -172,7 +172,7 @@ export default function PostsPage({ order }: postPageProps) {
                 </div>
                 <br />
                 <span className={"text-center text-xs text-zinc-600"}>
-                  {getTime(post.updated_at)} ago
+                  {getTime(post.created_at)} ago
                 </span>
               </div>
               <div
