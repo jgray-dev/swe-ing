@@ -156,7 +156,7 @@ export default function PostsPage({ order }: postPageProps) {
                 <div
                   className={`${
                     post.author.permission === 1
-                      ? "text-emerald-200"
+                      ? "text-emerald-300"
                       : post.author.permission === 2
                         ? "text-orange-400"
                         : post.author.permission === 3
