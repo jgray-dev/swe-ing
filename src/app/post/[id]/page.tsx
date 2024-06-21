@@ -156,7 +156,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
                         : post.author.permission === 2
                           ? "text-orange-400"
                           : post.author.permission === 3
-                            ? "text-red-400"
+                            ? "text-red-500"
                             : "text-zinc-200"
                     }`}
                   >

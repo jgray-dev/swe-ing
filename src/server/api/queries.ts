@@ -533,14 +533,7 @@ export async function updateUserEmbed(userId: string) {
     where: eq(users.clerk_id, userId),
   });
   if (user) {
-    let oldEmbedding = await embeddingFromID("users", user.id);
-    if (!oldEmbedding) {
-      oldEmbedding = [];
-      for (let i = 0; i < 1535; i++) {
-        oldEmbedding.push(0);
-      }
-      oldEmbedding.push(0.000001);
-    }
+    const oldEmbedding = await embeddingFromID("users", user.id);
     const rlAmount = user.recent_likes.length;
     const nlAmount = user.new_likes.length;
     const newEmbeddings = await getPostEmbeddings(user.new_likes);
