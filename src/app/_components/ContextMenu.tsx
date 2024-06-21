@@ -1,7 +1,7 @@
 import type { post } from "~/app/_functions/interfaces";
 import { PiDotsNine } from "react-icons/pi";
 import React, { useEffect, useRef, useState } from "react";
-import { CiEdit, CiMicrochip, CiTrash } from "react-icons/ci";
+import { CiEdit, CiTrash } from "react-icons/ci";
 import { IoWarningOutline } from "react-icons/io5";
 import { IoIosLink } from "react-icons/io";
 import {
@@ -14,6 +14,8 @@ import { HiOutlineXMark } from "react-icons/hi2";
 import { useAlertState, useUserState } from "~/app/_functions/store";
 import Image from "next/image";
 import { AiOutlineDeleteRow } from "react-icons/ai";
+import { TfiReload } from "react-icons/tfi";
+import { MdOutlineTextSnippet } from "react-icons/md";
 
 interface ContextMenuProps {
   post: post;
@@ -22,7 +24,6 @@ interface ContextMenuProps {
 }
 
 export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
   const setAlert = useAlertState((state) => state.setAlert);
   const { user_id, permission } = useUserState((state) => state);
   const [editing, setEditing] = useState(false);
@@ -75,19 +76,31 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
     }
   }
 
+  async function remakeEmbedding() {
+    setAlert({ text: "Remaking embedding", type: "loading" });
+    const resp = await dbEditPost(
+      post,
+      post.content,
+      post.author_id,
+      newImageUrls,
+    );
+    resp
+      ? setAlert({ text: "Remade embedding", type: "info" })
+      : setAlert({ text: "Error remaking embedding", type: "error" });
+  }
+
   async function reportPost() {
     setOpen(!open);
     if (user_id) {
       const resp = await dbReportPost(post, user_id);
       if (resp === "duplicate") {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         setAlert({ text: "You've already reported this post", type: "warn" });
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         setAlert({ text: "Post reported successfully", type: "info" });
       }
     } else {
-      console.error("Unable to report - no user_id");
+      console.error("Invalid user_id");
+      setAlert({ text: "Error reporting post", type: "error" });
     }
   }
 
@@ -290,7 +303,10 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
                 className={
                   "group mb-2 flex cursor-pointer flex-row duration-200"
                 }
-                onMouseDown={() => deletePost()}
+                onMouseDown={() => {
+                  setOpen(!open);
+                  void deletePost();
+                }}
               >
                 <div
                   className={
@@ -298,7 +314,7 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
                   }
                 >
                   <AiOutlineDeleteRow
-                    className={"hover: mr-1 h-5 w-5 -translate-x-0.5"}
+                    className={"mr-1 h-5 w-5 -translate-x-0.5 text-red-500"}
                   />
                   <span>Force delete</span>
                 </div>
@@ -311,7 +327,7 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
               className={"group mb-2 flex cursor-pointer flex-row duration-200"}
               onMouseDown={() => {
                 setOpen(!open);
-                alert(post.generalized);
+                void remakeEmbedding();
               }}
             >
               <div
@@ -319,8 +335,27 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
                   "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:border-orange-400 group-hover:text-orange-400"
                 }
               >
-                <CiMicrochip
-                  className={"hover: mr-1 h-5 w-5 -translate-x-0.5"}
+                <TfiReload
+                  className={"mr-1 h-5 w-5 -translate-x-0.5 text-orange-500"}
+                />
+                <span>Re-embed</span>
+              </div>
+            </div>
+
+            <div
+              className={"group mb-2 flex cursor-pointer flex-row duration-200"}
+              onMouseDown={() => {
+                setOpen(!open);
+                alert(post.generalized);
+              }}
+            >
+              <div
+                className={
+                  "group flex flex-row border-b border-transparent text-zinc-300 duration-200 group-hover:border-cyan-500 group-hover:text-cyan-500"
+                }
+              >
+                <MdOutlineTextSnippet
+                  className={"mr-1 h-5 w-5 -translate-x-0.5 text-cyan-500"}
                 />
                 <span>Generalized</span>
               </div>
