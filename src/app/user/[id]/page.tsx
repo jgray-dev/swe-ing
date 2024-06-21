@@ -29,7 +29,6 @@ export default function UserPage({ params }: { params: { id: string } }) {
   const [newWebsite, setNewWebsite] = useState("");
   const [newSkills, setNewSkills] = useState("");
   const [newLocation, setNewLocation] = useState("");
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
   const setAlert = useAlertState((state) => state.setAlert);
 
   useEffect(() => {

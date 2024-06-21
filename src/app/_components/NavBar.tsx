@@ -14,7 +14,6 @@ import { useAlertState, useUserState } from "~/app/_functions/store";
 import { VscAccount } from "react-icons/vsc";
 
 export default function NavBar() {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
   const setAlert = useAlertState((state) => state.setAlert);
   const router = useRouter();
   const [searchOpen, setSearchOpen] = useState(false);

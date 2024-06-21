@@ -9,7 +9,6 @@ import PostsPage from "~/app/_components/PostsPage";
 export default function HomePage() {
   const [hpo, setHpo] = useState<number[]>();
   const { user_id } = useUserState((state) => state);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
   const setAlert = useAlertState((state) => state.setAlert);
 
   useEffect(() => {

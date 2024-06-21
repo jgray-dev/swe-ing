@@ -62,6 +62,7 @@ export interface user {
   website?: string;
   skills?: string;
   recent_likes?: number[];
+  permission?: number;
 }
 
 // Embeddings interfaces
