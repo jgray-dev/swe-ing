@@ -27,6 +27,7 @@ import {
 
 import { UTApi } from "uploadthing/server";
 import { auth, clerkClient } from "@clerk/nextjs/server";
+import {checkAuthorized} from "~/server/api/auth";
 const utapi = new UTApi();
 
 export async function deleteImage(keys: string[] | string) {
@@ -37,19 +38,8 @@ export async function deleteImage(keys: string[] | string) {
 }
 
 export async function dbDeletePost(post: post) {
-  const fullUser = await clerkClient.users.getUser(`${auth().userId}`);
-  const actionUser = await db.query.users.findFirst({
-    where: eq(users.id, Number(fullUser.publicMetadata.database_id)),
-  });
-  if (!actionUser) throw new Error("Unauthorized1");
-  if (!post.author) throw new Error("Unauthorized2");
-  if (
-    fullUser.publicMetadata.database_id !== post.author_id &&
-    actionUser.permission <= post.author.permission
-  )
-    throw new Error("Unauthorized3");
-  if (actionUser.permission < post.author.permission)
-    throw new Error("Unauthorized4");
+  const authorized = await checkAuthorized(post.author?post.author:null);
+  if (!authorized) throw new Error("Unauthorized");
   void (await pineconeDelete([post.id], "posts"));
   const images = post.image_urls.split(",");
   for (const url of images) {
@@ -138,11 +128,13 @@ export async function dbEditPost(
   user_id: number,
   newImageUrls: string,
 ) {
-  const fullUser = await clerkClient.users.getUser(`${auth().userId}`);
-  if (fullUser.publicMetadata.database_id !== user_id)
-    throw new Error("Unauthorized");
+  const authorized = await checkAuthorized(post.author?post.author:null);
+  if (!authorized) throw new Error("Unauthorized");
+  console.log("authorized action");
   try {
     const generalized = await generalizePost(content, newImageUrls.split(","));
+    console.log("generalized");
+    console.log(generalized);
     await db
       .update(posts)
       .set({
@@ -152,6 +144,8 @@ export async function dbEditPost(
         generalized: generalized,
       })
       .where(and(eq(posts.author_id, user_id), eq(posts.id, post.id)));
+    console.log(user_id)
+    console.log(post.id)
     const newEmbedding = await getEmbedding(generalized);
     void (await insertPinecone("posts", newEmbedding, post.id));
     return true;
@@ -783,9 +777,6 @@ export async function createPost(
     .returning();
 
   if (newPost[0]?.id) {
-    console.log("newpost id confirmed");
-    console.log("generalized");
-    console.log(generalized);
     const embedding = await getEmbedding(generalized);
     void (await insertPinecone("posts", embedding, newPost[0].id));
     return newPost[0];
