@@ -115,7 +115,7 @@ export default function PostPage({ params }: { params: { id: string } }) {
   }
 
   async function getPostCard() {
-    const post = (await singlePost(postId)) as post;
+    const post = await singlePost(postId);
     if (post) {
       setRealPost(true);
       const liked =

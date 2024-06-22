@@ -208,18 +208,16 @@ export async function isUserFollowing(user_id: number, following_id: number) {
   return !!following;
 }
 
-export async function singlePost(post_id: number) {
-  return db.query.posts.findFirst({
+export async function singlePost(post_id: number): Promise<post> {
+  const post = await db.query.posts.findFirst({
     where: eq(posts.id, post_id),
     with: {
       author: {
         columns: {
-          recent_likes: false,
-        },
-      },
-      likes: {
-        columns: {
-          user_id: true,
+          id: true,
+          image_url: true,
+          name: true,
+          permission: true,
         },
       },
       comments: {
@@ -227,8 +225,18 @@ export async function singlePost(post_id: number) {
           id: true,
         },
       },
+      likes: {
+        columns: {
+          user_id: true,
+        },
+      },
     },
   });
+  if (post) {
+    return post;
+  } else {
+    throw new Error("Post not found");
+  }
 }
 
 export async function nextCommentsPage(page: number, post_id: number) {
