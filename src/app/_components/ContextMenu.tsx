@@ -17,7 +17,7 @@ import Image from "next/image";
 import { AiOutlineDeleteRow } from "react-icons/ai";
 import { TfiReload } from "react-icons/tfi";
 import { MdOutlineTextSnippet } from "react-icons/md";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface ContextMenuProps {
   post: post;
@@ -25,11 +25,7 @@ interface ContextMenuProps {
   postPage: boolean;
 }
 
-export default function ContextMenu({
-  post,
-  id,
-  postPage,
-}: ContextMenuProps) {
+export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
   const setAlert = useAlertState((state) => state.setAlert);
   const { user_id, permission } = useUserState((state) => state);
   const [editing, setEditing] = useState(false);
@@ -45,7 +41,7 @@ export default function ContextMenu({
             permission > 1)
       : false,
   );
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     setIsSuperior(
