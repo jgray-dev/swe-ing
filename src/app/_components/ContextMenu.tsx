@@ -9,7 +9,6 @@ import {
   dbEditPost,
   dbReportPost,
   deleteImage,
-  singlePost,
 } from "~/server/api/queries";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { useAlertState, useUserState } from "~/app/_functions/store";
@@ -17,7 +16,6 @@ import Image from "next/image";
 import { AiOutlineDeleteRow } from "react-icons/ai";
 import { TfiReload } from "react-icons/tfi";
 import { MdOutlineTextSnippet } from "react-icons/md";
-import { useRouter } from "next/navigation";
 
 interface ContextMenuProps {
   post: post;
@@ -41,7 +39,6 @@ export default function ContextMenu({ post, id, postPage }: ContextMenuProps) {
             permission > 1)
       : false,
   );
-  const router = useRouter();
 
   useEffect(() => {
     setIsSuperior(
