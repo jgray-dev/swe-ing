@@ -327,6 +327,7 @@ function shuffleArray(array: number[]): number[] {
 }
 
 export async function getHomePageOrder(user_id: number) {
+  console.log("GETHPO")
   const fullUser = await clerkClient.users.getUser(`${auth().userId}`);
   if (fullUser.publicMetadata.database_id !== user_id)
     throw new Error("Unauthorized");
