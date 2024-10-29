@@ -36,18 +36,18 @@ export function UserDataUpdater() {
   React.useEffect(() => {
     const fetchData = async () => {
       if (isLoaded) {
-        // console.log("Clerk state loaded");
+        console.log("Clerk state loaded");
         if (!isLoading) {
-          // console.log("Local loading is false");
+          console.log("Local loading is false");
           if (isSignedIn) {
-            // console.log("Clerk is signed in");
+            console.log("Clerk is signed in");
             setIsLoading(true);
             try {
-              // console.log("Trying dbUser");
+              console.log("Trying dbUser");
               const dbUser = await getDbUser(user.id);
-              // console.log("Finished dbUser", dbUser);
+              console.log("Finished dbUser", dbUser);
               if (dbUser) {
-                // console.log("We got dbUser");
+                console.log("We got dbUser");
                 setData({
                   user_id: dbUser.id,
                   clerk_id: user.id,
@@ -55,7 +55,7 @@ export function UserDataUpdater() {
                   permission: dbUser.permission,
                 });
               } else {
-                // console.log("We DONT got dbUser - reload page");
+                console.log("We DONT got dbUser - reload page");
                 alert("Error getting user data");
                 location.reload();
               }
